@@ -14,11 +14,11 @@ A Server entity in ECHOES Simulator contains following attrebutes:
     Storage             => Server storage in MB
     AvailableStorage    => Server available storage in MB
     StorageSpeed        => Server storage speed in MBps (Megabytes per second)
-    Average_Access_Time => Average Access Time for server in milliseconds (Similar to Latency)
+    AverageAccessTime   => Average Access Time for server in milliseconds (Similar to Latency)
     Latency             => Time delay for data to transmission between the server and connected devices in milliseconds
-    Network_Bandwidth   => Server Netwrok Bandwidth in Mbps (megabits per second)
-    Energy_Efficiency   => Power Usage Effectiveness (PUE) or Energy Efficiency Ratio (EER)
-    Redundancy_Level    => The level of redundancy or fault tolerance
+    NetworkBandwidth    => Server Netwrok Bandwidth in Mbps (megabits per second)
+    EnergyEfficiency    => Power Usage Effectiveness (PUE) or Energy Efficiency Ratio (EER)
+    RedundancyLevel     => The level of redundancy or fault tolerance
     Availability        => Is server available at the moment: True/False
 
 Example:
@@ -59,20 +59,20 @@ COPYRIGHT :
 
 class Server {
 
-    private $Type;                  // Server type: Edge/Cloud/Default
-    private $Cores;                 // Number of CPU cores
-    private $MIPS;                  // CPU Mega Instructions Per Second
-    private $RAM;                   // Server memory in MB
-    private $AvailableRAM;          // Server available memory in MB
-    private $Storage;               // Server storage in MB
-    private $AvailableStorage;      // Server available storage in MB
-    private $StorageSpeed;          // Server storage speed in MBps (Megabytes per second)
-    private $Average_Access_Time;   // Average Access Time for server in milliseconds (Similar to Latency)
-    private $Latency;               // Time delay for data to transmission between the server and connected devices in milliseconds
-    private $Network_Bandwidth;     // Server Netwrok Bandwidth in Mbps (megabits per second)
-    private $Energy_Efficiency;     // Power Usage Effectiveness (PUE) or Energy Efficiency Ratio (EER)
-    private $Redundancy_Level;      // The level of redundancy or fault tolerance
-    private $Availability;          // Is server available at the moment: True/False
+    private $Type;              // Server type: Edge/Cloud/Default
+    private $Cores;             // Number of CPU cores
+    private $MIPS;              // CPU Mega Instructions Per Second
+    private $RAM;               // Server memory in MB
+    private $AvailableRAM;      // Server available memory in MB
+    private $Storage;           // Server storage in MB
+    private $AvailableStorage;  // Server available storage in MB
+    private $StorageSpeed;      // Server storage speed in MBps (Megabytes per second)
+    private $AverageAccessTime; // Average Access Time for server in milliseconds (Similar to Latency)
+    private $Latency;           // Time delay for data to transmission between the server and connected devices in milliseconds
+    private $NetworkBandwidth;  // Server Netwrok Bandwidth in Mbps (megabits per second)
+    private $EnergyEfficiency;  // Power Usage Effectiveness (PUE) or Energy Efficiency Ratio (EER)
+    private $RedundancyLevel;   // The level of redundancy or fault tolerance
+    private $Availability;      // Is server available at the moment: True/False
     
 
     public function __construct(
@@ -84,11 +84,11 @@ class Server {
         int     $Storage, 
         int     $AvailableStorage, 
         int     $StorageSpeed, 
-        int     $Average_Access_Time, 
+        int     $AverageAccessTime, 
         int     $Latency, 
-        int     $Network_Bandwidth, 
-        float   $Energy_Efficiency, 
-        int     $Redundancy_Level, 
+        int     $NetworkBandwidth, 
+        float   $EnergyEfficiency, 
+        int     $RedundancyLevel, 
         bool    $Availability
     ) {
         $this->Type = $Type;
@@ -99,14 +99,15 @@ class Server {
         $this->Storage = $Storage;
         $this->AvailableStorage = $AvailableStorage;
         $this->StorageSpeed = $StorageSpeed;
-        $this->Average_Access_Time = $Average_Access_Time;
+        $this->AverageAccessTime = $AverageAccessTime;
         $this->Latency = $Latency;
-        $this->Network_Bandwidth = $Network_Bandwidth;
-        $this->Energy_Efficiency = $Energy_Efficiency;
-        $this->Redundancy_Level = $Redundancy_Level;
+        $this->NetworkBandwidth = $NetworkBandwidth;
+        $this->EnergyEfficiency = $EnergyEfficiency;
+        $this->RedundancyLevel = $RedundancyLevel;
         $this->Availability = $Availability;
     }
 
+    // Getter and Setter for Type
     public function getType() {
         return $this->Type;
     }
@@ -120,6 +121,7 @@ class Server {
         return true;
     }
 
+    // Getter and Setter for Cores
     public function getCores() {
         return $this->Cores;
     }
@@ -133,6 +135,7 @@ class Server {
         return true;
     }
 
+    // Getter and Setter for MIPS
     public function getMIPS() {
         return $this->MIPS;
     }
@@ -146,6 +149,7 @@ class Server {
         return true;
     }
 
+    // Getter and Setter for RAM
     public function getRAM() {
         return $this->RAM;
     }
@@ -159,6 +163,7 @@ class Server {
         return true;
     }
 
+    // Getter and Setter for AvailableRAM
     public function getAvailableRAM()
     {
         return $this->AvailableRAM;
@@ -173,6 +178,7 @@ class Server {
         return true;
     }
 
+    // Getter and Setter for Storage
     public function getStorage()
     {
         return $this->Storage;
@@ -187,6 +193,7 @@ class Server {
         return true;
     }
 
+    // Getter and Setter for AvailableStorage
     public function getAvailableStorage()
     {
         return $this->AvailableStorage;
@@ -201,6 +208,7 @@ class Server {
         return true;
     }
 
+    // Getter and Setter for StorageSpeed
     public function getStorageSpeed()
     {
         return $this->StorageSpeed;
@@ -215,20 +223,22 @@ class Server {
         return true;
     }
 
+    // Getter and Setter for AverageAccessTime
     public function getAverageAccessTime()
     {
-        return $this->Average_Access_Time;
+        return $this->AverageAccessTime;
     }
-    public function setAverageAccessTime(int $Average_Access_Time)
+    public function setAverageAccessTime(int $AverageAccessTime)
     {
-        if ($Average_Access_Time <= 0) {
-            throw new Exception("Invalid average access time: \"" . $Average_Access_Time . "\"." , 1);
+        if ($AverageAccessTime <= 0) {
+            throw new Exception("Invalid average access time: \"" . $AverageAccessTime . "\"." , 1);
             return false;
         }
-        $this->Average_Access_Time = $Average_Access_Time;
+        $this->AverageAccessTime = $AverageAccessTime;
         return true;
     }
 
+    // Getter and Setter for Latency
     public function getLatency()
     {
         return $this->Latency;
@@ -243,48 +253,52 @@ class Server {
         return true;
     }
 
+    // Getter and Setter for NetworkBandwidth
     public function getNetworkBandwidth()
     {
-        return $this->Network_Bandwidth;
+        return $this->NetworkBandwidth;
     }
-    public function setNetworkBandwidth(int $Network_Bandwidth)
+    public function setNetworkBandwidth(int $NetworkBandwidth)
     {
-        if ($Network_Bandwidth <= 0) {
-            throw new Exception("Invalid network bandwidth: \"" . $Network_Bandwidth . "\"." , 1);
+        if ($NetworkBandwidth <= 0) {
+            throw new Exception("Invalid network bandwidth: \"" . $NetworkBandwidth . "\"." , 1);
             return false;
         }
-        $this->Network_Bandwidth = $Network_Bandwidth;
+        $this->NetworkBandwidth = $NetworkBandwidth;
         return true;
     }
 
+    // Getter and Setter for EnergyEfficiency
     public function getEnergyEfficiency()
     {
-        return $this->Energy_Efficiency;
+        return $this->EnergyEfficiency;
     }
-    public function setEnergyEfficiency(float $Energy_Efficiency)
+    public function setEnergyEfficiency(float $EnergyEfficiency)
     {
-        if ($Energy_Efficiency <= 0.0) {
-            throw new Exception("Invalid energy efficiency: \"" . $Energy_Efficiency . "\"." , 1);
+        if ($EnergyEfficiency <= 0.0) {
+            throw new Exception("Invalid energy efficiency: \"" . $EnergyEfficiency . "\"." , 1);
             return false;
         }
-        $this->Energy_Efficiency = $Energy_Efficiency;
+        $this->EnergyEfficiency = $EnergyEfficiency;
         return true;
     }
 
+    // Getter and Setter for RedundancyLevel
     public function getRedundancyLevel()
     {
-        return $this->Redundancy_Level;
+        return $this->RedundancyLevel;
     }
-    public function setRedundancyLevel(int $Redundancy_Level)
+    public function setRedundancyLevel(int $RedundancyLevel)
     {
-        if ($Redundancy_Level < 0) {
-            throw new Exception("Invalid redundancy level: \"" . $Redundancy_Level . "\"." , 1);
+        if ($RedundancyLevel < 0) {
+            throw new Exception("Invalid redundancy level: \"" . $RedundancyLevel . "\"." , 1);
             return false;
         }
-        $this->Redundancy_Level = $Redundancy_Level;
+        $this->RedundancyLevel = $RedundancyLevel;
         return true;
     }
 
+    // Getter and Setter for Availability
     public function getAvailability()
     {
         return $this->Availability;
