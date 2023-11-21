@@ -166,7 +166,7 @@ class Server {
     public function setAvailableRAM(int $AvailableRAM)
     {
         if ($AvailableRAM < 0) {
-            throw new Exception("Invalid number of available RAM: " . $AvailableRAM, 1);
+            throw new Exception("Invalid number of available RAM: \"" . $AvailableRAM . "\"." , 1);
             return false;
         }
         $this->AvailableRAM = $AvailableRAM;
@@ -180,7 +180,7 @@ class Server {
     public function setStorage(int $Storage)
     {
         if ($Storage <= 0) {
-            throw new Exception("Invalid storage capacity: " . $Storage, 1);
+            throw new Exception("Invalid storage capacity: \"" . $Storage . "\"." , 1);
             return false;
         }
         $this->Storage = $Storage;
@@ -194,7 +194,7 @@ class Server {
     public function setAvailableStorage(int $AvailableStorage)
     {
         if ($AvailableStorage < 0) {
-            throw new Exception("Invalid number of available storage: " . $AvailableStorage, 1);
+            throw new Exception("Invalid number of available storage: \"" . $AvailableStorage . "\"." , 1);
             return false;
         }
         $this->AvailableStorage = $AvailableStorage;
@@ -208,7 +208,7 @@ class Server {
     public function setStorageSpeed(int $StorageSpeed)
     {
         if ($StorageSpeed <= 0) {
-            throw new Exception("Invalid storage speed: " . $StorageSpeed, 1);
+            throw new Exception("Invalid storage speed: \"" . $StorageSpeed . "\"." , 1);
             return false;
         }
         $this->StorageSpeed = $StorageSpeed;
@@ -222,7 +222,7 @@ class Server {
     public function setAverageAccessTime(int $Average_Access_Time)
     {
         if ($Average_Access_Time <= 0) {
-            throw new Exception("Invalid average access time: " . $Average_Access_Time
+            throw new Exception("Invalid average access time: \"" . $Average_Access_Time . "\"." , 1);
             return false;
         }
         $this->Average_Access_Time = $Average_Access_Time;
@@ -236,7 +236,7 @@ class Server {
     public function setLatency(int $Latency)
     {
         if ($Latency <= 0) {
-            throw new Exception("Invalid latency: " . $Latency, 1);
+            throw new Exception("Invalid latency: \"" . $Latency . "\"." , 1);
             return false;
         }
         $this->Latency = $Latency;
@@ -250,7 +250,7 @@ class Server {
     public function setNetworkBandwidth(int $Network_Bandwidth)
     {
         if ($Network_Bandwidth <= 0) {
-            throw new Exception("Invalid network bandwidth: " . $Network_Bandwidth, 1);
+            throw new Exception("Invalid network bandwidth: \"" . $Network_Bandwidth . "\"." , 1);
             return false;
         }
         $this->Network_Bandwidth = $Network_Bandwidth;
@@ -264,7 +264,7 @@ class Server {
     public function setEnergyEfficiency(float $Energy_Efficiency)
     {
         if ($Energy_Efficiency <= 0.0) {
-            throw new Exception("Invalid energy efficiency: " . $Energy_Efficiency, 1);
+            throw new Exception("Invalid energy efficiency: \"" . $Energy_Efficiency . "\"." , 1);
             return false;
         }
         $this->Energy_Efficiency = $Energy_Efficiency;
@@ -278,7 +278,7 @@ class Server {
     public function setRedundancyLevel(int $Redundancy_Level)
     {
         if ($Redundancy_Level < 0) {
-            throw new Exception("Invalid redundancy level: " . $Redundancy_Level, 1);
+            throw new Exception("Invalid redundancy level: \"" . $Redundancy_Level . "\"." , 1);
             return false;
         }
         $this->Redundancy_Level = $Redundancy_Level;
@@ -292,7 +292,7 @@ class Server {
     public function setAvailability(bool $Availability)
     {
         if ($Availability !== TRUE || $Availability !== FALSE) {
-            throw new Exception("Invalid availability: " . $Availability, 1);
+            throw new Exception("Invalid availability: \"" . $Availability . "\"." , 1);
             return false;
         }
         $this->Availability = $Availability;
