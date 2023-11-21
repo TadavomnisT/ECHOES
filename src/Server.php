@@ -6,6 +6,7 @@
 
 A Server entity in ECHOES Simulator contains following attrebutes:
 
+    Name                => Server name: e.g "E_Server_GNULinux64"
     Type                => Server type: Edge/Cloud/Default
     Cores               => Number of CPU cores
     MIPS                => CPU Mega Instructions Per Second
@@ -26,6 +27,7 @@ Example:
     +-----------------------------------+
     |         Server Attributes         |
     +-----------------------------------+
+    | Name:                 Server_1    |
     | Type:                 Edge        |
     | Cores:                8           |
     | MIPS:                 16000       |
@@ -59,6 +61,7 @@ COPYRIGHT :
 
 class Server {
 
+    private $Name;              // Server name: e.g "E_Server_GNULinux64"
     private $Type;              // Server type: Edge/Cloud/Default
     private $Cores;             // Number of CPU cores
     private $MIPS;              // CPU Mega Instructions Per Second
@@ -76,6 +79,7 @@ class Server {
     
 
     public function __construct(
+        string  $Name, 
         string  $Type, 
         int     $Cores, 
         int     $MIPS, 
@@ -91,6 +95,7 @@ class Server {
         int     $RedundancyLevel, 
         bool    $Availability
     ) {
+        $this->Name = $Name;
         $this->Type = $Type;
         $this->Cores = $Cores;
         $this->MIPS = $MIPS;
@@ -107,12 +112,21 @@ class Server {
         $this->Availability = $Availability;
     }
 
+    // Getter and Setter for Name
+    public function getName() {
+        return $this->Name;
+    }
+    public function setName( string $Name ) {
+        $this->Name = $Name;
+        return true;
+    }
+
     // Getter and Setter for Type
     public function getType() {
         return $this->Type;
     }
-    public function setType( string $Type = "default" ) {
-        if( $Type !== "default" && $Type !== "edge" && $Type !== "cloud"  )
+    public function setType( string $Type = "Default" ) {
+        if( $Type !== "Default" && $Type !== "Edge" && $Type !== "Cloud"  )
         {
             throw new Exception("Unknown type\"" . $Type . "\"." , 1);
             return FALSE;
