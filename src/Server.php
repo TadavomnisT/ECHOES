@@ -2,6 +2,59 @@
 
 /*
 
+--------------- ECHOES Abstract Server Implementation ---------------  
+
+A Server entity in ECHOES Simulator contains following attrebutes:
+
+    Type                => Server type: Edge/Cloud/Default
+    Cores               => Number of CPU cores
+    MIPS                => CPU Mega Instructions Per Second
+    RAM                 => Server memory in MB
+    AvailableRAM        => Server available memory in MB
+    Storage             => Server storage in MB
+    AvailableStorage    => Server available storage in MB
+    StorageSpeed        => Server storage speed in MBps (Megabytes per second)
+    Average_Access_Time => Average Access Time for server in milliseconds (Similar to Latency)
+    Latency             => Time delay for data to transmission between the server and connected devices in milliseconds
+    Network_Bandwidth   => Server Netwrok Bandwidth in Mbps (megabits per second)
+    Energy_Efficiency   => Power Usage Effectiveness (PUE) or Energy Efficiency Ratio (EER)
+    Redundancy_Level    => The level of redundancy or fault tolerance
+    Availability        => Is server available at the moment: True/False
+
+Example:
+
+    +-----------------------------------+
+    |         Server Attributes         |
+    +-----------------------------------+
+    | Type:                 Edge        |
+    | Cores:                8           |
+    | MIPS:                 16000       |
+    | RAM:                  32768 MB    |
+    | Available RAM:        28672 MB    |
+    | Storage:              1048576 MB  |
+    | Available Storage:    786432 MB   |
+    | Storage Speed:        10 MBps     |
+    | Avg. Access Time:     10 ms       |
+    | Latency:              12 ms       |
+    | Network Bandwidth:    1000 Mbps   |
+    | Energy Efficiency:    1.5         |
+    | Redundancy Level:     98          |
+    | Availability:         True        |
+    +-----------------------------------+
+
+---------------------------------------------------------------------
+
+* Copyright (c) 2023 Behrad.B (behroora@yahoo.com)
+AUTHOR :            TadavomnisT (Behrad.B)
+Repo :              https://github.com/TadavomnisT/ECHOES
+REPORTING BUGS :    https://github.com/TadavomnisT/ECHOES/issues
+COPYRIGHT :
+    Copyright (c) 2023   License GPLv3+
+    This is free software: you are free to change and redistribute it.
+    There is NO WARRANTY, to the extent permitted by law.
+
+---------------------------------------------------------------------
+
 */
 
 class Server {
@@ -15,8 +68,8 @@ class Server {
     private $AvailableStorage;      // Server available storage in MB
     private $StorageSpeed;          // Server storage speed in MBps (Megabytes per second)
     private $Average_Access_Time;   // Average Access Time for server in milliseconds (Similar to Latency)
-    private $Latency;               // Time delay for data to travel between the server and connected devices in milliseconds
-    private $Network_Bandwidth;     // Server Netwrok Bandwidth in Mbps (megabits per second (Mbps))
+    private $Latency;               // Time delay for data to transmission between the server and connected devices in milliseconds
+    private $Network_Bandwidth;     // Server Netwrok Bandwidth in Mbps (megabits per second)
     private $Energy_Efficiency;     // Power Usage Effectiveness (PUE) or Energy Efficiency Ratio (EER)
     private $Redundancy_Level;      // The level of redundancy or fault tolerance
     private $Availability;          // Is server available at the moment: True/False
