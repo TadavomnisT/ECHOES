@@ -4,7 +4,7 @@
 
 --------------- ECHOES Abstract Server Implementation ---------------  
 
-A Server entity in ECHOES Simulator contains following attrebutes:
+A Server entity in ECHOESimulator contains following attributes:
 
     Name                => Server name: e.g "E_Server_GNULinux64"
     Type                => Server type: Edge/Cloud/Default
