@@ -49,12 +49,12 @@ Topology:
     (High/Medium/Low)      (synchronous/asynchronous)
             |                       |
     --------------------------------
-    |             |           |    |
+    |             |           |    
     RequiredCores RequiredRAM RequiredStorage
                 (in MB)        (in MB)
                         
-    --------------------------------
-    |             |           |    |
+    ----------------------------------------------------------
+                  |           |                     |
     RequiredMIPSPerCore  RequiredDataDownload RequiredDataUpload
     (MIPS per core)         (in MB)            (in MB)
 

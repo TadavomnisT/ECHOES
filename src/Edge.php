@@ -7,6 +7,15 @@
 An Edge server is a server that is located near the user device.
 As the code, it's an implementation which extends "Server.php" class.
 
+                ------------------
+                |    Server      |
+                ------------------
+                  |           |
+           ---------------   ----------------      
+           | Edge-server |   | Cloud-server |
+           ---------------   ----------------      
+
+
 An Edge-Server entity in ECHOESimulator contains following attributes:
 
     Name                => Edge-Server name: e.g "E_Server_GNULinux64"

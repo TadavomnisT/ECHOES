@@ -7,6 +7,15 @@
 A Cloud-server is a server that is located in cloud data-centers (away from the user).
 As the code, it's an implementation which extends "Server.php" class.
 
+                ------------------
+                |    Server      |
+                ------------------
+                  |           |
+           ---------------   ----------------      
+           | Edge-server |   | Cloud-server |
+           ---------------   ----------------    
+
+
 A Cloud-Server entity in ECHOESimulator contains following attributes:
 
     Name                => Cloud-Server name: e.g "C_Server_GNULinux64"
@@ -30,10 +39,10 @@ A Cloud-Server entity in ECHOESimulator contains following attributes:
 Example:
 
     +-----------------------------------+
-    |      Cloud-server Attributes       |
+    |      Cloud-server Attributes      |
     +-----------------------------------+
     | Name:                 E_Server64  |
-    | Type:                 Cloud        |
+    | Type:                 Cloud       |
     | Cores:                8           |
     | MIPS:                 16000       |
     | RAM:                  32768 MB    |

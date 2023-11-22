@@ -128,7 +128,7 @@ class Server {
     public function setType( string $Type = "Default" ) {
         if( $Type !== "Default" && $Type !== "Edge" && $Type !== "Cloud"  )
         {
-            throw new Exception("Unknown type\"" . $Type . "\"." , 1);
+            throw new Exception("Unknown type \"" . $Type . "\"." , 1);
             return FALSE;
         }
         $this->Type = $Type;
