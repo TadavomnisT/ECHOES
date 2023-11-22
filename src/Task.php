@@ -1,5 +1,89 @@
 <?php
 
+/*
+
+----------------- ECHOES Abstract Task Implementation -----------------  
+
+A Task entity in ECHOESimulator contains following attributes:
+
+    Priority                =>  Priority: High/Medium/Low
+    RequiredCores           =>  Required number of CPU cores for execution
+    RequiredMIPSPerCore     =>  RequiredCPU MIPS(Mega Instructions Per Second) per core
+    RequiredRAM             =>  Required memory in MB
+    RequiredStorage         =>  Required storage in MB
+    Timestamp               =>  Current time in UNIX-timestamp seconds
+    TimestampMS             =>  Current time in UNIX-timestamp milliseconds
+    RequiredDataDownload    =>  The amount of data the task may download in MB
+    RequiredDataUpload      =>  The amount of data the task may upload in MB
+    Deadline                =>  Task deadline in seconds
+    SecurityLevel           =>  Security Level: High/Medium/Low
+    CommunicationType       =>  Communication Type: "synchronous" or "asynchronous"
+
+
+Example:
+
+    +--------------------------------------+
+    |           Task  Attributes           |
+    +--------------------------------------+
+    | Priority             | High          |
+    | RequiredCores        | 1             |
+    | RequiredMIPSPerCore  | 200           |
+    | RequiredRAM          | 256 MB        |
+    | RequiredStorage      | 1024 MB       |
+    | Timestamp            | <current time>|
+    | TimestampMS          | <current time>|
+    | RequiredDataDownload | 512 MB        |
+    | RequiredDataUpload   | 256 MB        |
+    | Deadline             | 3600 seconds  |
+    | SecurityLevel        | Medium        |
+    | CommunicationType    | asynchronous  |
+    +--------------------------------------+
+
+
+Topology:
+
+                        Task
+            -------------------------
+            |                       |
+    Priority            CommunicationType
+    (High/Medium/Low)      (synchronous/asynchronous)
+            |                       |
+    --------------------------------
+    |             |           |    |
+    RequiredCores RequiredRAM RequiredStorage
+                (in MB)        (in MB)
+                        
+    --------------------------------
+    |             |           |    |
+    RequiredMIPSPerCore  RequiredDataDownload RequiredDataUpload
+    (MIPS per core)         (in MB)            (in MB)
+
+                ---------------
+                |             |
+            Timestamp   TimestampMS
+        (UNIX-timestamp sec) (UNIX-timestamp ms)
+                
+        -----------------
+        |               |
+        Deadline    SecurityLevel
+    (in seconds)  (High/Medium/Low)
+
+
+---------------------------------------------------------------------
+
+* Copyright (c) 2023 Behrad.B (behroora@yahoo.com)
+AUTHOR :            TadavomnisT (Behrad.B)
+Repo :              https://github.com/TadavomnisT/ECHOES
+REPORTING BUGS :    https://github.com/TadavomnisT/ECHOES/issues
+COPYRIGHT :
+    Copyright (c) 2023   License GPLv3+
+    This is free software: you are free to change and redistribute it.
+    There is NO WARRANTY, to the extent permitted by law.
+
+---------------------------------------------------------------------
+
+*/
+
 
 class Task
 {
