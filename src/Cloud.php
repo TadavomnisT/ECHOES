@@ -33,6 +33,7 @@ A Cloud-Server entity in ECHOESimulator contains following attributes:
     EnergyEfficiency    => Power Usage Effectiveness (PUE) or Energy Efficiency Ratio (EER)
     RedundancyLevel     => The level of redundancy or fault tolerance
     Availability        => Is Cloud-Server available at the moment: True/False
+    ActiveTasks         => Current active tasks on Cloud-server
     Location            => Locatation of Cloud-server
     Temperature         => The temperature of Cloud-server (°C)
 
@@ -56,6 +57,7 @@ Example:
     | Energy Efficiency:    1.5         |
     | Redundancy Level:     98          |
     | Availability:         True        |
+    | ActiveTasks :         [T1,T2]     |
     | Location:             GEOL_356    |
     | Temperature:          24          |
     +-----------------------------------+

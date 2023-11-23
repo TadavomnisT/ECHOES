@@ -6,6 +6,7 @@
 
 A Task entity in ECHOESimulator contains following attributes:
 
+    Name                    =>  Task name: e.g "T_HEALTH_APP_156"
     Priority                =>  Priority: High/Medium/Low
     RequiredCores           =>  Required number of CPU cores for execution
     RequiredMIPSPerCore     =>  RequiredCPU MIPS(Mega Instructions Per Second) per core
@@ -25,6 +26,7 @@ Example:
     +--------------------------------------+
     |           Task  Attributes           |
     +--------------------------------------+
+    | Name                 | T_APP_15      |
     | Priority             | High          |
     | RequiredCores        | 1             |
     | RequiredMIPSPerCore  | 200           |
@@ -43,18 +45,18 @@ Example:
 Topology:
 
                         Task
-            -------------------------
-            |                       |
-    Priority            CommunicationType
+            -------------------------------------------
+            |                       |                 |
+    Priority            CommunicationType             Task Name
     (High/Medium/Low)      (synchronous/asynchronous)
             |                       |
     --------------------------------
-    |             |           |    
+    |             |                |    
     RequiredCores RequiredRAM RequiredStorage
                 (in MB)        (in MB)
                         
-    ----------------------------------------------------------
-                  |           |                     |
+    -------------------------------------------------
+    |                         |                     |
     RequiredMIPSPerCore  RequiredDataDownload RequiredDataUpload
     (MIPS per core)         (in MB)            (in MB)
 
@@ -116,6 +118,7 @@ class Task
         $SecurityLevel,
         $CommunicationType
         ) {
+        $this->Name                 = $Name;
         $this->Priority             = $Priority;
         $this->RequiredCores        = $RequiredCores;
         $this->RequiredMIPSPerCore  = $RequiredMIPSPerCore;

@@ -245,6 +245,7 @@ class Simulator
     public function getTaskDetails( $ID )
     {
         return [
+            "Name"                  => $this->tasks[ $ID ]->getName() ,
             "Priority"              => $this->tasks[ $ID ]->getPriority() ,
             "RequiredCores"         => $this->tasks[ $ID ]->getRequiredCores() ,
             "RequiredMIPSPerCore"   => $this->tasks[ $ID ]->getRequiredMIPSPerCore() ,
@@ -263,21 +264,70 @@ class Simulator
     public function getEdgeServerStatus( $ID )
     {
         return [
-            
+            "Name"              => $this->edgeServers[ $ID ]->getName(),
+            "Type"              => $this->edgeServers[ $ID ]->getType(),
+            "Cores"             => $this->edgeServers[ $ID ]->getCores(),
+            "MIPS"              => $this->edgeServers[ $ID ]->getMIPS(),
+            "RAM"               => $this->edgeServers[ $ID ]->getRAM(),
+            "AvailableRAM"      => $this->edgeServers[ $ID ]->getAvailableRAM(),
+            "Storage"           => $this->edgeServers[ $ID ]->getStorage(),
+            "AvailableStorage"  => $this->edgeServers[ $ID ]->getAvailableStorage(),
+            "StorageSpeed"      => $this->edgeServers[ $ID ]->getStorageSpeed(),
+            "AverageAccessTime" => $this->edgeServers[ $ID ]->getAverageAccessTime(),
+            "Latency"           => $this->edgeServers[ $ID ]->getLatency(),
+            "NetworkBandwidth"  => $this->edgeServers[ $ID ]->getNetworkBandwidth(),
+            "EnergyEfficiency"  => $this->edgeServers[ $ID ]->getEnergyEfficiency(),
+            "RedundancyLevel"   => $this->edgeServers[ $ID ]->getRedundancyLevel(),
+            "Availability"      => $this->edgeServers[ $ID ]->getAvailability(),
+            "ActiveTasks"       => $this->edgeServers[ $ID ]->getActiveTasks(),
+            "Location"          => $this->edgeServers[ $ID ]->getLocation(),
+            "Temperature"       => $this->edgeServers[ $ID ]->getTemperature()
         ];
     }
 
     public function getCloudServerStatus( $ID )
     {
         return [
-            
+            "Name"              => $this->cloudServers[ $ID ]->getName(),
+            "Type"              => $this->cloudServers[ $ID ]->getType(),
+            "Cores"             => $this->cloudServers[ $ID ]->getCores(),
+            "MIPS"              => $this->cloudServers[ $ID ]->getMIPS(),
+            "RAM"               => $this->cloudServers[ $ID ]->getRAM(),
+            "AvailableRAM"      => $this->cloudServers[ $ID ]->getAvailableRAM(),
+            "Storage"           => $this->cloudServers[ $ID ]->getStorage(),
+            "AvailableStorage"  => $this->cloudServers[ $ID ]->getAvailableStorage(),
+            "StorageSpeed"      => $this->cloudServers[ $ID ]->getStorageSpeed(),
+            "AverageAccessTime" => $this->cloudServers[ $ID ]->getAverageAccessTime(),
+            "Latency"           => $this->cloudServers[ $ID ]->getLatency(),
+            "NetworkBandwidth"  => $this->cloudServers[ $ID ]->getNetworkBandwidth(),
+            "EnergyEfficiency"  => $this->cloudServers[ $ID ]->getEnergyEfficiency(),
+            "RedundancyLevel"   => $this->cloudServers[ $ID ]->getRedundancyLevel(),
+            "Availability"      => $this->cloudServers[ $ID ]->getAvailability(),
+            "ActiveTasks"       => $this->cloudServers[ $ID ]->getActiveTasks(),
+            "Location"          => $this->cloudServers[ $ID ]->getLocation(),
+            "Temperature"       => $this->cloudServers[ $ID ]->getTemperature()
         ];
     }
 
     public function getServerStatus( $ID )
     {
         return [
-            
+            "Name"              => $this->servers[ $ID ]->getName(),
+            "Type"              => $this->servers[ $ID ]->getType(),
+            "Cores"             => $this->servers[ $ID ]->getCores(),
+            "MIPS"              => $this->servers[ $ID ]->getMIPS(),
+            "RAM"               => $this->servers[ $ID ]->getRAM(),
+            "AvailableRAM"      => $this->servers[ $ID ]->getAvailableRAM(),
+            "Storage"           => $this->servers[ $ID ]->getStorage(),
+            "AvailableStorage"  => $this->servers[ $ID ]->getAvailableStorage(),
+            "StorageSpeed"      => $this->servers[ $ID ]->getStorageSpeed(),
+            "AverageAccessTime" => $this->servers[ $ID ]->getAverageAccessTime(),
+            "Latency"           => $this->servers[ $ID ]->getLatency(),
+            "NetworkBandwidth"  => $this->servers[ $ID ]->getNetworkBandwidth(),
+            "EnergyEfficiency"  => $this->servers[ $ID ]->getEnergyEfficiency(),
+            "RedundancyLevel"   => $this->servers[ $ID ]->getRedundancyLevel(),
+            "Availability"      => $this->servers[ $ID ]->getAvailability(),
+            "ActiveTasks"       => $this->servers[ $ID ]->getActiveTasks()
         ];
     }
 

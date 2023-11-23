@@ -21,6 +21,7 @@ A Server entity in ECHOESimulator contains following attributes:
     EnergyEfficiency    => Power Usage Effectiveness (PUE) or Energy Efficiency Ratio (EER)
     RedundancyLevel     => The level of redundancy or fault tolerance
     Availability        => Is server available at the moment: True/False
+    ActiveTasks         => Current active tasks on server
 
 Example:
 
@@ -42,6 +43,7 @@ Example:
     | Energy Efficiency:    1.5         |
     | Redundancy Level:     98          |
     | Availability:         True        |
+    | ActiveTasks :         [T1,T2]     |
     +-----------------------------------+
 
 ---------------------------------------------------------------------
@@ -76,7 +78,7 @@ class Server {
     private $EnergyEfficiency;  // Power Usage Effectiveness (PUE) or Energy Efficiency Ratio (EER)
     private $RedundancyLevel;   // The level of redundancy or fault tolerance
     private $Availability;      // Is server available at the moment: True/False
-    private $ActiveTasks;      // Current active tasks on server.
+    private $ActiveTasks;       // Current active tasks on server.
     
 
     public function __construct(

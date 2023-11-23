@@ -33,6 +33,7 @@ An Edge-Server entity in ECHOESimulator contains following attributes:
     EnergyEfficiency    => Power Usage Effectiveness (PUE) or Energy Efficiency Ratio (EER)
     RedundancyLevel     => The level of redundancy or fault tolerance
     Availability        => Is Edge-Server available at the moment: True/False
+    ActiveTasks         => Current active tasks on server
     Location            => Locatation of Edge-server
     Temperature         => The temperature of Edge-server (°C)
 
@@ -56,6 +57,7 @@ Example:
     | Energy Efficiency:    1.5         |
     | Redundancy Level:     98          |
     | Availability:         True        |
+    | ActiveTasks :         [T1,T2]     |
     | Location:             GEOL_356    |
     | Temperature:          24          |
     +-----------------------------------+
