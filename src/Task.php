@@ -87,6 +87,7 @@ COPYRIGHT :
 
 class Task
 {
+    private $Name;                  // Task name: e.g "T_HEALTH_APP_156"
     private $Priority;              // Priority: High/Medium/Low
     private $RequiredCores;         // Required number of CPU cores for execution 
     private $RequiredMIPSPerCore;   // RequiredCPU MIPS(Mega Instructions Per Second) per core
@@ -100,7 +101,21 @@ class Task
     private $SecurityLevel;         // Security Level: High/Medium/Low
     private $CommunicationType;     // Communication Type: "synchronous" or "asynchronous"
     
-    public function __construct($Priority, $RequiredCores, $RequiredMIPSPerCore, $RequiredRAM, $RequiredStorage, $Timestamp, $TimestampMS, $RequiredDataDownload, $RequiredDataUpload, $Deadline, $SecurityLevel, $CommunicationType) {
+    public function __construct(
+        $Name,
+        $Priority,
+        $RequiredCores,
+        $RequiredMIPSPerCore,
+        $RequiredRAM,
+        $RequiredStorage,
+        $Timestamp,
+        $TimestampMS,
+        $RequiredDataDownload,
+        $RequiredDataUpload,
+        $Deadline,
+        $SecurityLevel,
+        $CommunicationType
+        ) {
         $this->Priority             = $Priority;
         $this->RequiredCores        = $RequiredCores;
         $this->RequiredMIPSPerCore  = $RequiredMIPSPerCore;
@@ -113,6 +128,15 @@ class Task
         $this->Deadline             = $Deadline;
         $this->SecurityLevel        = $SecurityLevel;
         $this->CommunicationType    = $CommunicationType;
+    }
+
+    // Getter and Setter for Name
+    public function getName() {
+        return $this->Name;
+    }
+    public function setName( string $Name ) {
+        $this->Name = $Name;
+        return true;
     }
     
     // Getter and Setter for Priority

@@ -76,6 +76,7 @@ class Server {
     private $EnergyEfficiency;  // Power Usage Effectiveness (PUE) or Energy Efficiency Ratio (EER)
     private $RedundancyLevel;   // The level of redundancy or fault tolerance
     private $Availability;      // Is server available at the moment: True/False
+    private $ActiveTasks;      // Current active tasks on server.
     
 
     public function __construct(
@@ -110,6 +111,7 @@ class Server {
         $this->EnergyEfficiency = $EnergyEfficiency;
         $this->RedundancyLevel = $RedundancyLevel;
         $this->Availability = $Availability;
+        $this->ActiveTasks = [];
     }
 
     // Getter and Setter for Name
@@ -326,6 +328,36 @@ class Server {
         $this->Availability = $Availability;
         return true;
     }
+
+    // Getter and Setter for ActiveTasks
+    public function getActiveTasks()
+    {
+        return $this->ActiveTasks;
+    }
+    public function setActiveTasks(array $ActiveTasks)
+    {
+        $this->ActiveTasks = $ActiveTasks;
+        return true;
+    }
+
+    // Add a new Task to ActiveTasks
+    public function addTask( int $ID )
+    {
+        return $this->ActiveTasks[] = $ID;
+    }
+    // Remvoe a Task from ActiveTasks
+    public function terminateTask( int $ID )
+    {
+        foreach ($this->ActiveTasks as $key => $task) {
+            if($task == $ID)
+            {
+                unset($this->ActiveTasks[ $key ]);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
 ?>
