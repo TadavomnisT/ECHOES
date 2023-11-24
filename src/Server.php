@@ -98,22 +98,22 @@ class Server {
         int     $RedundancyLevel, 
         bool    $Availability
     ) {
-        $this->Name = $Name;
-        $this->Type = $Type;
-        $this->Cores = $Cores;
-        $this->MIPS = $MIPS;
-        $this->RAM = $RAM;
-        $this->AvailableRAM = $AvailableRAM;
-        $this->Storage = $Storage;
-        $this->AvailableStorage = $AvailableStorage;
-        $this->StorageSpeed = $StorageSpeed;
-        $this->AverageAccessTime = $AverageAccessTime;
-        $this->Latency = $Latency;
-        $this->NetworkBandwidth = $NetworkBandwidth;
-        $this->EnergyEfficiency = $EnergyEfficiency;
-        $this->RedundancyLevel = $RedundancyLevel;
-        $this->Availability = $Availability;
-        $this->ActiveTasks = [];
+        $this->setName( $Name );
+        $this->setType( $Type );
+        $this->setCores( $Cores );
+        $this->setMIPS( $MIPS );
+        $this->setRAM( $RAM );
+        $this->setAvailableRAM( $AvailableRAM );
+        $this->setStorage( $Storage );
+        $this->setAvailableStorage( $AvailableStorage );
+        $this->setStorageSpeed( $StorageSpeed );
+        $this->setAverageAccessTime( $AverageAccessTime );
+        $this->setLatency( $Latency );
+        $this->setNetworkBandwidth( $NetworkBandwidth );
+        $this->setEnergyEfficiency( $EnergyEfficiency );
+        $this->setRedundancyLevel( $RedundancyLevel );
+        $this->setAv1ailability( $Availability );
+        $this->setActiveTasks( [] );
     }
 
     // Getter and Setter for Name

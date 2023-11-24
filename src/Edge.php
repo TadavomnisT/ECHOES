@@ -129,8 +129,8 @@ class Edge extends Server
             $RedundancyLevel,
             $Availability
         );
-        $this->Location = $Location;
-        $this->Temperature = $Temperature;
+        $this->setLocation( $Location );
+        $this->setTemperature( $Temperature );
     }
 
     // Getter and Setter for Location

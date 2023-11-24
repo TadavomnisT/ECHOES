@@ -118,19 +118,19 @@ class Task
         $SecurityLevel,
         $CommunicationType
         ) {
-        $this->Name                 = $Name;
-        $this->Priority             = $Priority;
-        $this->RequiredCores        = $RequiredCores;
-        $this->RequiredMIPSPerCore  = $RequiredMIPSPerCore;
-        $this->RequiredRAM          = $RequiredRAM;
-        $this->RequiredStorage      = $RequiredStorage;
-        $this->Timestamp            = $Timestamp;
-        $this->TimestampMS          = $TimestampMS;
-        $this->RequiredDataDownload = $RequiredDataDownload;
-        $this->RequiredDataUpload   = $RequiredDataUpload;
-        $this->Deadline             = $Deadline;
-        $this->SecurityLevel        = $SecurityLevel;
-        $this->CommunicationType    = $CommunicationType;
+        $this->setName( $Name );
+        $this->setPriority( $Priority );
+        $this->setRequiredCores( $RequiredCores );
+        $this->setRequiredMIPSPerCore( $RequiredMIPSPerCore );
+        $this->setRequiredRAM( $RequiredRAM );
+        $this->setRequiredStorage( $RequiredStorage );
+        $this->setTimestamp( $Timestamp );
+        $this->setTimestampMS( $TimestampMS );
+        $this->setRequiredDataDownload( $RequiredDataDownload );
+        $this->setRequiredDataUpload( $RequiredDataUpload );
+        $this->setDeadline( $Deadline );
+        $this->setSecurityLevel( $SecurityLevel );
+        $this->setCommunicationType( $CommunicationType );
     }
 
     // Getter and Setter for Name

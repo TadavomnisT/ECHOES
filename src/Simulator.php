@@ -9,11 +9,6 @@ require_once "Task.php";
 
 class Simulator
 {
-    // Instance-Handlers for each class
-    private $serverHandler;
-    private $cloudHandler;
-    private $edgeHandler;
-    private $taskHandler;
 
     // List of simulator's entities
     private $servers;
@@ -21,17 +16,18 @@ class Simulator
     private $edgeServers;
     private $tasks;
 
+    private $assignMethod;
+
     // Constructor
-    public function __construct() {
-        $this->serverHandler    = new Server();
-        $this->cloudHandler     = new Cloud();
-        $this->edgeHandler      = new Edge();
-        $this->taskHandler      = new Task();
+    public function __construct( $assignMethod = "Default" ) {
 
         $servers        = [];
         $cloudServers   = [];
         $edgeServers    = [];
         $tasks          = [];
+
+        $this->setAssignMethod( $assignMethod );
+
     }
 
     // Get simulator servers at the moment
@@ -331,6 +327,46 @@ class Simulator
         ];
     }
 
+    // Get this classes methods
+    public function getMethods()
+    {
+        return get_defined_functions() ;
+    }
+
+    // Assign a Task to a Server
+    public function assignTask()
+    {
+        # code...
+    }
+
+    // Getter and Setter for assignMethod
+    public function getAssignMethod()
+    {
+        return $this->assignMethod;
+    }
+    public function setAssignMethod( $assignMethod = "Default" )
+    {
+        if( $assignMethod !== "Default" && $assignMethod !== "Random" && $assignMethod !== "Knapsack" )
+        {
+            throw new Exception("Invalid type for assignMethod \"" . $assignMethod . "\".", 1);
+            return false;
+        }
+        $this->assignMethod = $assignMethod;
+        return true;
+    }
+    
+
+    // Update servers "ActiveTasks"
+    public function UpdateServers()
+    {
+        # code...
+    }
+
+    // Simulation starter: $simulationTime => in seconds
+    public function startSimulation( $simulationTime = 30 )
+    {
+        # code...
+    }
 }
 
 
