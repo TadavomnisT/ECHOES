@@ -86,8 +86,8 @@ class Simulator
             $SecurityLevel,
             $CommunicationType
         );
-        end($tasks);
-        return key($tasks); 
+        end($this->tasks);
+        return key($this->tasks); 
     }
 
     // Deletes a Task
@@ -133,8 +133,8 @@ class Simulator
             $RedundancyLevel,
             $Availability
         );
-        end($servers);
-        return key($servers); 
+        end($this->servers);
+        return key($this->servers); 
     }
 
     // Deletes a Server
@@ -182,8 +182,8 @@ class Simulator
             $Location,
             $Temperature
         );
-        end($edgeServers);
-        return key($edgeServers); 
+        end($this->edgeServers);
+        return key($this->edgeServers); 
     }
 
     // Deletes an Edge-Server
@@ -231,8 +231,8 @@ class Simulator
             $Location,
             $Temperature
         );
-        end($cloudServers);
-        return key($cloudServers); 
+        end($this->cloudServers);
+        return key($this->cloudServers); 
     }
 
     public function deleteCloudServer( $ID )
@@ -336,10 +336,11 @@ class Simulator
         return get_class_methods( get_class( $this ) ) ;
     }
 
-    // Assign a Task to a Server
-    public function assignTask()
+    public function getTimestampMS( $time = NULL )
     {
-        # code...
+        if( $time === NULL )
+            return floor(microtime(true) * 1000);
+        return floor( $time  * 1000);
     }
 
     // Getter and Setter for assignMethod
@@ -358,6 +359,11 @@ class Simulator
         return true;
     }
     
+    // Assign a Task to a Server
+    public function assignTask()
+    {
+        # code...
+    }
 
     // Update servers "ActiveTasks"
     public function UpdateServers()
