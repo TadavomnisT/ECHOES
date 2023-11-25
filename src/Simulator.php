@@ -90,6 +90,13 @@ class Simulator
         return key($tasks); 
     }
 
+    // Deletes a Task
+    public function deleteTask( $ID )
+    {
+        unset($this->tasks[ $ID ]);
+        return true;
+    }
+
     // Create a new server and returns its ID
     public function createServer(
         $Name,
@@ -128,6 +135,13 @@ class Simulator
         );
         end($servers);
         return key($servers); 
+    }
+
+    // Deletes a Server
+    public function deleteServer( $ID )
+    {
+        unset($this->servers[ $ID ]);
+        return true;
     }
 
     // Create a new edge-server and returns its ID
@@ -172,6 +186,13 @@ class Simulator
         return key($edgeServers); 
     }
 
+    // Deletes an Edge-Server
+    public function deleteEdgeServer( $ID )
+    {
+        unset($this->edgeServers[ $ID ]);
+        return true;
+    }
+
     // Create a new cloud-server and returns its ID
     public function createCloudServer(
         $Name,
@@ -214,27 +235,9 @@ class Simulator
         return key($cloudServers); 
     }
 
-    public function deleteTask( $ID )
-    {
-        unset( $this->tasks[ $ID ] );
-        return true;
-    }
-
-    public function deleteEdgeServer( $ID )
-    {
-        unset( $this->edgeServers[ $ID ] );
-        return true;
-    }
-
     public function deleteCloudServer( $ID )
     {
         unset( $this->cloudServers[ $ID ] );
-        return true;
-    }
-
-    public function deleteServer( $ID )
-    {
-        unset( $this->servers[ $ID ] );
         return true;
     }
 
@@ -330,7 +333,7 @@ class Simulator
     // Get this classes methods
     public function getMethods()
     {
-        return get_defined_functions() ;
+        return get_class_methods( get_class( $this ) ) ;
     }
 
     // Assign a Task to a Server

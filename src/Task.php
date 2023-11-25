@@ -103,6 +103,7 @@ class Task
     private $SecurityLevel;         // Security Level: High/Medium/Low
     private $CommunicationType;     // Communication Type: "synchronous" or "asynchronous"
     
+    // Constructor
     public function __construct(
         $Name,
         $Priority,

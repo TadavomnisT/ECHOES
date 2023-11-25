@@ -81,6 +81,7 @@ class Server {
     private $ActiveTasks;       // Current active tasks on server.
     
 
+    // Constructor
     public function __construct(
         string  $Name, 
         string  $Type, 

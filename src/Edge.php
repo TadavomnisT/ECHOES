@@ -93,6 +93,7 @@ class Edge extends Server
     private $Location;
     private $Temperature;
 
+    // Constructor
     public function __construct(
         string  $Name, 
         int     $Cores, 
