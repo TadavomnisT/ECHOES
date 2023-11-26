@@ -113,7 +113,7 @@ class Server {
         $this->setNetworkBandwidth( $NetworkBandwidth );
         $this->setEnergyEfficiency( $EnergyEfficiency );
         $this->setRedundancyLevel( $RedundancyLevel );
-        $this->setAv1ailability( $Availability );
+        $this->setAvailability( $Availability );
         $this->setActiveTasks( [] );
     }
 
@@ -324,7 +324,7 @@ class Server {
     }
     public function setAvailability(bool $Availability)
     {
-        if ($Availability !== TRUE || $Availability !== FALSE) {
+        if ($Availability !== TRUE && $Availability !== FALSE) {
             throw new Exception("Invalid availability: \"" . $Availability . "\"." , 1);
             return false;
         }
