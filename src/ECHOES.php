@@ -100,5 +100,43 @@ $C1 = $ECHOES->createCloudServer(
 // Testing: getCloudServerStatus()
 var_dump( $ECHOES->getCloudServerStatus($E1) );
 
+// Testing: getServers()
+var_dump( $ECHOES->getServers() );
+
+// Testing: getCloudServers()
+var_dump( $ECHOES->getCloudServers() );
+
+// Testing: getEdgeServers()
+var_dump( $ECHOES->getEdgeServers() );
+
+// Testing: getTasks()
+var_dump( $ECHOES->getTasks() );
+
+// Testing: deleteTask()
+var_dump( $ECHOES->deleteTask( $T1 ) );
+var_dump( $ECHOES->getTasks() );
+
+// Testing: deleteServer()
+var_dump( $ECHOES->deleteServer( $S1 ) );
+var_dump( $ECHOES->getServers() );
+
+// Testing: deleteEdgeServer()
+var_dump( $ECHOES->deleteEdgeServer( $E1 ) );
+var_dump( $ECHOES->getEdgeServers() );
+
+// Testing: deleteCloudServer()
+var_dump( $ECHOES->deleteCloudServer( $C1 ) );
+var_dump( $ECHOES->getCloudServers() );
+
+// Testing: setAssignMethod()
+var_dump( $ECHOES->setAssignMethod( "Random" ) );
+var_dump($ECHOES->getAssignMethod());
+
+
+// TODO
+// assignTask
+// UpdateServers
+// startSimulation
+
 
 ?>

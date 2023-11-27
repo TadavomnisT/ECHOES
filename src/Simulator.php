@@ -33,25 +33,25 @@ class Simulator
     // Get simulator servers at the moment
     public function getServers()
     {
-        return $this->$servers;
+        return $this->servers;
     }
 
     // Get simulator cloud-servers at the moment
     public function getCloudServers()
     {
-        return $this->$cloudServers;
+        return $this->cloudServers;
     }
 
     // Get simulator edge-servers at the moment
     public function getEdgeServers()
     {
-        return $this->$edgeServers;
+        return $this->edgeServers;
     }
 
     // Get simulator tasks at the moment
     public function getTasks()
     {
-        return $this->$tasks;
+        return $this->tasks;
     }
 
     // Creates a new task and returns its ID
