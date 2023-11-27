@@ -130,8 +130,11 @@ var_dump( $ECHOES->getCloudServers() );
 
 // Testing: setAssignMethod()
 var_dump( $ECHOES->setAssignMethod( "Random" ) );
-var_dump($ECHOES->getAssignMethod());
+var_dump( $ECHOES->getAssignMethod() );
 
+// Testing: generateRandomTasks()
+var_dump( $ECHOES->generateRandomTasks( 50 ) );
+var_dump( $ECHOES->getTasks() );
 
 // TODO
 // assignTask

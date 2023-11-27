@@ -21,10 +21,10 @@ class Simulator
     // Constructor
     public function __construct( $assignMethod = "Default" ) {
 
-        $servers        = [];
-        $cloudServers   = [];
-        $edgeServers    = [];
-        $tasks          = [];
+        $this->servers        = [];
+        $this->cloudServers   = [];
+        $this->edgeServers    = [];
+        $this->tasks          = [];
 
         $this->setAssignMethod( $assignMethod );
 
@@ -357,6 +357,58 @@ class Simulator
         }
         $this->assignMethod = $assignMethod;
         return true;
+    }
+
+    // Generate random tasks
+    public function generateRandomTasks(int $taskNumbers)
+    {
+        $IDs = [];
+        $taskCategories = ["Health", "Navigation", "Communication", "Entertainment", "Productivity"];
+        $priorities = ["Low", "Medium", "High"];
+        $securityLevels = ["Low", "Medium", "High"];
+        $communicationTypes = ["synchronous", "asynchronous"];
+
+        for ($i = 0; $i < $taskNumbers; $i++) {
+            $category = $taskCategories[array_rand($taskCategories)];
+            $actionVerbs = ["Monitor", "Track", "Analyze", "Calculate", "Record"];
+            $action = $actionVerbs[array_rand($actionVerbs)];
+            $name = $category . " " . $action;
+            $priority = $priorities[array_rand($priorities)];
+            $requiredCores = mt_rand(1, 8);
+            $requiredMIPSPerCore = mt_rand(200, 800);
+            $requiredRAM = mt_rand(128, 1024);
+            $requiredStorage = mt_rand(256, 2048);
+            $timestamp = time();
+            $timestampMS = $this->getTimestampMS();
+            $requiredDataDownload = mt_rand(128, 512);
+            $requiredDataUpload = mt_rand(64, 256);
+            $deadline = $timestamp + mt_rand(3600, 86400); // 1 to 24 hours
+            $securityLevel = $securityLevels[array_rand($securityLevels)];
+            $communicationType = $communicationTypes[array_rand($communicationTypes)];
+
+            $IDs[] = $this->createTask(
+                $name,
+                $priority,
+                $requiredCores,
+                $requiredMIPSPerCore,
+                $requiredRAM,
+                $requiredStorage,
+                $timestamp,
+                $timestampMS,
+                $requiredDataDownload,
+                $requiredDataUpload,
+                $deadline,
+                $securityLevel,
+                $communicationType
+            );
+        }
+        return $IDs;
+    }
+
+    // Generate random servers
+    public function generateRandomServers( int $serverNumbers )
+    {
+        # code...
     }
     
     // Assign a Task to a Server
