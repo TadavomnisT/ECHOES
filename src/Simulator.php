@@ -11,6 +11,7 @@ class Simulator
 {
 
     // List of simulator's entities
+    private $allServers;
     private $servers;
     private $cloudServers;
     private $edgeServers;
@@ -21,13 +22,20 @@ class Simulator
     // Constructor
     public function __construct( $assignMethod = "Default" ) {
 
-        $this->servers        = [];
-        $this->cloudServers   = [];
-        $this->edgeServers    = [];
-        $this->tasks          = [];
+        $this->getAllServers    = [];
+        $this->servers          = [];
+        $this->cloudServers     = [];
+        $this->edgeServers      = [];
+        $this->tasks            = [];
 
         $this->setAssignMethod( $assignMethod );
 
+    }
+
+    // Get all kind of servers in current simulation
+    public function getAllServers()
+    {
+        return $this->allServers;
     }
 
     // Get simulator servers at the moment
@@ -134,13 +142,24 @@ class Simulator
             $Availability
         );
         end($this->servers);
-        return key($this->servers); 
+        $ID = key($this->servers);
+        $this->allServers[] = [
+            "Type"      => "Server",
+            "ID"        => $ID,
+            "Object"    => $this->servers[ $ID ]
+        ];
+        return $ID; 
     }
 
     // Deletes a Server
     public function deleteServer( $ID )
     {
         unset($this->servers[ $ID ]);
+        foreach ($this->allServers as $key => $server) {
+            if ( $server["Type"] === "Server" && $server["ID"] === $ID ) {
+                unset($this->allServers[ $key ]);
+            }
+        }
         return true;
     }
 
@@ -183,13 +202,24 @@ class Simulator
             $Temperature
         );
         end($this->edgeServers);
-        return key($this->edgeServers); 
+        $ID = key($this->edgeServers);
+        $this->allServers[] = [
+            "Type"      => "Edge",
+            "ID"        => $ID,
+            "Object"    => $this->edgeServers[ $ID ]
+        ];
+        return $ID; 
     }
 
     // Deletes an Edge-Server
     public function deleteEdgeServer( $ID )
     {
         unset($this->edgeServers[ $ID ]);
+        foreach ($this->allServers as $key => $server) {
+            if ( $server["Type"] === "Edge" && $server["ID"] === $ID ) {
+                unset($this->allServers[ $key ]);
+            }
+        }
         return true;
     }
 
@@ -232,12 +262,23 @@ class Simulator
             $Temperature
         );
         end($this->cloudServers);
-        return key($this->cloudServers); 
+        $ID = key($this->cloudServers);
+        $this->allServers[] = [
+            "Type"      => "Cloud",
+            "ID"        => $ID,
+            "Object"    => $this->cloudServers[ $ID ]
+        ];
+        return $ID; 
     }
 
     public function deleteCloudServer( $ID )
     {
         unset( $this->cloudServers[ $ID ] );
+        foreach ($this->allServers as $key => $server) {
+            if ( $server["Type"] === "Cloud" && $server["ID"] === $ID ) {
+                unset($this->allServers[ $key ]);
+            }
+        }
         return true;
     }
 
@@ -405,12 +446,80 @@ class Simulator
         return $IDs;
     }
 
-    // Generate random servers
-    public function generateRandomServers( int $serverNumbers )
+    // Generate random edge/cloud servers
+    public function generateRandomServers(int $serverNumbers)
     {
-        # code...
+        $serverTypes = ["Edge", "Cloud"];
+        $locations = ["LocationA", "LocationB", "LocationC"];
+
+        $serverIDs = [];
+
+        for ($i = 0; $i < $serverNumbers; $i++) {
+            $serverType = $serverTypes[array_rand($serverTypes)];
+            $namePrefix = ($serverType === "Edge") ? "E" : "C";
+            $name = $namePrefix . ($i + 1); // Assuming a simple numbering scheme
+            $cores = mt_rand(4, 16);
+            $mips = mt_rand(8000, 32000);
+            $ram = mt_rand(8194, 65536); // 8GB to 64GB
+            $availableRam = $ram - mt_rand(1024, 4096); // Random available RAM within the range
+            $storage = mt_rand(524288, 2097152); // 512GB to 2TB
+            $availableStorage = $storage - mt_rand(131072, 524288); // Random available storage within the range
+            $storageSpeed = mt_rand(5, 15); // Assume storage speed in ms
+            $averageAccessTime = mt_rand(5, 20);
+            $latency = mt_rand(1, 20);
+            $networkBandwidth = mt_rand(500, 2000); // Bandwidth in Mbps
+            $energyEfficiency = 1.5; // Assuming a constant value for energy efficiency
+            $redundancyLevel = mt_rand(1, 3); // Assuming redundancy levels 1, 2, 3
+            $availability = true; // Servers are assumed to be available initially
+
+            $location = $locations[array_rand($locations)];
+            $temperature = mt_rand(20, 30);
+
+            if ($serverType === "Edge") {
+                $serverID = $this->createEdgeServer(
+                    $name,
+                    $cores,
+                    $mips,
+                    $ram,
+                    $availableRam,
+                    $storage,
+                    $availableStorage,
+                    $storageSpeed,
+                    $averageAccessTime,
+                    $latency,
+                    $networkBandwidth,
+                    $energyEfficiency,
+                    $redundancyLevel,
+                    $availability,
+                    $location,
+                    $temperature
+                );
+            } else {
+                $serverID = $this->createCloudServer(
+                    $name,
+                    $cores,
+                    $mips,
+                    $ram,
+                    $availableRam,
+                    $storage,
+                    $availableStorage,
+                    $storageSpeed,
+                    $averageAccessTime,
+                    $latency,
+                    $networkBandwidth,
+                    $energyEfficiency,
+                    $redundancyLevel,
+                    $availability,
+                    $location,
+                    $temperature
+                );
+            }
+            $serverIDs[] = $serverID;
+        }
+
+        return $serverIDs;
     }
-    
+
     // Assign a Task to a Server
     public function assignTask()
     {
