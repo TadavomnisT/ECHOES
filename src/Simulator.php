@@ -98,7 +98,7 @@ class Simulator
         return key($this->tasks); 
     }
 
-    // Deletes a Task
+    // Delete a Task
     public function deleteTask( $ID )
     {
         unset($this->tasks[ $ID ]);
@@ -151,7 +151,7 @@ class Simulator
         return $ID; 
     }
 
-    // Deletes a Server
+    // Delete a Server
     public function deleteServer( $ID )
     {
         unset($this->servers[ $ID ]);
@@ -211,7 +211,7 @@ class Simulator
         return $ID; 
     }
 
-    // Deletes an Edge-Server
+    // Delete an Edge-Server
     public function deleteEdgeServer( $ID )
     {
         unset($this->edgeServers[ $ID ]);
@@ -271,6 +271,7 @@ class Simulator
         return $ID; 
     }
 
+    // Delete a Cloud-Server
     public function deleteCloudServer( $ID )
     {
         unset( $this->cloudServers[ $ID ] );
@@ -282,6 +283,7 @@ class Simulator
         return true;
     }
 
+    // Get details of a Task
     public function getTaskDetails( $ID )
     {
         return [
@@ -301,6 +303,7 @@ class Simulator
         ];
     }
 
+    // Get Edge-server status
     public function getEdgeServerStatus( $ID )
     {
         return [
@@ -325,6 +328,7 @@ class Simulator
         ];
     }
 
+    // Get Cloud-server status
     public function getCloudServerStatus( $ID )
     {
         return [
@@ -349,6 +353,7 @@ class Simulator
         ];
     }
 
+    // Get Server status
     public function getServerStatus( $ID )
     {
         return [
@@ -371,12 +376,13 @@ class Simulator
         ];
     }
 
-    // Get this classes methods
+    // Get methods of this class 
     public function getMethods()
     {
         return get_class_methods( get_class( $this ) ) ;
     }
 
+    // Get a TimeStamp in milliseconds
     public function getTimestampMS( $time = NULL )
     {
         if( $time === NULL )
@@ -391,7 +397,13 @@ class Simulator
     }
     public function setAssignMethod( $assignMethod = "Default" )
     {
-        if( $assignMethod !== "Default" && $assignMethod !== "Random" && $assignMethod !== "Knapsack" )
+        if(
+            $assignMethod !== "Default"     &&
+            $assignMethod !== "Random"      && 
+            $assignMethod !== "Knapsack"    &&
+            $assignMethod !== "EdgeFirst"   &&
+            $assignMethod !== "CloudFirst"
+        )
         {
             throw new Exception("Invalid type for assignMethod \"" . $assignMethod . "\".", 1);
             return false;
@@ -465,8 +477,8 @@ class Simulator
             $storage = mt_rand(524288, 2097152); // 512GB to 2TB
             $availableStorage = $storage - mt_rand(131072, 524288); // Random available storage within the range
             $storageSpeed = mt_rand(5, 15); // Assume storage speed in ms
-            $averageAccessTime = mt_rand(5, 20);
-            $latency = mt_rand(1, 20);
+            $averageAccessTime = ($serverType === "Edge") ? mt_rand(5, 30) : mt_rand(200, 1500);
+            $latency = ($serverType === "Edge") ? $averageAccessTime + mt_rand(-5, 5) : $averageAccessTime + mt_rand(-100, 100);
             $networkBandwidth = mt_rand(500, 2000); // Bandwidth in Mbps
             $energyEfficiency = 1.5; // Assuming a constant value for energy efficiency
             $redundancyLevel = mt_rand(1, 3); // Assuming redundancy levels 1, 2, 3
@@ -521,9 +533,33 @@ class Simulator
     }
 
     // Assign a Task to a Server
-    public function assignTask()
+    public function assignTask( $taskID, $serverType, $serverID )
     {
-        # code...
+        switch ( $this->getAssignMethod() ) {
+            case "Default":
+                # code...
+                break;
+            case "Random":
+                # code...
+                break;
+
+            case "Knapsack":
+                # code...
+                break;
+
+            case "EdgeFirst":
+                # code...
+                break;
+
+            case "CloudFirst":
+                # code...
+                break;
+            
+            default:
+                return false;
+                break;
+        }
+        return true;
     }
 
     // Update servers "ActiveTasks"
