@@ -571,7 +571,15 @@ class Simulator
     // Simulation starter: $simulationTime => in seconds
     public function startSimulation( $simulationTime = 30 )
     {
-        # code...
+        $startTime = time();
+        $endTime = $startTime + $simulationTime;
+
+        while (time() < $endTime) {
+
+            // Update servers, assign tasks, etc.
+
+            usleep(100000); // Sleep for 100 milliseconds
+        }
     }
 }
 
