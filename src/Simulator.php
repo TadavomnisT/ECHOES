@@ -643,7 +643,23 @@ class Simulator
     // Update servers by Terminating executed tasks
     public function UpdateServers()
     {
-        # code...
+        foreach ($this->getAllServers() as $server) {
+            foreach ($server["Object"]->getActiveTasks() as $taskID) {
+                $TD = $this->getTaskDetails($taskID);
+
+                //Terminate if Deadline has passed
+                if( $TD["Deadline"] < time() )
+                {
+                    $server["Object"]->terminateTask( $taskID );
+                }
+
+                //Terminate if Task is done
+                if( $TD["ExecutionTime"] + $TD["Timestamp"] < time() )
+                {
+                    $server["Object"]->terminateTask( $taskID );
+                }
+            }
+        }
     }
 
     // Simulation starter: $simulationTime => in seconds
@@ -663,9 +679,9 @@ class Simulator
                 $result = $this->assignTask( $key, "Edge", 0 , true );
                 if($result !== True)
                 {
-                    var_dump( $task , $this->getEdgeServers( 0 ) );
+                    var_dump( $task , $this->getEdgeServers()[0] );
                     var_dump( $result );
-                    // die;
+                    die;
                 } 
                 else var_dump( $result );
             }

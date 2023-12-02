@@ -249,7 +249,7 @@ class Server {
     }
     public function setAverageAccessTime(int $AverageAccessTime)
     {
-        if ($AverageAccessTime <= 0) {
+        if ($AverageAccessTime < 0) {
             throw new Exception("Invalid average access time: \"" . $AverageAccessTime . "\"." , 1);
             return false;
         }
@@ -264,7 +264,7 @@ class Server {
     }
     public function setLatency(int $Latency)
     {
-        if ($Latency <= 0) {
+        if ($Latency < 0) {
             throw new Exception("Invalid latency: \"" . $Latency . "\"." , 1);
             return false;
         }
@@ -354,7 +354,7 @@ class Server {
         return $this->ActiveTasks[] = $ID;
     }
     // Remove a Task from ActiveTasks
-    public function terminateTask( int $ID, Task $task )
+    public function terminateTask( int $ID )
     {
         $this->setAvailableRAM( $this->getAvailableRAM() + $task->getRequiredRAM() );
         $this->setAvailableStorage( $this->getAvailableStorage() + $task->getRequiredStorage() );
