@@ -583,12 +583,27 @@ class Simulator
         }
 
         $this->UpdateServers();
-        $task = getTasks( $taskID );
+        $task = $this->getTasks()[$taskID];
 
-        // if (  ) {
-            
-        //     return false;
-        // }
+        if ( $task->getRequiredCores() > $server->getCores() ) {
+            return ( $returnError ) ? [ False, "Server's cores are less than task's required cores." ] : False ;
+        }
+        if ( $task->getRequiredMIPSPerCore() > $server->getMIPS() ) {
+            return ( $returnError ) ? [ False, "Server's MIPS is less than task's required MIPS." ] : False ;
+        }
+        if ( $task->getRequiredRAM() > $server->getAvailableRAM() ) {
+            return ( $returnError ) ? [ False, "Server's avaiable RAM is less than task's required RAM." ] : False ;
+        }
+        if ( $task->getRequiredStorage() > $server->getAvailableStorage() ) {
+            return ( $returnError ) ? [ False, "Server's avaiable Storage is less than task's required Storage." ] : False ;
+        }
+        if ( $task->getTimestamp() + $task->getDeadline() <= time() ) {
+            return ( $returnError ) ? [ False, "Task is expired." ] : False ;
+        }
+
+
+        $server->addTask( $taskID );
+        return true;
     }
 
     // Assign all Tasks using assignMethod
@@ -597,7 +612,7 @@ class Simulator
         switch ( $this->getAssignMethod() ) {
             case "Default":
                 // Tasks are assigned on a "First-come, First-served" basis
-                foreach ($this->getTasks as $key => $task) { 
+                foreach ($this->getTasks() as $key => $task) { 
                     $this->UpdateServers();
                 }
                 # code...
@@ -643,7 +658,15 @@ class Simulator
             // Update servers, assign tasks, etc.
             
             $this->UpdateServers();
-            $this->assignAllTasks();
+            
+            foreach ($this->getTasks() as $key => $task) {
+                $result = $this->assignTask( $key, "Edge", 0 , true );
+                if(!$result)
+                {
+                    var_dump( $task , $this->getEdgeServers( 0 ) );
+                } 
+                var_dump( $result );
+            }
             
 
             usleep(100000); // Sleep for 100 milliseconds
