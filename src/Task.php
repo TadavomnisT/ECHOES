@@ -312,7 +312,7 @@ class Task
     }
     public function setExecutionTime(int $ExecutionTime) {
         if ($ExecutionTime <= 0) {
-            throw new Exception("Invalid value for execution-time RAM \"" . $ExecutionTime . "\".", 1);
+            throw new Exception("Invalid value for execution-time \"" . $ExecutionTime . "\".", 1);
             return FALSE;
         }
         $this->ExecutionTime = $ExecutionTime;
