@@ -348,7 +348,7 @@ class Server {
     {
         return $this->ActiveTasks[] = $ID;
     }
-    // Remvoe a Task from ActiveTasks
+    // Remove a Task from ActiveTasks
     public function terminateTask( int $ID )
     {
         foreach ($this->ActiveTasks as $key => $task) {
