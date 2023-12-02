@@ -153,8 +153,7 @@ $ECHOES->startSimulation();
 
 
 // TODO
-// assignTask
-// UpdateServers
+// assignAllTasks
 // startSimulation
 
 
