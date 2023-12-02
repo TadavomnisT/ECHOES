@@ -16,24 +16,25 @@ $ECHOES = new Simulator();
 // // Testing: getTimestampMS( time() )
 // var_dump($ECHOES->getTimestampMS( time() ));
 
-// // Testing: createTask()
-// $T1 = $ECHOES->createTask(
-//     "T1",
-//     "Medium",
-//     1,
-//     200,
-//     128,
-//     1024,
-//     time(),
-//     $ECHOES->getTimestampMS(),
-//     512,
-//     256,
-//     3600,
-//     "Medium",
-//     "synchronous"
-// );
-// // Testing: getTaskDetails()
-// var_dump( $ECHOES->getTaskDetails($T1) );
+// Testing: createTask()
+$T1 = $ECHOES->createTask(
+    "T1",
+    "Medium",
+    1,
+    200,
+    128,
+    1024,
+    time(),
+    $ECHOES->getTimestampMS(),
+    512,
+    256,
+    3600,
+    "Medium",
+    "synchronous",
+    3600
+);
+// Testing: getTaskDetails()
+var_dump( $ECHOES->getTaskDetails($T1) );
 
 // // Testing: createServer()
 // $S1 = $ECHOES->createServer(
@@ -136,14 +137,20 @@ $ECHOES = new Simulator();
 // var_dump( $ECHOES->generateRandomTasks( 50 ) );
 // var_dump( $ECHOES->getTasks() );
 
-// Testing: generateRandomServers()
-var_dump( $ECHOES->generateRandomServers( 20 ) );
-var_dump( $ECHOES->getServers() );
-var_dump( $ECHOES->getEdgeServers() );
-var_dump( $ECHOES->getCloudServers() );
+// // Testing: generateRandomServers()
+// var_dump( $ECHOES->generateRandomServers( 20 ) );
+// var_dump( $ECHOES->getServers() );
+// var_dump( $ECHOES->getEdgeServers() );
+// var_dump( $ECHOES->getCloudServers() );
 
-// Testing: getAllServers()
-var_dump( $ECHOES->getAllServers() );
+// // Testing: getAllServers()
+// var_dump( $ECHOES->getAllServers() );
+
+// $ECHOES->generateRandomServers( 20 );
+// $ECHOES->generateRandomTasks( 200 );
+
+// var_dump( $ECHOES->getTasks() );
+
 
 // TODO
 // assignTask

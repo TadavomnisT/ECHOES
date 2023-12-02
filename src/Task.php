@@ -19,6 +19,7 @@ A Task entity in ECHOESimulator contains following attributes:
     Deadline                =>  Task deadline in seconds
     SecurityLevel           =>  Security Level: High/Medium/Low
     CommunicationType       =>  Communication Type: "synchronous" or "asynchronous"
+    ExecutionTime           =>  The time that the Task is running on server in seconds
 
 
 Example:
@@ -39,6 +40,7 @@ Example:
     | Deadline             | 3600 seconds  |
     | SecurityLevel        | Medium        |
     | CommunicationType    | asynchronous  |
+    | ExecutionTime        | 360           |
     +--------------------------------------+
 
 
@@ -65,10 +67,10 @@ Topology:
             Timestamp   TimestampMS
         (UNIX-timestamp sec) (UNIX-timestamp ms)
                 
-        -----------------
-        |               |
-        Deadline    SecurityLevel
-    (in seconds)  (High/Medium/Low)
+        ---------------------------------------
+        |               |                     |
+        Deadline    SecurityLevel       ExecutionTime
+    (in seconds)  (High/Medium/Low)     (in seconds)
 
 
 ---------------------------------------------------------------------
@@ -102,6 +104,7 @@ class Task
     private $Deadline;              // Task deadline in seconds
     private $SecurityLevel;         // Security Level: High/Medium/Low
     private $CommunicationType;     // Communication Type: "synchronous" or "asynchronous"
+    private $ExecutionTime;         // The time that the Task is running on server in seconds
     
     // Constructor
     public function __construct(
@@ -117,7 +120,8 @@ class Task
         $RequiredDataUpload,
         $Deadline,
         $SecurityLevel,
-        $CommunicationType
+        $CommunicationType,
+        $ExecutionTime
         ) {
         $this->setName( $Name );
         $this->setPriority( $Priority );
@@ -132,6 +136,7 @@ class Task
         $this->setDeadline( $Deadline );
         $this->setSecurityLevel( $SecurityLevel );
         $this->setCommunicationType( $CommunicationType );
+        $this->setExecutionTime( $ExecutionTime );
     }
 
     // Getter and Setter for Name
@@ -298,6 +303,19 @@ class Task
             return FALSE;
         }
         $this->CommunicationType = $CommunicationType;
+        return true;
+    }
+
+    // Getter and Setter for ExecutionTime
+    public function getExecutionTime() {
+        return $this->ExecutionTime;
+    }
+    public function setExecutionTime(int $ExecutionTime) {
+        if ($ExecutionTime <= 0) {
+            throw new Exception("Invalid value for execution-time RAM \"" . $ExecutionTime . "\".", 1);
+            return FALSE;
+        }
+        $this->ExecutionTime = $ExecutionTime;
         return true;
     }
 

@@ -76,7 +76,8 @@ class Simulator
         $RequiredDataUpload,
         $Deadline,
         $SecurityLevel,
-        $CommunicationType
+        $CommunicationType,
+        $ExecutionTime
     )
     {
         $this->tasks[] = new Task(
@@ -92,7 +93,8 @@ class Simulator
             $RequiredDataUpload,
             $Deadline,
             $SecurityLevel,
-            $CommunicationType
+            $CommunicationType,
+            $ExecutionTime
         );
         end($this->tasks);
         return key($this->tasks); 
@@ -299,7 +301,8 @@ class Simulator
             "RequiredDataUpload"    => $this->tasks[ $ID ]->getRequiredDataUpload() ,
             "Deadline"              => $this->tasks[ $ID ]->getDeadline() ,
             "SecurityLevel"         => $this->tasks[ $ID ]->getSecurityLevel() ,
-            "CommunicationType"     => $this->tasks[ $ID ]->getCommunicationType() 
+            "CommunicationType"     => $this->tasks[ $ID ]->getCommunicationType(),
+            "ExecutionTime"         => $this->tasks[ $ID ]->getExecutionTime() 
         ];
     }
 
@@ -438,6 +441,7 @@ class Simulator
             $deadline = $timestamp + mt_rand(3600, 86400); // 1 to 24 hours
             $securityLevel = $securityLevels[array_rand($securityLevels)];
             $communicationType = $communicationTypes[array_rand($communicationTypes)];
+            $ExecutionTime = (mt_rand(0,9)>6) ? mt_rand(5, 86400) : mt_rand(5, 18000);
 
             $IDs[] = $this->createTask(
                 $name,
@@ -452,7 +456,8 @@ class Simulator
                 $requiredDataUpload,
                 $deadline,
                 $securityLevel,
-                $communicationType
+                $communicationType,
+                $ExecutionTime
             );
         }
         return $IDs;
