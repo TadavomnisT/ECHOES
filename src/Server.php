@@ -344,13 +344,21 @@ class Server {
     }
 
     // Add a new Task to ActiveTasks
-    public function addTask( int $ID )
+    public function addTask( int $ID, Task $task )
     {
+        if ( $this->getAvailableRAM() < $task->getRequiredRAM() ) return false;
+        if ( $this->getAvailableStorage() < $task->getRequiredStorage() ) return false;
+        $this->setAvailableRAM( $this->getAvailableRAM() - $task->getRequiredRAM() );
+        $this->setAvailableStorage( $this->getAvailableStorage() - $task->getRequiredStorage() );
+
         return $this->ActiveTasks[] = $ID;
     }
     // Remove a Task from ActiveTasks
-    public function terminateTask( int $ID )
+    public function terminateTask( int $ID, Task $task )
     {
+        $this->setAvailableRAM( $this->getAvailableRAM() + $task->getRequiredRAM() );
+        $this->setAvailableStorage( $this->getAvailableStorage() + $task->getRequiredStorage() );
+
         foreach ($this->ActiveTasks as $key => $task) {
             if($task == $ID)
             {

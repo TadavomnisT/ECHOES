@@ -602,7 +602,7 @@ class Simulator
         }
 
 
-        $server->addTask( $taskID );
+        $server->addTask( $taskID, $task );
         return true;
     }
 
@@ -640,7 +640,7 @@ class Simulator
         return true;
     }
 
-    // Update servers "ActiveTasks"
+    // Update servers by Terminating executed tasks
     public function UpdateServers()
     {
         # code...
@@ -661,11 +661,13 @@ class Simulator
             
             foreach ($this->getTasks() as $key => $task) {
                 $result = $this->assignTask( $key, "Edge", 0 , true );
-                if(!$result)
+                if($result !== True)
                 {
                     var_dump( $task , $this->getEdgeServers( 0 ) );
+                    var_dump( $result );
+                    // die;
                 } 
-                var_dump( $result );
+                else var_dump( $result );
             }
             
 
