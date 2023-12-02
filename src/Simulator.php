@@ -537,6 +537,12 @@ class Simulator
         return $serverIDs;
     }
 
+    // Printing logs
+    public function printLog( string $message )
+    {
+        echo "[Log] " . $message . PHP_EOL;
+    }
+
     // Assign a Task to a Server
     public function assignTask( $taskID, $serverType, $serverID )
     {
@@ -576,6 +582,7 @@ class Simulator
     // Simulation starter: $simulationTime => in seconds
     public function startSimulation( $simulationTime = 30 )
     {
+        $this->printLog( "Simulation started at " . date(DATE_RFC2822) . " (" . time() . ") for " . $simulationTime . " seconds."  );
         $startTime = time();
         $endTime = $startTime + $simulationTime;
 
