@@ -544,10 +544,62 @@ class Simulator
     }
 
     // Assign a Task to a Server
-    public function assignTask( $taskID, $serverType, $serverID )
+    public function assignTask( $taskID, $serverType, $serverID, $returnError = False )
+    {
+        if ($serverType != "Edge" && $serverType != "Cloud" && $serverType != "Server") {
+            throw new Exception("Invalid server-type : \"" . $serverType . "\"." , 1);
+            return false;
+        }
+        if (empty($this->getTasks()[$taskID])) {
+            throw new Exception("Invalid task-ID : \"" . $taskID . "\"." , 1);
+            return false;
+        }
+        switch ($serverType) {
+            case "Edge":
+                if (empty($this->getEdgeServers()[$serverID])) {
+                    throw new Exception("Invalid edge-server-ID : \"" . $serverID . "\"." , 1);
+                    return false;
+                }
+                $server = $this->getEdgeServers()[$serverID];
+                break;
+            case "Cloud":
+                if (empty($this->getCloudServers()[$serverID])) {
+                    throw new Exception("Invalid cloud-server-ID : \"" . $serverID . "\"." , 1);
+                    return false;
+                }
+                $server = $this->getCloudServers()[$serverID];
+                break;
+            case "Server":
+                if (empty($this->getServers()[$serverID])) {
+                    throw new Exception("Invalid server-ID : \"" . $serverID . "\"." , 1);
+                    return false;
+                }
+                $server = $this->getServers()[$serverID];
+                break;
+            default:
+                throw new Exception("Invalid server-type : \"" . $serverType . "\"." , 1);
+                return false;
+                break;
+        }
+
+        $this->UpdateServers();
+        $task = getTasks( $taskID );
+
+        // if (  ) {
+            
+        //     return false;
+        // }
+    }
+
+    // Assign all Tasks using assignMethod
+    public function assignAllTasks()
     {
         switch ( $this->getAssignMethod() ) {
             case "Default":
+                // Tasks are assigned on a "First-come, First-served" basis
+                foreach ($this->getTasks as $key => $task) { 
+                    $this->UpdateServers();
+                }
                 # code...
                 break;
             case "Random":
@@ -589,6 +641,10 @@ class Simulator
         while (time() < $endTime) {
 
             // Update servers, assign tasks, etc.
+            
+            $this->UpdateServers();
+            $this->assignAllTasks();
+            
 
             usleep(100000); // Sleep for 100 milliseconds
         }
