@@ -21,6 +21,9 @@ A Task entity in ECHOESimulator contains following attributes:
     CommunicationType       =>  Communication Type: "synchronous" or "asynchronous"
     ExecutionTime           =>  The time that the Task is running on server in seconds
 
+    NOTES:
+        * The execution time ("ExecutionTime") of a task depends on the server to which it's assigned
+        Which is why it can be NULL.
 
 Example:
 
@@ -104,7 +107,7 @@ class Task
     private $Deadline;              // Task deadline in seconds
     private $SecurityLevel;         // Security Level: High/Medium/Low
     private $CommunicationType;     // Communication Type: "synchronous" or "asynchronous"
-    private $ExecutionTime;         // The time that the Task is running on server in seconds
+    private $ExecutionTime;         // The time that the Task is running on server in seconds (Null at first)
     
     // Constructor
     public function __construct(
@@ -311,7 +314,7 @@ class Task
         return $this->ExecutionTime;
     }
     public function setExecutionTime(int $ExecutionTime) {
-        if ($ExecutionTime <= 0) {
+        if ( $ExecutionTime <= 0 && $ExecutionTime !== NULL ) {
             throw new Exception("Invalid value for execution-time \"" . $ExecutionTime . "\".", 1);
             return FALSE;
         }
