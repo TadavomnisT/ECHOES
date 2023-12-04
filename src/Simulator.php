@@ -286,96 +286,174 @@ class Simulator
     }
 
     // Get details of a Task
-    public function getTaskDetails( $ID )
+    public function getTaskDetails( $task )
     {
+        if ( $task instanceof Task )
+            return [
+                "Name"                  => $task->getName() ,
+                "Priority"              => $task->getPriority() ,
+                "RequiredCores"         => $task->getRequiredCores() ,
+                "RequiredMIPSPerCore"   => $task->getRequiredMIPSPerCore() ,
+                "RequiredRAM"           => $task->getRequiredRAM() ,
+                "RequiredStorage"       => $task->getRequiredStorage() ,
+                "Timestamp"             => $task->getTimestamp() ,
+                "TimestampMS"           => $task->getTimestampMS() ,
+                "RequiredDataDownload"  => $task->getRequiredDataDownload() ,
+                "RequiredDataUpload"    => $task->getRequiredDataUpload() ,
+                "Deadline"              => $task->getDeadline() ,
+                "SecurityLevel"         => $task->getSecurityLevel() ,
+                "CommunicationType"     => $task->getCommunicationType(),
+                "ExecutionTime"         => $task->getExecutionTime() 
+            ];
         return [
-            "Name"                  => $this->tasks[ $ID ]->getName() ,
-            "Priority"              => $this->tasks[ $ID ]->getPriority() ,
-            "RequiredCores"         => $this->tasks[ $ID ]->getRequiredCores() ,
-            "RequiredMIPSPerCore"   => $this->tasks[ $ID ]->getRequiredMIPSPerCore() ,
-            "RequiredRAM"           => $this->tasks[ $ID ]->getRequiredRAM() ,
-            "RequiredStorage"       => $this->tasks[ $ID ]->getRequiredStorage() ,
-            "Timestamp"             => $this->tasks[ $ID ]->getTimestamp() ,
-            "TimestampMS"           => $this->tasks[ $ID ]->getTimestampMS() ,
-            "RequiredDataDownload"  => $this->tasks[ $ID ]->getRequiredDataDownload() ,
-            "RequiredDataUpload"    => $this->tasks[ $ID ]->getRequiredDataUpload() ,
-            "Deadline"              => $this->tasks[ $ID ]->getDeadline() ,
-            "SecurityLevel"         => $this->tasks[ $ID ]->getSecurityLevel() ,
-            "CommunicationType"     => $this->tasks[ $ID ]->getCommunicationType(),
-            "ExecutionTime"         => $this->tasks[ $ID ]->getExecutionTime() 
+            "Name"                  => $this->tasks[ $task ]->getName() ,
+            "Priority"              => $this->tasks[ $task ]->getPriority() ,
+            "RequiredCores"         => $this->tasks[ $task ]->getRequiredCores() ,
+            "RequiredMIPSPerCore"   => $this->tasks[ $task ]->getRequiredMIPSPerCore() ,
+            "RequiredRAM"           => $this->tasks[ $task ]->getRequiredRAM() ,
+            "RequiredStorage"       => $this->tasks[ $task ]->getRequiredStorage() ,
+            "Timestamp"             => $this->tasks[ $task ]->getTimestamp() ,
+            "TimestampMS"           => $this->tasks[ $task ]->getTimestampMS() ,
+            "RequiredDataDownload"  => $this->tasks[ $task ]->getRequiredDataDownload() ,
+            "RequiredDataUpload"    => $this->tasks[ $task ]->getRequiredDataUpload() ,
+            "Deadline"              => $this->tasks[ $task ]->getDeadline() ,
+            "SecurityLevel"         => $this->tasks[ $task ]->getSecurityLevel() ,
+            "CommunicationType"     => $this->tasks[ $task ]->getCommunicationType(),
+            "ExecutionTime"         => $this->tasks[ $task ]->getExecutionTime() 
         ];
     }
 
     // Get Edge-server status
-    public function getEdgeServerStatus( $ID )
+    public function getEdgeServerStatus( $server )
     {
+        if ( $server instanceof Edge )
+            return [
+                "Name"              => $server->getName(),
+                "Type"              => $server->getType(),
+                "Cores"             => $server->getCores(),
+                "MIPS"              => $server->getMIPS(),
+                "RAM"               => $server->getRAM(),
+                "AvailableRAM"      => $server->getAvailableRAM(),
+                "Storage"           => $server->getStorage(),
+                "AvailableStorage"  => $server->getAvailableStorage(),
+                "StorageSpeed"      => $server->getStorageSpeed(),
+                "AverageAccessTime" => $server->getAverageAccessTime(),
+                "Latency"           => $server->getLatency(),
+                "NetworkBandwidth"  => $server->getNetworkBandwidth(),
+                "EnergyEfficiency"  => $server->getEnergyEfficiency(),
+                "RedundancyLevel"   => $server->getRedundancyLevel(),
+                "Availability"      => $server->getAvailability(),
+                "ActiveTasks"       => $server->getActiveTasks(),
+                "Location"          => $server->getLocation(),
+                "Temperature"       => $server->getTemperature()
+            ];
         return [
-            "Name"              => $this->edgeServers[ $ID ]->getName(),
-            "Type"              => $this->edgeServers[ $ID ]->getType(),
-            "Cores"             => $this->edgeServers[ $ID ]->getCores(),
-            "MIPS"              => $this->edgeServers[ $ID ]->getMIPS(),
-            "RAM"               => $this->edgeServers[ $ID ]->getRAM(),
-            "AvailableRAM"      => $this->edgeServers[ $ID ]->getAvailableRAM(),
-            "Storage"           => $this->edgeServers[ $ID ]->getStorage(),
-            "AvailableStorage"  => $this->edgeServers[ $ID ]->getAvailableStorage(),
-            "StorageSpeed"      => $this->edgeServers[ $ID ]->getStorageSpeed(),
-            "AverageAccessTime" => $this->edgeServers[ $ID ]->getAverageAccessTime(),
-            "Latency"           => $this->edgeServers[ $ID ]->getLatency(),
-            "NetworkBandwidth"  => $this->edgeServers[ $ID ]->getNetworkBandwidth(),
-            "EnergyEfficiency"  => $this->edgeServers[ $ID ]->getEnergyEfficiency(),
-            "RedundancyLevel"   => $this->edgeServers[ $ID ]->getRedundancyLevel(),
-            "Availability"      => $this->edgeServers[ $ID ]->getAvailability(),
-            "ActiveTasks"       => $this->edgeServers[ $ID ]->getActiveTasks(),
-            "Location"          => $this->edgeServers[ $ID ]->getLocation(),
-            "Temperature"       => $this->edgeServers[ $ID ]->getTemperature()
+            "Name"              => $this->edgeServers[ $server ]->getName(),
+            "Type"              => $this->edgeServers[ $server ]->getType(),
+            "Cores"             => $this->edgeServers[ $server ]->getCores(),
+            "MIPS"              => $this->edgeServers[ $server ]->getMIPS(),
+            "RAM"               => $this->edgeServers[ $server ]->getRAM(),
+            "AvailableRAM"      => $this->edgeServers[ $server ]->getAvailableRAM(),
+            "Storage"           => $this->edgeServers[ $server ]->getStorage(),
+            "AvailableStorage"  => $this->edgeServers[ $server ]->getAvailableStorage(),
+            "StorageSpeed"      => $this->edgeServers[ $server ]->getStorageSpeed(),
+            "AverageAccessTime" => $this->edgeServers[ $server ]->getAverageAccessTime(),
+            "Latency"           => $this->edgeServers[ $server ]->getLatency(),
+            "NetworkBandwidth"  => $this->edgeServers[ $server ]->getNetworkBandwidth(),
+            "EnergyEfficiency"  => $this->edgeServers[ $server ]->getEnergyEfficiency(),
+            "RedundancyLevel"   => $this->edgeServers[ $server ]->getRedundancyLevel(),
+            "Availability"      => $this->edgeServers[ $server ]->getAvailability(),
+            "ActiveTasks"       => $this->edgeServers[ $server ]->getActiveTasks(),
+            "Location"          => $this->edgeServers[ $server ]->getLocation(),
+            "Temperature"       => $this->edgeServers[ $server ]->getTemperature()
         ];
     }
 
     // Get Cloud-server status
-    public function getCloudServerStatus( $ID )
+    public function getCloudServerStatus( $server )
     {
+        if ( $server instanceof Cloud )
+            return [
+                "Name"              => $server->getName(),
+                "Type"              => $server->getType(),
+                "Cores"             => $server->getCores(),
+                "MIPS"              => $server->getMIPS(),
+                "RAM"               => $server->getRAM(),
+                "AvailableRAM"      => $server->getAvailableRAM(),
+                "Storage"           => $server->getStorage(),
+                "AvailableStorage"  => $server->getAvailableStorage(),
+                "StorageSpeed"      => $server->getStorageSpeed(),
+                "AverageAccessTime" => $server->getAverageAccessTime(),
+                "Latency"           => $server->getLatency(),
+                "NetworkBandwidth"  => $server->getNetworkBandwidth(),
+                "EnergyEfficiency"  => $server->getEnergyEfficiency(),
+                "RedundancyLevel"   => $server->getRedundancyLevel(),
+                "Availability"      => $server->getAvailability(),
+                "ActiveTasks"       => $server->getActiveTasks(),
+                "Location"          => $server->getLocation(),
+                "Temperature"       => $server->getTemperature()
+            ];
         return [
-            "Name"              => $this->cloudServers[ $ID ]->getName(),
-            "Type"              => $this->cloudServers[ $ID ]->getType(),
-            "Cores"             => $this->cloudServers[ $ID ]->getCores(),
-            "MIPS"              => $this->cloudServers[ $ID ]->getMIPS(),
-            "RAM"               => $this->cloudServers[ $ID ]->getRAM(),
-            "AvailableRAM"      => $this->cloudServers[ $ID ]->getAvailableRAM(),
-            "Storage"           => $this->cloudServers[ $ID ]->getStorage(),
-            "AvailableStorage"  => $this->cloudServers[ $ID ]->getAvailableStorage(),
-            "StorageSpeed"      => $this->cloudServers[ $ID ]->getStorageSpeed(),
-            "AverageAccessTime" => $this->cloudServers[ $ID ]->getAverageAccessTime(),
-            "Latency"           => $this->cloudServers[ $ID ]->getLatency(),
-            "NetworkBandwidth"  => $this->cloudServers[ $ID ]->getNetworkBandwidth(),
-            "EnergyEfficiency"  => $this->cloudServers[ $ID ]->getEnergyEfficiency(),
-            "RedundancyLevel"   => $this->cloudServers[ $ID ]->getRedundancyLevel(),
-            "Availability"      => $this->cloudServers[ $ID ]->getAvailability(),
-            "ActiveTasks"       => $this->cloudServers[ $ID ]->getActiveTasks(),
-            "Location"          => $this->cloudServers[ $ID ]->getLocation(),
-            "Temperature"       => $this->cloudServers[ $ID ]->getTemperature()
+            "Name"              => $this->cloudServers[ $server ]->getName(),
+            "Type"              => $this->cloudServers[ $server ]->getType(),
+            "Cores"             => $this->cloudServers[ $server ]->getCores(),
+            "MIPS"              => $this->cloudServers[ $server ]->getMIPS(),
+            "RAM"               => $this->cloudServers[ $server ]->getRAM(),
+            "AvailableRAM"      => $this->cloudServers[ $server ]->getAvailableRAM(),
+            "Storage"           => $this->cloudServers[ $server ]->getStorage(),
+            "AvailableStorage"  => $this->cloudServers[ $server ]->getAvailableStorage(),
+            "StorageSpeed"      => $this->cloudServers[ $server ]->getStorageSpeed(),
+            "AverageAccessTime" => $this->cloudServers[ $server ]->getAverageAccessTime(),
+            "Latency"           => $this->cloudServers[ $server ]->getLatency(),
+            "NetworkBandwidth"  => $this->cloudServers[ $server ]->getNetworkBandwidth(),
+            "EnergyEfficiency"  => $this->cloudServers[ $server ]->getEnergyEfficiency(),
+            "RedundancyLevel"   => $this->cloudServers[ $server ]->getRedundancyLevel(),
+            "Availability"      => $this->cloudServers[ $server ]->getAvailability(),
+            "ActiveTasks"       => $this->cloudServers[ $server ]->getActiveTasks(),
+            "Location"          => $this->cloudServers[ $server ]->getLocation(),
+            "Temperature"       => $this->cloudServers[ $server ]->getTemperature()
         ];
     }
 
     // Get Server status
-    public function getServerStatus( $ID )
+    public function getServerStatus( $server )
     {
+        if ( $server instanceof Server )
+            return [
+                "Name"              => $server->getName(),
+                "Type"              => $server->getType(),
+                "Cores"             => $server->getCores(),
+                "MIPS"              => $server->getMIPS(),
+                "RAM"               => $server->getRAM(),
+                "AvailableRAM"      => $server->getAvailableRAM(),
+                "Storage"           => $server->getStorage(),
+                "AvailableStorage"  => $server->getAvailableStorage(),
+                "StorageSpeed"      => $server->getStorageSpeed(),
+                "AverageAccessTime" => $server->getAverageAccessTime(),
+                "Latency"           => $server->getLatency(),
+                "NetworkBandwidth"  => $server->getNetworkBandwidth(),
+                "EnergyEfficiency"  => $server->getEnergyEfficiency(),
+                "RedundancyLevel"   => $server->getRedundancyLevel(),
+                "Availability"      => $server->getAvailability(),
+                "ActiveTasks"       => $server->getActiveTasks()
+            ];
         return [
-            "Name"              => $this->servers[ $ID ]->getName(),
-            "Type"              => $this->servers[ $ID ]->getType(),
-            "Cores"             => $this->servers[ $ID ]->getCores(),
-            "MIPS"              => $this->servers[ $ID ]->getMIPS(),
-            "RAM"               => $this->servers[ $ID ]->getRAM(),
-            "AvailableRAM"      => $this->servers[ $ID ]->getAvailableRAM(),
-            "Storage"           => $this->servers[ $ID ]->getStorage(),
-            "AvailableStorage"  => $this->servers[ $ID ]->getAvailableStorage(),
-            "StorageSpeed"      => $this->servers[ $ID ]->getStorageSpeed(),
-            "AverageAccessTime" => $this->servers[ $ID ]->getAverageAccessTime(),
-            "Latency"           => $this->servers[ $ID ]->getLatency(),
-            "NetworkBandwidth"  => $this->servers[ $ID ]->getNetworkBandwidth(),
-            "EnergyEfficiency"  => $this->servers[ $ID ]->getEnergyEfficiency(),
-            "RedundancyLevel"   => $this->servers[ $ID ]->getRedundancyLevel(),
-            "Availability"      => $this->servers[ $ID ]->getAvailability(),
-            "ActiveTasks"       => $this->servers[ $ID ]->getActiveTasks()
+            "Name"              => $this->servers[ $server ]->getName(),
+            "Type"              => $this->servers[ $server ]->getType(),
+            "Cores"             => $this->servers[ $server ]->getCores(),
+            "MIPS"              => $this->servers[ $server ]->getMIPS(),
+            "RAM"               => $this->servers[ $server ]->getRAM(),
+            "AvailableRAM"      => $this->servers[ $server ]->getAvailableRAM(),
+            "Storage"           => $this->servers[ $server ]->getStorage(),
+            "AvailableStorage"  => $this->servers[ $server ]->getAvailableStorage(),
+            "StorageSpeed"      => $this->servers[ $server ]->getStorageSpeed(),
+            "AverageAccessTime" => $this->servers[ $server ]->getAverageAccessTime(),
+            "Latency"           => $this->servers[ $server ]->getLatency(),
+            "NetworkBandwidth"  => $this->servers[ $server ]->getNetworkBandwidth(),
+            "EnergyEfficiency"  => $this->servers[ $server ]->getEnergyEfficiency(),
+            "RedundancyLevel"   => $this->servers[ $server ]->getRedundancyLevel(),
+            "Availability"      => $this->servers[ $server ]->getAvailability(),
+            "ActiveTasks"       => $this->servers[ $server ]->getActiveTasks()
         ];
     }
 
@@ -441,7 +519,8 @@ class Simulator
             $deadline = $timestamp + mt_rand(3600, 86400); // 1 to 24 hours
             $securityLevel = $securityLevels[array_rand($securityLevels)];
             $communicationType = $communicationTypes[array_rand($communicationTypes)];
-            $ExecutionTime = (mt_rand(0,9)>6) ? mt_rand(5, 86400) : mt_rand(5, 18000);
+            // $ExecutionTime = (mt_rand(0,9)>6) ? mt_rand(5, 86400) : mt_rand(5, 18000);
+            $ExecutionTime = NULL;
 
             $IDs[] = $this->createTask(
                 $name,
@@ -537,6 +616,22 @@ class Simulator
         return $serverIDs;
     }
 
+    // Calculate the execution time for a task based on the server which the task is offloaded to
+    public function calculateExecutionTime(Task $task, $server) {
+        $taskParameters = $this->getTaskDetails($task);
+        $serverParameters = $this->getServerStatus($server);
+        if ($server instanceof Server) {
+            // Handle Server type
+        } elseif ($server instanceof Edge) {
+            // Handle Edge type
+        } elseif ($server instanceof Cloud) {
+            // Handle Cloud type
+        } else {
+            throw new Exception("Invalid server type : \"" . gettype( $server ) . "\"." , 1);
+        }
+        var_dump( $taskParameters, $serverParameters );die;
+    }
+
     // Printing logs
     public function printLog( string $message )
     {
@@ -601,6 +696,8 @@ class Simulator
             return ( $returnError ) ? [ False, "Task is expired." ] : False ;
         }
 
+        # Need to set E-time
+        $this->calculateExecutionTime( $task, $server );
 
         $server->addTask( $taskID, $task );
         return true;

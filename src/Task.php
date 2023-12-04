@@ -313,7 +313,7 @@ class Task
     public function getExecutionTime() {
         return $this->ExecutionTime;
     }
-    public function setExecutionTime(int $ExecutionTime) {
+    public function setExecutionTime($ExecutionTime) {
         if ( $ExecutionTime <= 0 && $ExecutionTime !== NULL ) {
             throw new Exception("Invalid value for execution-time \"" . $ExecutionTime . "\".", 1);
             return FALSE;
