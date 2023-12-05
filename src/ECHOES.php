@@ -31,6 +31,7 @@ $ECHOES = new Simulator();
 //     3600,
 //     "Medium",
 //     "synchronous",
+//     Null,
 //     3600
 // );
 // // Testing: getTaskDetails()
@@ -151,10 +152,11 @@ $ECHOES->generateRandomTasks( 200 );
 $ECHOES->startSimulation();
 
 
-
-// TODO
-// assignAllTasks
-// startSimulation
+// TODO:
+// calculateExecutionTime()
+// assignTask()
+// assignAllTasks()
+// startSimulation()
 
 
 ?>

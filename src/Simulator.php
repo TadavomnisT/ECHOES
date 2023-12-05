@@ -77,7 +77,8 @@ class Simulator
         $Deadline,
         $SecurityLevel,
         $CommunicationType,
-        $ExecutionTime
+        $ExecutionTime,
+        $EstimateExecutionTime
     )
     {
         $this->tasks[] = new Task(
@@ -94,7 +95,8 @@ class Simulator
             $Deadline,
             $SecurityLevel,
             $CommunicationType,
-            $ExecutionTime
+            $ExecutionTime,
+            $EstimateExecutionTime
         );
         end($this->tasks);
         return key($this->tasks); 
@@ -303,7 +305,8 @@ class Simulator
                 "Deadline"              => $task->getDeadline() ,
                 "SecurityLevel"         => $task->getSecurityLevel() ,
                 "CommunicationType"     => $task->getCommunicationType(),
-                "ExecutionTime"         => $task->getExecutionTime() 
+                "ExecutionTime"         => $task->getExecutionTime(),
+                "EstimateExecutionTime" => $task->getEstimateExecutionTime()
             ];
         return [
             "Name"                  => $this->tasks[ $task ]->getName() ,
@@ -319,7 +322,8 @@ class Simulator
             "Deadline"              => $this->tasks[ $task ]->getDeadline() ,
             "SecurityLevel"         => $this->tasks[ $task ]->getSecurityLevel() ,
             "CommunicationType"     => $this->tasks[ $task ]->getCommunicationType(),
-            "ExecutionTime"         => $this->tasks[ $task ]->getExecutionTime() 
+            "ExecutionTime"         => $this->tasks[ $task ]->getExecutionTime(),
+            "EstimateExecutionTime" => $this->tasks[ $task ]->getEstimateExecutionTime()
         ];
     }
 
@@ -519,8 +523,8 @@ class Simulator
             $deadline = $timestamp + mt_rand(3600, 86400); // 1 to 24 hours
             $securityLevel = $securityLevels[array_rand($securityLevels)];
             $communicationType = $communicationTypes[array_rand($communicationTypes)];
-            // $ExecutionTime = (mt_rand(0,9)>6) ? mt_rand(5, 86400) : mt_rand(5, 18000);
             $ExecutionTime = NULL;
+            $EstimateExecutionTime = (mt_rand(0,9)>6) ? mt_rand(5, 86400) : mt_rand(5, 18000);
 
             $IDs[] = $this->createTask(
                 $name,
@@ -536,7 +540,8 @@ class Simulator
                 $deadline,
                 $securityLevel,
                 $communicationType,
-                $ExecutionTime
+                $ExecutionTime,
+                $EstimateExecutionTime
             );
         }
         return $IDs;
@@ -618,19 +623,44 @@ class Simulator
 
     // Calculate the execution time for a task based on the server which the task is offloaded to
     public function calculateExecutionTime(Task $task, $server) {
+        
+        // Ensure valid server type
+        if (!($server instanceof Server || $server instanceof Edge || $server instanceof Cloud)) {
+            throw new Exception("Invalid server type: \"" . gettype($server) . "\".", 1);
+        }
+        
         $taskParameters = $this->getTaskDetails($task);
         $serverParameters = $this->getServerStatus($server);
-        if ($server instanceof Server) {
-            // Handle Server type
-        } elseif ($server instanceof Edge) {
-            // Handle Edge type
-        } elseif ($server instanceof Cloud) {
-            // Handle Cloud type
-        } else {
-            throw new Exception("Invalid server type : \"" . gettype( $server ) . "\"." , 1);
-        }
-        var_dump( $taskParameters, $serverParameters );die;
+    
+        // // Define weights for each parameter
+        // $weights = [
+        //     "Cores" => 0.1,
+        //     "MIPS" => 0.1,
+        //     "AvailableRAM" => 0.1,
+        //     "AvailableStorage" => 0.1,
+        //     "StorageSpeed" => 0.1,
+        //     "AverageAccessTime" => 0.1,
+        //     "Latency" => 0.1,
+        //     "NetworkBandwidth" => 0.1,
+            
+        //     "RequiredCores" => -0.1,
+        //     "RequiredMIPSPerCore" => -0.1,
+        //     "RequiredRAM" => -0.1,
+        //     "RequiredStorage" => -0.1,
+        //     "RequiredDataDownload" => -0.1,
+        //     "RequiredDataUpload" => -0.1,
+        // ];
+    
+        // // Calculate a score for the server based on the parameters and weights
+        // $serverScore = 0;
+        // #CODE....
+    
+        // // Calculate the execution time based on the score and the deadline constraint
+        // $executionTime = min($serverScore, $taskParameters["Deadline"] - $taskParameters["Timestamp"]);
+
+        var_dump($taskParameters, $serverParameters);die;
     }
+    
 
     // Printing logs
     public function printLog( string $message )
@@ -694,6 +724,9 @@ class Simulator
         }
         if ( $task->getTimestamp() + $task->getDeadline() <= time() ) {
             return ( $returnError ) ? [ False, "Task is expired." ] : False ;
+        }
+        if ( !$server->getAvailability() ) {
+            return ( $returnError ) ? [ False, "Server is not Available." ] : False ;
         }
 
         # Need to set E-time

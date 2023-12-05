@@ -20,31 +20,33 @@ A Task entity in ECHOESimulator contains following attributes:
     SecurityLevel           =>  Security Level: High/Medium/Low
     CommunicationType       =>  Communication Type: "synchronous" or "asynchronous"
     ExecutionTime           =>  The time that the Task is running on server in seconds
+    EstimateExecutionTime   =>  The estimation of real "ExecutionTime"
 
     NOTES:
         * The execution time ("ExecutionTime") of a task depends on the server to which it's assigned
-        Which is why it can be NULL.
+        Which is why it can be NULL and may be assigned a value later.
 
 Example:
 
-    +--------------------------------------+
-    |           Task  Attributes           |
-    +--------------------------------------+
-    | Name                 | T_APP_15      |
-    | Priority             | High          |
-    | RequiredCores        | 1             |
-    | RequiredMIPSPerCore  | 200           |
-    | RequiredRAM          | 256 MB        |
-    | RequiredStorage      | 1024 MB       |
-    | Timestamp            | <current time>|
-    | TimestampMS          | <current time>|
-    | RequiredDataDownload | 512 MB        |
-    | RequiredDataUpload   | 256 MB        |
-    | Deadline             | 3600 seconds  |
-    | SecurityLevel        | Medium        |
-    | CommunicationType    | asynchronous  |
-    | ExecutionTime        | 360           |
-    +--------------------------------------+
+    +---------------------------------------+
+    |            Task  Attributes           |
+    +---------------------------------------+
+    | Name                  | T_APP_15      |
+    | Priority              | High          |
+    | RequiredCores         | 1             |
+    | RequiredMIPSPerCore   | 200           |
+    | RequiredRAM           | 256 MB        |
+    | RequiredStorage       | 1024 MB       |
+    | Timestamp             | <current time>|
+    | TimestampMS           | <current time>|
+    | RequiredDataDownload  | 512 MB        |
+    | RequiredDataUpload    | 256 MB        |
+    | Deadline              | 3600 seconds  |
+    | SecurityLevel         | Medium        |
+    | CommunicationType     | asynchronous  |
+    | ExecutionTime         | 360           |
+    | EstimateExecutionTime | 360           |
+    +---------------------------------------+
 
 
 Topology:
@@ -70,10 +72,10 @@ Topology:
             Timestamp   TimestampMS
         (UNIX-timestamp sec) (UNIX-timestamp ms)
                 
-        ---------------------------------------
-        |               |                     |
-        Deadline    SecurityLevel       ExecutionTime
-    (in seconds)  (High/Medium/Low)     (in seconds)
+        ---------------------------------------------------------
+        |               |                     |                 |
+        Deadline    SecurityLevel       ExecutionTime      EstimateExecutionTime
+    (in seconds)  (High/Medium/Low)     (in seconds)           (in seconds)
 
 
 ---------------------------------------------------------------------
@@ -108,6 +110,7 @@ class Task
     private $SecurityLevel;         // Security Level: High/Medium/Low
     private $CommunicationType;     // Communication Type: "synchronous" or "asynchronous"
     private $ExecutionTime;         // The time that the Task is running on server in seconds (Null at first)
+    private $EstimateExecutionTime; // The estimation of real "ExecutionTime"
     
     // Constructor
     public function __construct(
@@ -124,7 +127,8 @@ class Task
         $Deadline,
         $SecurityLevel,
         $CommunicationType,
-        $ExecutionTime
+        $ExecutionTime,
+        $EstimateExecutionTime
         ) {
         $this->setName( $Name );
         $this->setPriority( $Priority );
@@ -140,6 +144,7 @@ class Task
         $this->setSecurityLevel( $SecurityLevel );
         $this->setCommunicationType( $CommunicationType );
         $this->setExecutionTime( $ExecutionTime );
+        $this->setEstimateExecutionTime( $EstimateExecutionTime );
     }
 
     // Getter and Setter for Name
@@ -319,6 +324,19 @@ class Task
             return FALSE;
         }
         $this->ExecutionTime = $ExecutionTime;
+        return true;
+    }
+
+    // Getter and Setter for EstimateExecutionTime
+    public function getEstimateExecutionTime() {
+        return $this->EstimateExecutionTime;
+    }
+    public function setEstimateExecutionTime($EstimateExecutionTime) {
+        if ( $EstimateExecutionTime <= 0 ) {
+            throw new Exception("Invalid value for estimate-execution-time \"" . $EstimateExecutionTime . "\".", 1);
+            return FALSE;
+        }
+        $this->EstimateExecutionTime = $EstimateExecutionTime;
         return true;
     }
 
