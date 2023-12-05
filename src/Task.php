@@ -340,6 +340,12 @@ class Task
         return true;
     }
 
+    // Get methods of this class 
+    public function getMethods()
+    {
+        return get_class_methods( get_class( $this ) ) ;
+    }
+
 }
 
 

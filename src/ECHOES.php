@@ -4,7 +4,7 @@ require_once "Simulator.php";
 
 $ECHOES = new Simulator();
 
-// // Testing: getMethods()
+// // Testing: getMethods() for Simulator
 // var_dump($ECHOES->getMethods());
 
 // // Testing: getAssignMethod()
@@ -146,6 +146,93 @@ $ECHOES = new Simulator();
 
 // // Testing: getAllServers()
 // var_dump( $ECHOES->getAllServers() );
+
+// // Testing: getMethods() for Task
+// require_once "Simulator.php";
+// $Task = new Task(
+//         "T1",
+//         "Medium",
+//         1,
+//         200,
+//         128,
+//         1024,
+//         time(),
+//         $ECHOES->getTimestampMS(),
+//         512,
+//         256,
+//         3600,
+//         "Medium",
+//         "synchronous",
+//         Null,
+//         3600
+//     );
+// var_dump($Task->getMethods());
+
+// // Testing: getMethods() for Server
+// require_once "Server.php";
+// $server = new Server(
+//         "S1",
+//         "Edge",
+//         8,
+//         16000,
+//         32768,
+//         28672,
+//         1048576,
+//         786432,
+//         10,
+//         10,
+//         12,
+//         1000,
+//         1.5,
+//         98,
+//         True
+//     );
+// var_dump($server->getMethods());
+
+// // Testing: getMethods() for Cloud
+// require_once "Cloud.php";
+// $cloud = new Cloud(
+//         "C1",
+//         8,
+//         16000,
+//         32768,
+//         28672,
+//         1048576,
+//         786432,
+//         10,
+//         10,
+//         12,
+//         1000,
+//         1.5,
+//         98,
+//         True,
+//         "GEOL_356",
+//         24.
+//     );
+// var_dump($cloud->getMethods());
+
+// // Testing: getMethods() for Edge
+// require_once "Edge.php";
+// $edge = new Edge(
+//         "E1",
+//         8,
+//         16000,
+//         32768,
+//         28672,
+//         1048576,
+//         786432,
+//         10,
+//         10,
+//         12,
+//         1000,
+//         1.5,
+//         98,
+//         True,
+//         "GEOL_356",
+//         24
+//     );
+// var_dump($edge->getMethods());
+
 
 $ECHOES->generateRandomServers( 20 );
 $ECHOES->generateRandomTasks( 200 );

@@ -632,6 +632,9 @@ class Simulator
         $taskParameters = $this->getTaskDetails($task);
         $serverParameters = $this->getServerStatus($server);
     
+        var_dump($taskParameters, $serverParameters);die;
+
+
         // // Define weights for each parameter
         // $weights = [
         //     "Cores" => 0.1,
@@ -658,7 +661,6 @@ class Simulator
         // // Calculate the execution time based on the score and the deadline constraint
         // $executionTime = min($serverScore, $taskParameters["Deadline"] - $taskParameters["Timestamp"]);
 
-        var_dump($taskParameters, $serverParameters);die;
     }
     
 
