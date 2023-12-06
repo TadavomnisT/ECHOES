@@ -1,11 +1,54 @@
 <?php
 
 
-
 require_once "Server.php";
 require_once "Cloud.php";
 require_once "Edge.php";
 require_once "Task.php";
+
+// Constants for TASK
+defined("MAX_TASK_REQUIRED_CORE") or define("MAX_TASK_REQUIRED_CORE", 8);
+defined("MIN_TASK_REQUIRED_CORE") or define("MIN_TASK_REQUIRED_CORE", 1);
+defined("MAX_TASK_REQUIRED_MIPS") or define("MAX_TASK_REQUIRED_MIPS", 800);
+defined("MIN_TASK_REQUIRED_MIPS") or define("MIN_TASK_REQUIRED_MIPS", 200);
+defined("MAX_TASK_REQUIRED_RAM") or define("MAX_TASK_REQUIRED_RAM", 1024);
+defined("MIN_TASK_REQUIRED_RAM") or define("MIN_TASK_REQUIRED_RAM", 128);
+defined("MAX_TASK_REQUIRED_STORAGE") or define("MAX_TASK_REQUIRED_STORAGE", 2048);
+defined("MIN_TASK_REQUIRED_STORAGE") or define("MIN_TASK_REQUIRED_STORAGE", 256);
+defined("MAX_TASK_REQUIRED_DOWNLOAD") or define("MAX_TASK_REQUIRED_DOWNLOAD", 512);
+defined("MIN_TASK_REQUIRED_DOWNLOAD") or define("MIN_TASK_REQUIRED_DOWNLOAD", 128);
+defined("MAX_TASK_REQUIRED_UPLOAD") or define("MAX_TASK_REQUIRED_UPLOAD", 256);
+defined("MIN_TASK_REQUIRED_UPLOAD") or define("MIN_TASK_REQUIRED_UPLOAD", 64);
+defined("MAX_TASK_DEADLINE") or define("MAX_TASK_DEADLINE", 86400); // 1 hour
+defined("MIN_TASK_DEADLINE") or define("MIN_TASK_DEADLINE", 3600); // 24 hours
+defined("MAX_TASK_ESTIMATE_EXECUTION_TIME_1") or define("MAX_TASK_ESTIMATE_EXECUTION_TIME_1", 18000);
+defined("MAX_TASK_ESTIMATE_EXECUTION_TIME_2") or define("MAX_TASK_ESTIMATE_EXECUTION_TIME_2", 86400);
+defined("MIN_TASK_ESTIMATE_EXECUTION_TIME") or define("MIN_TASK_ESTIMATE_EXECUTION_TIME", 5);
+
+// Constants for SERVER
+defined("MAX_SERVER_CORES") or define("MAX_SERVER_CORES", 32);
+defined("MIN_SERVER_CORES") or define("MIN_SERVER_CORES", 4);
+defined("MAX_SERVER_MIPS") or define("MAX_SERVER_MIPS", 32000);
+defined("MIN_SERVER_MIPS") or define("MIN_SERVER_MIPS", 8000);
+defined("MAX_SERVER_RAM") or define("MAX_SERVER_RAM", 131072); // 128GB
+defined("MIN_SERVER_RAM") or define("MIN_SERVER_RAM", 8194); // 8GB
+defined("MAX_SERVER_RAM_NOT_AVAILABLE_RANGE") or define("MAX_SERVER_RAM_NOT_AVAILABLE_RANGE", 4096);
+defined("MIN_SERVER_RAM_NOT_AVAILABLE_RANGE") or define("MIN_SERVER_RAM_NOT_AVAILABLE_RANGE", 1024);
+defined("MAX_SERVER_STORAGE") or define("MAX_SERVER_STORAGE", 4194304); // 4TB
+defined("MIN_SERVER_STORAGE") or define("MIN_SERVER_STORAGE", 524288); // 512GB
+defined("MAX_SERVER_STORAGE_NOT_AVAILABLE_RANGE") or define("MAX_SERVER_STORAGE_NOT_AVAILABLE_RANGE", 524288);
+defined("MIN_SERVER_STORAGE_NOT_AVAILABLE_RANGE") or define("MIN_SERVER_STORAGE_NOT_AVAILABLE_RANGE", 131072);
+defined("MAX_SERVER_STORAGE_SPEED") or define("MAX_SERVER_STORAGE_SPEED", 160);
+defined("MIN_SERVER_STORAGE_SPEED") or define("MIN_SERVER_STORAGE_SPEED", 60);
+defined("MAX_SERVER_AVERAGE_ACCESS_TIME_EDGE") or define("MAX_SERVER_AVERAGE_ACCESS_TIME_EDGE", 30);
+defined("MIN_SERVER_AVERAGE_ACCESS_TIME_EDGE") or define("MIN_SERVER_AVERAGE_ACCESS_TIME_EDGE", 5);
+defined("MAX_SERVER_AVERAGE_ACCESS_TIME_CLOUD") or define("MAX_SERVER_AVERAGE_ACCESS_TIME_CLOUD", 1500);
+defined("MIN_SERVER_AVERAGE_ACCESS_TIME_CLOUD") or define("MIN_SERVER_AVERAGE_ACCESS_TIME_CLOUD", 200);
+defined("MAX_SERVER_BANDWIDTH") or define("MAX_SERVER_BANDWIDTH", 2000);
+defined("MIN_SERVER_BANDWIDTH") or define("MIN_SERVER_BANDWIDTH", 500);
+defined("MAX_SERVER_TEMPERATURE") or define("MAX_SERVER_TEMPERATURE", 30);
+defined("MIN_SERVER_TEMPERATURE") or define("MIN_SERVER_TEMPERATURE", 20);
+
 
 class Simulator
 {
@@ -512,19 +555,19 @@ class Simulator
             $action = $actionVerbs[array_rand($actionVerbs)];
             $name = $category . " " . $action;
             $priority = $priorities[array_rand($priorities)];
-            $requiredCores = mt_rand(1, 8);
-            $requiredMIPSPerCore = mt_rand(200, 800);
-            $requiredRAM = mt_rand(128, 1024);
-            $requiredStorage = mt_rand(256, 2048);
+            $requiredCores = mt_rand(MIN_TASK_REQUIRED_CORE, MAX_TASK_REQUIRED_CORE);
+            $requiredMIPSPerCore = mt_rand(MIN_TASK_REQUIRED_MIPS, MAX_TASK_REQUIRED_MIPS);
+            $requiredRAM = mt_rand(MIN_TASK_REQUIRED_RAM, MAX_TASK_REQUIRED_RAM);
+            $requiredStorage = mt_rand(MIN_TASK_REQUIRED_STORAGE, MAX_TASK_REQUIRED_STORAGE);
             $timestamp = time();
             $timestampMS = $this->getTimestampMS();
-            $requiredDataDownload = mt_rand(128, 512);
-            $requiredDataUpload = mt_rand(64, 256);
-            $deadline = $timestamp + mt_rand(3600, 86400); // 1 to 24 hours
+            $requiredDataDownload = mt_rand(MIN_TASK_REQUIRED_DOWNLOAD, MAX_TASK_REQUIRED_DOWNLOAD);
+            $requiredDataUpload = mt_rand(MIN_TASK_REQUIRED_UPLOAD, MAX_TASK_REQUIRED_UPLOAD);
+            $deadline = $timestamp + mt_rand(MIN_TASK_DEADLINE, MAX_TASK_DEADLINE); // 1 to 24 hours
             $securityLevel = $securityLevels[array_rand($securityLevels)];
             $communicationType = $communicationTypes[array_rand($communicationTypes)];
             $ExecutionTime = NULL;
-            $EstimateExecutionTime = (mt_rand(0,9)>6) ? mt_rand(5, 86400) : mt_rand(5, 18000);
+            $EstimateExecutionTime = (mt_rand(0,9)>6) ? mt_rand(MIN_TASK_ESTIMATE_EXECUTION_TIME, MAX_TASK_ESTIMATE_EXECUTION_TIME_1) : mt_rand(MIN_TASK_ESTIMATE_EXECUTION_TIME, MAX_TASK_ESTIMATE_EXECUTION_TIME_2);
 
             $IDs[] = $this->createTask(
                 $name,
@@ -555,26 +598,48 @@ class Simulator
 
         $serverIDs = [];
 
+        defined("MAX_SERVER_CORES") or define("MAX_SERVER_CORES", 32);
+        defined("MIN_SERVER_CORES") or define("MIN_SERVER_CORES", 4);
+        defined("MAX_SERVER_MIPS") or define("MAX_SERVER_MIPS", 32000);
+        defined("MIN_SERVER_MIPS") or define("MIN_SERVER_MIPS", 8000);
+        defined("MAX_SERVER_RAM") or define("MAX_SERVER_RAM", 131072); // 128GB
+        defined("MIN_SERVER_RAM") or define("MIN_SERVER_RAM", 8194); // 8GB
+        defined("MAX_SERVER_RAM_NOT_AVAILABLE_RANGE") or define("MAX_SERVER_RAM_NOT_AVAILABLE_RANGE", 4096);
+        defined("MIN_SERVER_RAM_NOT_AVAILABLE_RANGE") or define("MIN_SERVER_RAM_NOT_AVAILABLE_RANGE", 1024);
+        defined("MAX_SERVER_STORAGE") or define("MAX_SERVER_STORAGE", 4194304); // 4TB
+        defined("MIN_SERVER_STORAGE") or define("MIN_SERVER_STORAGE", 524288); // 512GB
+        defined("MAX_SERVER_STORAGE_NOT_AVAILABLE_RANGE") or define("MAX_SERVER_STORAGE_NOT_AVAILABLE_RANGE", 524288);
+        defined("MIN_SERVER_STORAGE_NOT_AVAILABLE_RANGE") or define("MIN_SERVER_STORAGE_NOT_AVAILABLE_RANGE", 131072);
+        defined("MAX_SERVER_STORAGE_SPEED") or define("MAX_SERVER_STORAGE_SPEED", 160);
+        defined("MIN_SERVER_STORAGE_SPEED") or define("MIN_SERVER_STORAGE_SPEED", 60);
+        defined("MAX_SERVER_AVERAGE_ACCESS_TIME_EDGE") or define("MAX_SERVER_AVERAGE_ACCESS_TIME_EDGE", 30);
+        defined("MIN_SERVER_AVERAGE_ACCESS_TIME_EDGE") or define("MIN_SERVER_AVERAGE_ACCESS_TIME_EDGE", 5);
+        defined("MAX_SERVER_AVERAGE_ACCESS_TIME_CLOUD") or define("MAX_SERVER_AVERAGE_ACCESS_TIME_CLOUD", 1500);
+        defined("MIN_SERVER_AVERAGE_ACCESS_TIME_CLOUD") or define("MIN_SERVER_AVERAGE_ACCESS_TIME_CLOUD", 200);
+        defined("MAX_SERVER_BANDWIDTH") or define("MAX_SERVER_BANDWIDTH", 2000);
+        defined("MIN_SERVER_BANDWIDTH") or define("MIN_SERVER_BANDWIDTH", 500);
+        defined("MAX_SERVER_TEMPERATURE") or define("MAX_SERVER_TEMPERATURE", 30);
+        defined("MIN_SERVER_TEMPERATURE") or define("MIN_SERVER_TEMPERATURE", 20);
+
         for ($i = 0; $i < $serverNumbers; $i++) {
             $serverType = $serverTypes[array_rand($serverTypes)];
             $namePrefix = ($serverType === "Edge") ? "E" : "C";
             $name = $namePrefix . ($i + 1); // Assuming a simple numbering scheme
-            $cores = mt_rand(4, 16);
-            $mips = mt_rand(8000, 32000);
-            $ram = mt_rand(8194, 65536); // 8GB to 64GB
-            $availableRam = $ram - mt_rand(1024, 4096); // Random available RAM within the range
-            $storage = mt_rand(524288, 2097152); // 512GB to 2TB
-            $availableStorage = $storage - mt_rand(131072, 524288); // Random available storage within the range
-            $storageSpeed = mt_rand(5, 15); // Assume storage speed in ms
-            $averageAccessTime = ($serverType === "Edge") ? mt_rand(5, 30) : mt_rand(200, 1500);
-            $latency = ($serverType === "Edge") ? $averageAccessTime + mt_rand(-5, 5) : $averageAccessTime + mt_rand(-100, 100);
-            $networkBandwidth = mt_rand(500, 2000); // Bandwidth in Mbps
+            $cores = mt_rand(MIN_SERVER_CORES, MAX_SERVER_CORES);
+            $mips = mt_rand(MIN_SERVER_MIPS, MAX_SERVER_MIPS);
+            $ram = mt_rand(MIN_SERVER_RAM, MAX_SERVER_RAM);
+            $availableRam = $ram - mt_rand(MIN_SERVER_RAM_NOT_AVAILABLE_RANGE, MAX_SERVER_RAM_NOT_AVAILABLE_RANGE); // Random available RAM within the range
+            $storage = mt_rand(MIN_SERVER_STORAGE, MAX_SERVER_STORAGE);
+            $availableStorage = $storage - mt_rand(MIN_SERVER_STORAGE_NOT_AVAILABLE_RANGE, MAX_SERVER_STORAGE_NOT_AVAILABLE_RANGE); // Random available storage within the range
+            $storageSpeed = mt_rand(MIN_SERVER_STORAGE_SPEED, MAX_SERVER_STORAGE_SPEED); // Storage speed in MBps
+            $averageAccessTime = ($serverType === "Edge") ? mt_rand(MIN_SERVER_AVERAGE_ACCESS_TIME_EDGE, MAX_SERVER_AVERAGE_ACCESS_TIME_EDGE) : mt_rand(MIN_SERVER_AVERAGE_ACCESS_TIME_CLOUD, MAX_SERVER_AVERAGE_ACCESS_TIME_CLOUD);
+            $latency = ($serverType === "Edge") ? $averageAccessTime + mt_rand(-1 * MIN_SERVER_AVERAGE_ACCESS_TIME_EDGE, MIN_SERVER_AVERAGE_ACCESS_TIME_EDGE) : $averageAccessTime + mt_rand(-1 * (MIN_SERVER_AVERAGE_ACCESS_TIME_CLOUD/2), (MIN_SERVER_AVERAGE_ACCESS_TIME_CLOUD/2));
+            $networkBandwidth = mt_rand(MIN_SERVER_BANDWIDTH, MAX_SERVER_BANDWIDTH); // Bandwidth in Mbps
             $energyEfficiency = 1.5; // Assuming a constant value for energy efficiency
             $redundancyLevel = mt_rand(1, 3); // Assuming redundancy levels 1, 2, 3
             $availability = true; // Servers are assumed to be available initially
-
             $location = $locations[array_rand($locations)];
-            $temperature = mt_rand(20, 30);
+            $temperature = mt_rand(MIN_SERVER_TEMPERATURE, MAX_SERVER_TEMPERATURE);
 
             if ($serverType === "Edge") {
                 $serverID = $this->createEdgeServer(
@@ -632,7 +697,18 @@ class Simulator
         $taskParameters = $this->getTaskDetails($task);
         $serverParameters = $this->getServerStatus($server);
     
-        var_dump($taskParameters, $serverParameters);die;
+        $factor_1 = $serverParameters["Cores"] / $taskParameters ["RequiredCores"];
+        $factor_2 = $serverParameters["MIPS"] / $taskParameters ["RequiredMIPSPerCore"];
+        $factor_3 = $serverParameters["AvailableRAM"] / $taskParameters ["RequiredRAM"];
+        $factor_4 = $serverParameters["AvailableStorage"] / $taskParameters ["RequiredStorage"];
+
+
+        var_dump(
+            $factor_1,
+            $factor_2,
+            $factor_3,
+            $factor_4    
+        );die;
 
 
         // // Define weights for each parameter
