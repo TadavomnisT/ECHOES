@@ -49,6 +49,22 @@ defined("MIN_SERVER_BANDWIDTH") or define("MIN_SERVER_BANDWIDTH", 500);
 defined("MAX_SERVER_TEMPERATURE") or define("MAX_SERVER_TEMPERATURE", 30);
 defined("MIN_SERVER_TEMPERATURE") or define("MIN_SERVER_TEMPERATURE", 20);
 
+// Constants for calculateExecutionTime()
+defined("MAX_CT_FACTOR_1") or define("MAX_CT_FACTOR_1", MAX_SERVER_CORES/MIN_TASK_REQUIRED_CORE);
+defined("MIN_CT_FACTOR_1") or define("MIN_CT_FACTOR_1", ((MIN_SERVER_CORES/MAX_TASK_REQUIRED_CORE)<1)?1:(MIN_SERVER_CORES/MAX_TASK_REQUIRED_CORE));
+defined("MAX_CT_FACTOR_2") or define("MAX_CT_FACTOR_2", MAX_SERVER_MIPS/MIN_TASK_REQUIRED_MIPS);
+defined("MIN_CT_FACTOR_2") or define("MIN_CT_FACTOR_2", ((MIN_SERVER_MIPS/MAX_TASK_REQUIRED_MIPS)<1)?1:(MIN_SERVER_MIPS/MAX_TASK_REQUIRED_MIPS));
+defined("MAX_CT_FACTOR_3") or define("MAX_CT_FACTOR_3", (MAX_SERVER_RAM-MIN_SERVER_RAM_NOT_AVAILABLE_RANGE)/MIN_TASK_REQUIRED_RAM);
+defined("MIN_CT_FACTOR_3") or define("MIN_CT_FACTOR_3", ((MIN_SERVER_RAM-MAX_SERVER_RAM_NOT_AVAILABLE_RANGE)/MAX_TASK_REQUIRED_RAM));
+defined("MAX_CT_FACTOR_4") or define("MAX_CT_FACTOR_4", (MAX_SERVER_STORAGE-MIN_SERVER_STORAGE_NOT_AVAILABLE_RANGE)/MIN_TASK_REQUIRED_STORAGE);
+defined("MIN_CT_FACTOR_4") or define("MIN_CT_FACTOR_4", ((MIN_SERVER_STORAGE-MAX_SERVER_STORAGE_NOT_AVAILABLE_RANGE)/MAX_TASK_REQUIRED_STORAGE));
+defined("MAX_CT_FACTOR_5") or define("MAX_CT_FACTOR_5", (MAX_TASK_REQUIRED_DOWNLOAD+MAX_TASK_REQUIRED_UPLOAD)/MIN_SERVER_BANDWIDTH);
+defined("MIN_CT_FACTOR_5") or define("MIN_CT_FACTOR_5", ((MIN_TASK_REQUIRED_DOWNLOAD+MIN_TASK_REQUIRED_UPLOAD)/MAX_SERVER_BANDWIDTH));
+defined("MAX_CT_FACTOR_6") or define("MAX_CT_FACTOR_6", MAX_SERVER_STORAGE_SPEED);
+defined("MIN_CT_FACTOR_6") or define("MIN_CT_FACTOR_6", MIN_SERVER_STORAGE_SPEED);
+defined("MAX_CT_FACTOR_7") or define("MAX_CT_FACTOR_7", MAX_SERVER_RAM/MIN_TASK_REQUIRED_RAM);
+defined("MIN_CT_FACTOR_7") or define("MIN_CT_FACTOR_7", 0);
+
 
 class Simulator
 {
@@ -598,29 +614,6 @@ class Simulator
 
         $serverIDs = [];
 
-        defined("MAX_SERVER_CORES") or define("MAX_SERVER_CORES", 32);
-        defined("MIN_SERVER_CORES") or define("MIN_SERVER_CORES", 4);
-        defined("MAX_SERVER_MIPS") or define("MAX_SERVER_MIPS", 32000);
-        defined("MIN_SERVER_MIPS") or define("MIN_SERVER_MIPS", 8000);
-        defined("MAX_SERVER_RAM") or define("MAX_SERVER_RAM", 131072); // 128GB
-        defined("MIN_SERVER_RAM") or define("MIN_SERVER_RAM", 8194); // 8GB
-        defined("MAX_SERVER_RAM_NOT_AVAILABLE_RANGE") or define("MAX_SERVER_RAM_NOT_AVAILABLE_RANGE", 4096);
-        defined("MIN_SERVER_RAM_NOT_AVAILABLE_RANGE") or define("MIN_SERVER_RAM_NOT_AVAILABLE_RANGE", 1024);
-        defined("MAX_SERVER_STORAGE") or define("MAX_SERVER_STORAGE", 4194304); // 4TB
-        defined("MIN_SERVER_STORAGE") or define("MIN_SERVER_STORAGE", 524288); // 512GB
-        defined("MAX_SERVER_STORAGE_NOT_AVAILABLE_RANGE") or define("MAX_SERVER_STORAGE_NOT_AVAILABLE_RANGE", 524288);
-        defined("MIN_SERVER_STORAGE_NOT_AVAILABLE_RANGE") or define("MIN_SERVER_STORAGE_NOT_AVAILABLE_RANGE", 131072);
-        defined("MAX_SERVER_STORAGE_SPEED") or define("MAX_SERVER_STORAGE_SPEED", 160);
-        defined("MIN_SERVER_STORAGE_SPEED") or define("MIN_SERVER_STORAGE_SPEED", 60);
-        defined("MAX_SERVER_AVERAGE_ACCESS_TIME_EDGE") or define("MAX_SERVER_AVERAGE_ACCESS_TIME_EDGE", 30);
-        defined("MIN_SERVER_AVERAGE_ACCESS_TIME_EDGE") or define("MIN_SERVER_AVERAGE_ACCESS_TIME_EDGE", 5);
-        defined("MAX_SERVER_AVERAGE_ACCESS_TIME_CLOUD") or define("MAX_SERVER_AVERAGE_ACCESS_TIME_CLOUD", 1500);
-        defined("MIN_SERVER_AVERAGE_ACCESS_TIME_CLOUD") or define("MIN_SERVER_AVERAGE_ACCESS_TIME_CLOUD", 200);
-        defined("MAX_SERVER_BANDWIDTH") or define("MAX_SERVER_BANDWIDTH", 2000);
-        defined("MIN_SERVER_BANDWIDTH") or define("MIN_SERVER_BANDWIDTH", 500);
-        defined("MAX_SERVER_TEMPERATURE") or define("MAX_SERVER_TEMPERATURE", 30);
-        defined("MIN_SERVER_TEMPERATURE") or define("MIN_SERVER_TEMPERATURE", 20);
-
         for ($i = 0; $i < $serverNumbers; $i++) {
             $serverType = $serverTypes[array_rand($serverTypes)];
             $namePrefix = ($serverType === "Edge") ? "E" : "C";
@@ -696,49 +689,45 @@ class Simulator
         
         $taskParameters = $this->getTaskDetails($task);
         $serverParameters = $this->getServerStatus($server);
+
+        $EstimateExecutionTime = $taskParameters["EstimateExecutionTime"];
     
-        $factor_1 = $serverParameters["Cores"] / $taskParameters ["RequiredCores"];
-        $factor_2 = $serverParameters["MIPS"] / $taskParameters ["RequiredMIPSPerCore"];
-        $factor_3 = $serverParameters["AvailableRAM"] / $taskParameters ["RequiredRAM"];
-        $factor_4 = $serverParameters["AvailableStorage"] / $taskParameters ["RequiredStorage"];
+        $factor_1 = $serverParameters["Cores"] / $taskParameters["RequiredCores"];
+        $factor_2 = $serverParameters["MIPS"] / $taskParameters["RequiredMIPSPerCore"];
+        $factor_3 = $serverParameters["AvailableRAM"] / $taskParameters["RequiredRAM"];
+        $factor_4 = $serverParameters["AvailableStorage"] / $taskParameters["RequiredStorage"];
+        $factor_5 = ($taskParameters["RequiredDataDownload"] + $taskParameters["RequiredDataUpload"]) / $serverParameters["NetworkBandwidth"];
+        $factor_6 = $serverParameters["StorageSpeed"];
+        $factor_7 = count($serverParameters["ActiveTasks"]);
+        
+
+        // Normalization of Factors
+        $factor_1 = $this->min_max_0_1($factor_1, MIN_CT_FACTOR_1, MAX_CT_FACTOR_1);
+        $factor_2 = $this->min_max_0_1($factor_2, MIN_CT_FACTOR_2, MAX_CT_FACTOR_2);
+        $factor_3 = $this->min_max_0_1($factor_3, MIN_CT_FACTOR_3, MAX_CT_FACTOR_3);
+        $factor_4 = $this->min_max_0_1($factor_4, MIN_CT_FACTOR_4, MAX_CT_FACTOR_4);
+        $factor_5 = $this->min_max_0_1($factor_5, MIN_CT_FACTOR_5, MAX_CT_FACTOR_5);
+        $factor_6 = $this->min_max_0_1($factor_6, MIN_CT_FACTOR_6, MAX_CT_FACTOR_6);
+        $factor_7 = $this->min_max_0_1($factor_7, MIN_CT_FACTOR_7, MAX_CT_FACTOR_7);
 
 
         var_dump(
             $factor_1,
             $factor_2,
             $factor_3,
-            $factor_4    
+            $factor_4,
+            $factor_5,
+            $factor_6,
+            $factor_7,
         );die;
-
-
-        // // Define weights for each parameter
-        // $weights = [
-        //     "Cores" => 0.1,
-        //     "MIPS" => 0.1,
-        //     "AvailableRAM" => 0.1,
-        //     "AvailableStorage" => 0.1,
-        //     "StorageSpeed" => 0.1,
-        //     "AverageAccessTime" => 0.1,
-        //     "Latency" => 0.1,
-        //     "NetworkBandwidth" => 0.1,
-            
-        //     "RequiredCores" => -0.1,
-        //     "RequiredMIPSPerCore" => -0.1,
-        //     "RequiredRAM" => -0.1,
-        //     "RequiredStorage" => -0.1,
-        //     "RequiredDataDownload" => -0.1,
-        //     "RequiredDataUpload" => -0.1,
-        // ];
-    
-        // // Calculate a score for the server based on the parameters and weights
-        // $serverScore = 0;
-        // #CODE....
-    
-        // // Calculate the execution time based on the score and the deadline constraint
-        // $executionTime = min($serverScore, $taskParameters["Deadline"] - $taskParameters["Timestamp"]);
 
     }
     
+    // Min-Max normalization (Rescaling) in range [0,1]
+    public function min_max_0_1( $x, $min_x, $max_x )
+    {
+        return ($x - $min_x) / ($max_x - $min_x);
+    }
 
     // Printing logs
     public function printLog( string $message )
