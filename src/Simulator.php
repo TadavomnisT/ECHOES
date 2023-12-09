@@ -82,7 +82,7 @@ class Simulator
     // Constructor
     public function __construct( $assignMethod = "Default" ) {
 
-        $this->getAllServers    = [];
+        $this->allServers    = [];
         $this->servers          = [];
         $this->cloudServers     = [];
         $this->edgeServers      = [];
@@ -737,9 +737,7 @@ class Simulator
         // Apply Edge factor
         $ExecutionTime *= ($server instanceof Edge)? 0.7 : 1;
 
-        // var_dump( $taskParameters["EstimateExecutionTime"], $ExecutionTime);die;
         return $ExecutionTime;
-
     }
     
     // Min-Max normalization (Rescaling) in range [0,1]
@@ -823,15 +821,25 @@ class Simulator
     }
 
     // Assign all Tasks using assignMethod
-    public function assignAllTasks()
+    public function assignAllTasks( $deleteTasksAfterAssigning = true )
     {
+        $tasks = $this->getTasks();
+        $servers = $this->getAllServers();
+        $assignedTasks = [];
+        $remainingTasks = array_keys( $tasks );
         switch ( $this->getAssignMethod() ) {
             case "Default":
                 // Tasks are assigned on a "First-come, First-served" basis
-                foreach ($this->getTasks() as $key => $task) { 
+                foreach ($tasks as $taskID => $task) { 
                     $this->UpdateServers();
+                    foreach ($servers as $server) {
+                        if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
+                            unset( $remainingTasks[$taskID] );
+                            $assignedTasks[] = $taskID;
+                            break;
+                        }
+                    }
                 }
-                # code...
                 break;
             case "Random":
                 # code...
@@ -853,7 +861,18 @@ class Simulator
                 return false;
                 break;
         }
-        return true;
+
+        // Delete assigned tasks
+        if( $deleteTasksAfterAssigning )
+        {
+            foreach ($assignedTasks as $taskID) {
+                $this->deleteTask( $taskID );
+            }
+        }
+        return [
+            "assignedTasks" => $assignedTasks,
+            "remainingTasks" => $remainingTasks
+        ];
     }
 
     // Update servers by Terminating executed tasks
@@ -890,17 +909,10 @@ class Simulator
             // Update servers, assign tasks, etc.
             
             $this->UpdateServers();
+            $result = $this->assignAllTasks();
+            var_dump( $result );die;
             
-            foreach ($this->getTasks() as $key => $task) {
-                $result = $this->assignTask( $key, "Edge", 0 , true );
-                if($result !== True)
-                {
-                    var_dump( $task , $this->getEdgeServers()[0] );
-                    var_dump( $result );
-                    die;
-                } 
-                else var_dump( $result );
-            }
+        
             
 
             usleep(100000); // Sleep for 100 milliseconds
