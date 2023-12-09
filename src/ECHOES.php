@@ -234,10 +234,20 @@ $ECHOES = new Simulator();
 // var_dump($edge->getMethods());
 
 
+// Testing: calculateExecutionTime()
 $ECHOES->generateRandomServers( 20 );
-$ECHOES->generateRandomTasks( 200 );
-$ECHOES->startSimulation();
+$ECHOES->generateRandomTasks( 1 );
+foreach ($ECHOES->getTasks() as $task) {
+    foreach ($ECHOES->getAllServers() as $server) {
+        echo $task->getEstimateExecutionTime() . ", " . $server["Type"] . " " . $ECHOES->calculateExecutionTime( $task, $server["Object"] ) . PHP_EOL ;
+    }
+}
 
+
+
+// $ECHOES->generateRandomServers( 20 );
+// $ECHOES->generateRandomTasks( 200 );
+// $ECHOES->startSimulation();
 
 // TODO:
 // calculateExecutionTime()

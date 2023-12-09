@@ -64,7 +64,8 @@ defined("MAX_CT_FACTOR_6") or define("MAX_CT_FACTOR_6", MAX_SERVER_STORAGE_SPEED
 defined("MIN_CT_FACTOR_6") or define("MIN_CT_FACTOR_6", MIN_SERVER_STORAGE_SPEED);
 defined("MAX_CT_FACTOR_7") or define("MAX_CT_FACTOR_7", MAX_SERVER_RAM/MIN_TASK_REQUIRED_RAM);
 defined("MIN_CT_FACTOR_7") or define("MIN_CT_FACTOR_7", 0);
-
+defined("MAX_CT_FACTOR_8") or define("MAX_CT_FACTOR_8", max([ MAX_SERVER_AVERAGE_ACCESS_TIME_EDGE, MAX_SERVER_AVERAGE_ACCESS_TIME_CLOUD ]));
+defined("MIN_CT_FACTOR_8") or define("MIN_CT_FACTOR_8", 0);
 
 class Simulator
 {
@@ -690,7 +691,7 @@ class Simulator
         $taskParameters = $this->getTaskDetails($task);
         $serverParameters = $this->getServerStatus($server);
 
-        $EstimateExecutionTime = $taskParameters["EstimateExecutionTime"];
+        $ExecutionTime = $taskParameters["EstimateExecutionTime"];
     
         $factor_1 = $serverParameters["Cores"] / $taskParameters["RequiredCores"];
         $factor_2 = $serverParameters["MIPS"] / $taskParameters["RequiredMIPSPerCore"];
@@ -699,6 +700,7 @@ class Simulator
         $factor_5 = ($taskParameters["RequiredDataDownload"] + $taskParameters["RequiredDataUpload"]) / $serverParameters["NetworkBandwidth"];
         $factor_6 = $serverParameters["StorageSpeed"];
         $factor_7 = count($serverParameters["ActiveTasks"]);
+        $factor_8 = $serverParameters["Latency"];
         
 
         // Normalization of Factors
@@ -709,17 +711,34 @@ class Simulator
         $factor_5 = $this->min_max_0_1($factor_5, MIN_CT_FACTOR_5, MAX_CT_FACTOR_5);
         $factor_6 = $this->min_max_0_1($factor_6, MIN_CT_FACTOR_6, MAX_CT_FACTOR_6);
         $factor_7 = $this->min_max_0_1($factor_7, MIN_CT_FACTOR_7, MAX_CT_FACTOR_7);
+        $factor_8 = $this->min_max_0_1($factor_8, MIN_CT_FACTOR_8, MAX_CT_FACTOR_8);
 
 
-        var_dump(
-            $factor_1,
-            $factor_2,
-            $factor_3,
-            $factor_4,
-            $factor_5,
-            $factor_6,
-            $factor_7,
-        );die;
+        // Assign a weight to each factor
+        $factor_1 = 1 - ($factor_1 * 0.05);
+        $factor_2 = 1 - ($factor_2 * 0.2);
+        $factor_3 = 1 - ($factor_3 * 0.1);
+        $factor_4 = 1 - ($factor_4 * 0.05);
+        $factor_5 = 1 - ($factor_5 * 0.2);
+        $factor_6 = 1 - ($factor_6 * 0.1);
+        $factor_7 = 1 - ((1 - $factor_7) * 0.2);
+        $factor_8 = 1 - ($factor_8 * 0.1);
+
+        // Apply factors to final ExecutionTime
+        $ExecutionTime *= $factor_1;
+        $ExecutionTime *= $factor_2;
+        $ExecutionTime *= $factor_3;
+        $ExecutionTime *= $factor_4;
+        $ExecutionTime *= $factor_5;
+        $ExecutionTime *= $factor_6;
+        $ExecutionTime *= $factor_7;
+        $ExecutionTime *= $factor_8;
+
+        // Apply Edge factor
+        $ExecutionTime *= ($server instanceof Edge)? 0.7 : 1;
+
+        // var_dump( $taskParameters["EstimateExecutionTime"], $ExecutionTime);die;
+        return $ExecutionTime;
 
     }
     
