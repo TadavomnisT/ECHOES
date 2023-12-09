@@ -815,8 +815,8 @@ class Simulator
             return ( $returnError ) ? [ False, "Server is not Available." ] : False ;
         }
 
-        # Need to set E-time
-        $this->calculateExecutionTime( $task, $server );
+        // Calculate and set real ExecutionTime based on server
+        $task->setExecutionTime( $this->calculateExecutionTime( $task, $server ) );
 
         $server->addTask( $taskID, $task );
         return true;
