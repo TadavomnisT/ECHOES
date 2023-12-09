@@ -76,17 +76,19 @@ class Simulator
     private $cloudServers;
     private $edgeServers;
     private $tasks;
+    private $runningTasks;
 
     private $assignMethod;
 
     // Constructor
     public function __construct( $assignMethod = "Default" ) {
 
-        $this->allServers    = [];
+        $this->allServers       = [];
         $this->servers          = [];
         $this->cloudServers     = [];
         $this->edgeServers      = [];
         $this->tasks            = [];
+        $this->runningTasks     = [];
 
         $this->setAssignMethod( $assignMethod );
 
@@ -116,10 +118,38 @@ class Simulator
         return $this->edgeServers;
     }
 
-    // Get simulator tasks at the moment
+    // Get simulator waiting-tasks at the moment
     public function getTasks()
     {
         return $this->tasks;
+    }
+
+    // Get a waiting-tasks by ID
+    public function getTask( int $taskID )
+    {
+        if( isset($this->tasks[ $taskID ]) )
+            return $this->tasks[ $taskID ];
+        return false;
+    }
+
+    // Get simulator running-tasks at the moment
+    public function getRunningTasks()
+    {
+        return $this->runningTasks;
+    }
+
+    // Add a running-task
+    public function addRunningTask( Task $task, int $taskID )
+    {
+        $this->runningTasks[ $taskID ] = $task;
+        return true;
+    }
+
+    // Delete a running-task
+    public function deleteRunningTask( int $taskID )
+    {
+        unset($this->runningTasks[ $taskID ]);
+        return true;
     }
 
     // Creates a new task and returns its ID
@@ -347,7 +377,7 @@ class Simulator
         return true;
     }
 
-    // Get details of a Task
+    // Get details of a Waiting-Task
     public function getTaskDetails( $task )
     {
         if ( $task instanceof Task )
@@ -384,6 +414,46 @@ class Simulator
             "CommunicationType"     => $this->tasks[ $task ]->getCommunicationType(),
             "ExecutionTime"         => $this->tasks[ $task ]->getExecutionTime(),
             "EstimateExecutionTime" => $this->tasks[ $task ]->getEstimateExecutionTime()
+        ];
+    }
+
+    // Get details of a Running-Task
+    public function getRunningTaskDetails( $task )
+    {
+        if ( $task instanceof Task )
+            return [
+                "Name"                  => $task->getName() ,
+                "Priority"              => $task->getPriority() ,
+                "RequiredCores"         => $task->getRequiredCores() ,
+                "RequiredMIPSPerCore"   => $task->getRequiredMIPSPerCore() ,
+                "RequiredRAM"           => $task->getRequiredRAM() ,
+                "RequiredStorage"       => $task->getRequiredStorage() ,
+                "Timestamp"             => $task->getTimestamp() ,
+                "TimestampMS"           => $task->getTimestampMS() ,
+                "RequiredDataDownload"  => $task->getRequiredDataDownload() ,
+                "RequiredDataUpload"    => $task->getRequiredDataUpload() ,
+                "Deadline"              => $task->getDeadline() ,
+                "SecurityLevel"         => $task->getSecurityLevel() ,
+                "CommunicationType"     => $task->getCommunicationType(),
+                "ExecutionTime"         => $task->getExecutionTime(),
+                "EstimateExecutionTime" => $task->getEstimateExecutionTime()
+            ];
+        return [
+            "Name"                  => $this->runningTasks[ $task ]->getName() ,
+            "Priority"              => $this->runningTasks[ $task ]->getPriority() ,
+            "RequiredCores"         => $this->runningTasks[ $task ]->getRequiredCores() ,
+            "RequiredMIPSPerCore"   => $this->runningTasks[ $task ]->getRequiredMIPSPerCore() ,
+            "RequiredRAM"           => $this->runningTasks[ $task ]->getRequiredRAM() ,
+            "RequiredStorage"       => $this->runningTasks[ $task ]->getRequiredStorage() ,
+            "Timestamp"             => $this->runningTasks[ $task ]->getTimestamp() ,
+            "TimestampMS"           => $this->runningTasks[ $task ]->getTimestampMS() ,
+            "RequiredDataDownload"  => $this->runningTasks[ $task ]->getRequiredDataDownload() ,
+            "RequiredDataUpload"    => $this->runningTasks[ $task ]->getRequiredDataUpload() ,
+            "Deadline"              => $this->runningTasks[ $task ]->getDeadline() ,
+            "SecurityLevel"         => $this->runningTasks[ $task ]->getSecurityLevel() ,
+            "CommunicationType"     => $this->runningTasks[ $task ]->getCommunicationType(),
+            "ExecutionTime"         => $this->runningTasks[ $task ]->getExecutionTime(),
+            "EstimateExecutionTime" => $this->runningTasks[ $task ]->getEstimateExecutionTime()
         ];
     }
 
@@ -635,6 +705,7 @@ class Simulator
             $location = $locations[array_rand($locations)];
             $temperature = mt_rand(MIN_SERVER_TEMPERATURE, MAX_SERVER_TEMPERATURE);
 
+
             if ($serverType === "Edge") {
                 $serverID = $this->createEdgeServer(
                     $name,
@@ -759,7 +830,7 @@ class Simulator
             throw new Exception("Invalid server-type : \"" . $serverType . "\"." , 1);
             return false;
         }
-        if (empty($this->getTasks()[$taskID])) {
+        if ( $this->getTask( $taskID ) === false ) {
             throw new Exception("Invalid task-ID : \"" . $taskID . "\"." , 1);
             return false;
         }
@@ -792,7 +863,7 @@ class Simulator
         }
 
         $this->UpdateServers();
-        $task = $this->getTasks()[$taskID];
+        $task = $this->getTask( $taskID );
 
         if ( $task->getRequiredCores() > $server->getCores() ) {
             return ( $returnError ) ? [ False, "Server's cores are less than task's required cores." ] : False ;
@@ -821,7 +892,7 @@ class Simulator
     }
 
     // Assign all Tasks using assignMethod
-    public function assignAllTasks( $deleteTasksAfterAssigning = true )
+    public function assignAllTasks()
     {
         $tasks = $this->getTasks();
         $servers = $this->getAllServers();
@@ -836,6 +907,11 @@ class Simulator
                         if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
                             unset( $remainingTasks[$taskID] );
                             $assignedTasks[] = $taskID;
+
+                            // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                            $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                            $this->deleteTask( $taskID );
+
                             break;
                         }
                     }
@@ -862,13 +938,6 @@ class Simulator
                 break;
         }
 
-        // Delete assigned tasks
-        if( $deleteTasksAfterAssigning )
-        {
-            foreach ($assignedTasks as $taskID) {
-                $this->deleteTask( $taskID );
-            }
-        }
         return [
             "assignedTasks" => $assignedTasks,
             "remainingTasks" => $remainingTasks
@@ -880,18 +949,13 @@ class Simulator
     {
         foreach ($this->getAllServers() as $server) {
             foreach ($server["Object"]->getActiveTasks() as $taskID) {
-                $TD = $this->getTaskDetails($taskID);
+                $TD = $this->getRunningTaskDetails($taskID);
 
-                //Terminate if Deadline has passed
-                if( $TD["Deadline"] < time() )
+                //Terminate if Deadline has passed || Terminate if Task is done
+                if( ($TD["Deadline"] < time()) || ($TD["ExecutionTime"] + $TD["Timestamp"] < time()) )
                 {
                     $server["Object"]->terminateTask( $taskID );
-                }
-
-                //Terminate if Task is done
-                if( $TD["ExecutionTime"] + $TD["Timestamp"] < time() )
-                {
-                    $server["Object"]->terminateTask( $taskID );
+                    $this->deleteRunningTask( $taskID );
                 }
             }
         }
@@ -907,10 +971,10 @@ class Simulator
         while (time() < $endTime) {
 
             // Update servers, assign tasks, etc.
-            
+
             $this->UpdateServers();
             $result = $this->assignAllTasks();
-            var_dump( $result );die;
+            // var_dump( $result );die;
             
         
             
