@@ -233,7 +233,6 @@ $ECHOES = new Simulator();
 //     );
 // var_dump($edge->getMethods());
 
-
 // // Testing: calculateExecutionTime()
 // $ECHOES->generateRandomServers( 20 );
 // $ECHOES->generateRandomTasks( 1 );
@@ -244,10 +243,9 @@ $ECHOES = new Simulator();
 // }
 
 
-
 $ECHOES->generateRandomServers( 20 );
-$ECHOES->generateRandomTasks( 200 );
-$ECHOES->startSimulation();
+$ECHOES->startSimulation( 200 );
+
 
 // TODO:
 // assignAllTasks()

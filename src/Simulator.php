@@ -78,6 +78,8 @@ class Simulator
     private $tasks;
     private $runningTasks;
 
+    private $totalTerminatedTasks;
+
     private $assignMethod;
 
     // Constructor
@@ -89,6 +91,8 @@ class Simulator
         $this->edgeServers      = [];
         $this->tasks            = [];
         $this->runningTasks     = [];
+
+        $this->totalTerminatedTasks = 0;
 
         $this->setAssignMethod( $assignMethod );
 
@@ -138,6 +142,14 @@ class Simulator
         return $this->runningTasks;
     }
 
+    // Get a running-tasks by ID
+    public function getRunningTask(  int $taskID )
+    {
+        if( isset($this->runningTasks[ $taskID ]) )
+            return $this->runningTasks[ $taskID ];
+        return false;
+    }
+
     // Add a running-task
     public function addRunningTask( Task $task, int $taskID )
     {
@@ -150,6 +162,18 @@ class Simulator
     {
         unset($this->runningTasks[ $taskID ]);
         return true;
+    }
+
+    // Increment the number of terminated tasks
+    public function incrementTotalTerminatedTasks()
+    {
+        $this->totalTerminatedTasks++;
+    }
+
+    // Get the number of terminated tasks
+    public function getTotalTerminatedTasks()
+    {
+        return $this->totalTerminatedTasks;
     }
 
     // Creates a new task and returns its ID
@@ -954,16 +978,28 @@ class Simulator
                 //Terminate if Deadline has passed || Terminate if Task is done
                 if( ($TD["Deadline"] < time()) || ($TD["ExecutionTime"] + $TD["Timestamp"] < time()) )
                 {
-                    $server["Object"]->terminateTask( $taskID );
+                    $server["Object"]->terminateTask( $taskID, $this->getRunningTask($taskID) );
                     $this->deleteRunningTask( $taskID );
+                    $this->incrementTotalTerminatedTasks();
                 }
             }
         }
     }
 
     // Simulation starter: $simulationTime => in seconds
-    public function startSimulation( $simulationTime = 30 )
+    public function startSimulation(
+            $simulationTime = 30,
+            $initialTasks = true,
+            $autoGenerateTasks = true,
+            $randomNumberOfTasks = true,
+            $constantNumberOfTasks = 0,
+            $minTaskGenration = 1,
+            $maxTaskGenration = 50,
+            $possibilityOfGeneration = 50
+        )
     {
+        $flag = false;
+        $running = 0;
         $this->printLog( "Simulation started at " . date(DATE_RFC2822) . " (" . time() . ") for " . $simulationTime . " seconds."  );
         $startTime = time();
         $endTime = $startTime + $simulationTime;
@@ -971,13 +1007,30 @@ class Simulator
         while (time() < $endTime) {
 
             // Update servers, assign tasks, etc.
-
+            
             $this->UpdateServers();
+
+            // Generate initial Tasks if $initialTasks is true
+            if ( $initialTasks ) {
+                $this->generateRandomTasks( ($randomNumberOfTasks) ? mt_rand( $minTaskGenration, $maxTaskGenration ) : $constantNumberOfTasks );
+            }
+
+            // Generate random Task during simulatin if $autoGenerateTasks is true
+            if ( $autoGenerateTasks && $flag ) {
+                if ( mt_rand(0,99) >= $possibilityOfGeneration ) {
+                    $this->generateRandomTasks( ($randomNumberOfTasks) ? mt_rand( $minTaskGenration, $maxTaskGenration ) : $constantNumberOfTasks );
+                }
+            }
+            $flag = true;
+
             $result = $this->assignAllTasks();
-            // var_dump( $result );die;
-            
-        
-            
+            $running += count( $result["assignedTasks"] );
+
+            $this->printLog( "At " . date(DATE_RFC2822) . " (" . time() . ") " . time() - $startTime . " seconds passed, \"" .
+                            $this->getTotalTerminatedTasks() . "\" Total terminated Task(s) so far, \"" .
+                            $running . "\" Task(s) running at this point, \"" . count( $result["remainingTasks"] ) .
+                            "\" Task(s) still waiting."   
+            );
 
             usleep(100000); // Sleep for 100 milliseconds
         }

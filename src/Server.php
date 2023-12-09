@@ -354,7 +354,7 @@ class Server {
         return $this->ActiveTasks[] = $ID;
     }
     // Remove a Task from ActiveTasks
-    public function terminateTask( int $ID )
+    public function terminateTask( int $ID, Task $task )
     {
         $this->setAvailableRAM( $this->getAvailableRAM() + $task->getRequiredRAM() );
         $this->setAvailableStorage( $this->getAvailableStorage() + $task->getRequiredStorage() );
