@@ -21,8 +21,10 @@ defined("MAX_TASK_REQUIRED_UPLOAD") or define("MAX_TASK_REQUIRED_UPLOAD", 256);
 defined("MIN_TASK_REQUIRED_UPLOAD") or define("MIN_TASK_REQUIRED_UPLOAD", 64);
 defined("MAX_TASK_DEADLINE") or define("MAX_TASK_DEADLINE", 86400); // 1 hour
 defined("MIN_TASK_DEADLINE") or define("MIN_TASK_DEADLINE", 3600); // 24 hours
-defined("MAX_TASK_ESTIMATE_EXECUTION_TIME_1") or define("MAX_TASK_ESTIMATE_EXECUTION_TIME_1", 18000);
-defined("MAX_TASK_ESTIMATE_EXECUTION_TIME_2") or define("MAX_TASK_ESTIMATE_EXECUTION_TIME_2", 86400);
+// defined("MAX_TASK_ESTIMATE_EXECUTION_TIME_1") or define("MAX_TASK_ESTIMATE_EXECUTION_TIME_1", 18000);
+// defined("MAX_TASK_ESTIMATE_EXECUTION_TIME_2") or define("MAX_TASK_ESTIMATE_EXECUTION_TIME_2", 86400);
+defined("MAX_TASK_ESTIMATE_EXECUTION_TIME_1") or define("MAX_TASK_ESTIMATE_EXECUTION_TIME_1", 120);
+defined("MAX_TASK_ESTIMATE_EXECUTION_TIME_2") or define("MAX_TASK_ESTIMATE_EXECUTION_TIME_2", 18000);
 defined("MIN_TASK_ESTIMATE_EXECUTION_TIME") or define("MIN_TASK_ESTIMATE_EXECUTION_TIME", 5);
 
 // Constants for SERVER
@@ -80,6 +82,7 @@ class Simulator
 
     private $totalTerminatedTasks;
 
+    private $assignMethods;
     private $assignMethod;
 
     // Constructor
@@ -94,8 +97,23 @@ class Simulator
 
         $this->totalTerminatedTasks = 0;
 
-        $this->setAssignMethod( $assignMethod );
 
+        $this->assignMethods = [
+            "Default",
+            "Random",
+            "Knapsack",
+            "EdgeFirst",
+            "CloudFirst",
+            "ServerFirst",
+            "EdgeCloudServer",
+            "EdgeServerCloud",
+            "CloudEdgeServer",
+            "CloudServerEdge",
+            "ServerEdgeCloud",
+            "ServerCloudEdge"
+        ];
+        $this->setAssignMethod( $assignMethod );
+        
     }
 
     // Get all kind of servers in current simulation
@@ -636,19 +654,154 @@ class Simulator
     }
     public function setAssignMethod( $assignMethod = "Default" )
     {
-        if(
-            $assignMethod !== "Default"     &&
-            $assignMethod !== "Random"      && 
-            $assignMethod !== "Knapsack"    &&
-            $assignMethod !== "EdgeFirst"   &&
-            $assignMethod !== "CloudFirst"
-        )
+        if( !in_array($assignMethod, $this->getAssignMethods()) )
         {
             throw new Exception("Invalid type for assignMethod \"" . $assignMethod . "\".", 1);
             return false;
         }
         $this->assignMethod = $assignMethod;
         return true;
+    }
+
+    // Get all avaiable Assign-Methods
+    public function getAssignMethods()
+    {
+        return $this->assignMethods;
+    }
+
+    // Sort all servers based on EdgeFirst
+    public function sortServers_EdgeFirst(array $servers)
+    {
+        $edges = [];
+        $else = [];
+        foreach ($servers as $server) {
+            if ( $server["Type"] == "Edge" )
+                $edges[] = $server;
+            else $else[] = $server;
+        }
+        return array_merge( $edges, $else );
+    }
+
+    // Sort all servers based on CloudFirst
+    public function sortServers_CloudFirst(array $servers)
+    {
+        $clouds = [];
+        $else = [];
+        foreach ($servers as $server) {
+            if ( $server["Type"] == "Cloud" )
+                $clouds[] = $server;
+            else $else[] = $server;
+        }
+        return array_merge( $clouds, $else );
+    }
+
+    // Sort all servers based on ServerFirst
+    public function sortServers_ServerFirst(array $servers)
+    {
+        $servers_type = [];
+        $else = [];
+        foreach ($servers as $server) {
+            if ( $server["Type"] == "Server" )
+                $servers_type[] = $server;
+            else $else[] = $server;
+        }
+        return array_merge( $servers_type, $else );
+    }
+
+    // Sort all servers based on EdgeCloudServer
+    public function sortServers_EdgeCloudServer(array $servers)
+    {
+        $edges = [];
+        $clouds = [];
+        $servers_type = [];
+        foreach ($servers as $server) {
+            if ( $server["Type"] == "Edge" )
+                $edges[] = $server;
+            if ( $server["Type"] == "Cloud" )
+                $clouds[] = $server;
+            else $servers_type[] = $server;
+        }
+        return array_merge( $edges, $clouds, $servers_type );
+    }
+
+    // Sort all servers based on EdgeServerCloud
+    public function sortServers_EdgeServerCloud(array $servers)
+    {
+        $edges = [];
+        $clouds = [];
+        $servers_type = [];
+        foreach ($servers as $server) {
+            if ( $server["Type"] == "Edge" )
+                $edges[] = $server;
+            if ( $server["Type"] == "Cloud" )
+                $clouds[] = $server;
+            else $servers_type[] = $server;
+        }
+        return array_merge( $edges, $servers_type, $clouds );
+    }
+
+    // Sort all servers based on CloudEdgeServer
+    public function sortServers_CloudEdgeServer(array $servers)
+    {
+        $edges = [];
+        $clouds = [];
+        $servers_type = [];
+        foreach ($servers as $server) {
+            if ( $server["Type"] == "Edge" )
+                $edges[] = $server;
+            if ( $server["Type"] == "Cloud" )
+                $clouds[] = $server;
+            else $servers_type[] = $server;
+        }
+        return array_merge( $clouds, $edges, $servers_type );
+    }
+
+    // Sort all servers based on CloudServerEdge
+    public function sortServers_CloudServerEdge(array $servers)
+    {
+        $edges = [];
+        $clouds = [];
+        $servers_type = [];
+        foreach ($servers as $server) {
+            if ( $server["Type"] == "Edge" )
+                $edges[] = $server;
+            if ( $server["Type"] == "Cloud" )
+                $clouds[] = $server;
+            else $servers_type[] = $server;
+        }
+        return array_merge( $clouds, $servers_type, $edges );
+    }
+
+    // Sort all servers based on ServerEdgeCloud
+    public function sortServers_ServerEdgeCloud(array $servers)
+    {
+        $edges = [];
+        $clouds = [];
+        $servers_type = [];
+        foreach ($servers as $server) {
+            if ( $server["Type"] == "Edge" )
+                $edges[] = $server;
+            if ( $server["Type"] == "Cloud" )
+                $clouds[] = $server;
+            else $servers_type[] = $server;
+        }
+        return array_merge( $servers_type, $edges, $clouds );
+    }
+
+    // Sort all servers based on ServerCloudEdge
+    public function sortServers_ServerCloudEdge(array $servers)
+    {
+        $edges = [];
+        $clouds = [];
+        $servers_type = [];
+        foreach ($servers as $server) {
+            if ( $server["Type"] == "Edge" )
+                $edges[] = $server;
+            if ( $server["Type"] == "Cloud" )
+                $clouds[] = $server;
+            else $servers_type[] = $server;
+        }
+        return array_merge( $servers_type, $clouds, $edges  );
     }
 
     // Generate random tasks
@@ -919,12 +1072,13 @@ class Simulator
     public function assignAllTasks()
     {
         $tasks = $this->getTasks();
-        $servers = $this->getAllServers();
         $assignedTasks = [];
         $remainingTasks = array_keys( $tasks );
         switch ( $this->getAssignMethod() ) {
             case "Default":
                 // Tasks are assigned on a "First-come, First-served" basis
+                // Servers are choosed by "Default" order
+                $servers = $this->getAllServers();
                 foreach ($tasks as $taskID => $task) { 
                     $this->UpdateServers();
                     foreach ($servers as $server) {
@@ -942,7 +1096,25 @@ class Simulator
                 }
                 break;
             case "Random":
-                # code...
+                // Tasks are assigned on a "First-come, First-served" basis
+                // Servers are choosed Randomly
+                $servers = $this->getAllServers();
+                shuffle( $servers );
+                foreach ($tasks as $taskID => $task) { 
+                    $this->UpdateServers();
+                    foreach ($servers as $server) {
+                        if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
+                            unset( $remainingTasks[$taskID] );
+                            $assignedTasks[] = $taskID;
+
+                            // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                            $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                            $this->deleteTask( $taskID );
+
+                            break;
+                        }
+                    }
+                }
                 break;
 
             case "Knapsack":
@@ -950,13 +1122,203 @@ class Simulator
                 break;
 
             case "EdgeFirst":
-                # code...
+                // Tasks are assigned on a "First-come, First-served" basis
+                // Edge-Servers are choosed first
+                $servers = $this->getAllServers();
+                $servers = $this->sortServers_EdgeFirst( $servers );
+                foreach ($tasks as $taskID => $task) { 
+                    $this->UpdateServers();
+                    foreach ($servers as $server) {
+                        if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
+                            unset( $remainingTasks[$taskID] );
+                            $assignedTasks[] = $taskID;
+
+                            // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                            $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                            $this->deleteTask( $taskID );
+
+                            break;
+                        }
+                    }
+                }
                 break;
 
             case "CloudFirst":
-                # code...
+                // Tasks are assigned on a "First-come, First-served" basis
+                // Cloud-Servers are choosed first
+                $servers = $this->getAllServers();
+                $servers = $this->sortServers_CloudFirst( $servers );
+                foreach ($tasks as $taskID => $task) { 
+                    $this->UpdateServers();
+                    foreach ($servers as $server) {
+                        if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
+                            unset( $remainingTasks[$taskID] );
+                            $assignedTasks[] = $taskID;
+
+                            // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                            $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                            $this->deleteTask( $taskID );
+
+                            break;
+                        }
+                    }
+                }
+                break;
+
+            case "ServerFirst":
+                // Tasks are assigned on a "First-come, First-served" basis
+                // Servers with type of "Server" are choosed first
+                $servers = $this->getAllServers();
+                $servers = $this->sortServers_ServerFirst( $servers );
+                foreach ($tasks as $taskID => $task) { 
+                    $this->UpdateServers();
+                    foreach ($servers as $server) {
+                        if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
+                            unset( $remainingTasks[$taskID] );
+                            $assignedTasks[] = $taskID;
+
+                            // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                            $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                            $this->deleteTask( $taskID );
+
+                            break;
+                        }
+                    }
+                }
                 break;
             
+            case "EdgeCloudServer":
+                // Tasks are assigned on a "First-come, First-served" basis
+                // First Edge-servers then Cloud-servers then typical-servers
+                $servers = $this->getAllServers();
+                $servers = $this->sortServers_EdgeCloudServer( $servers );
+                foreach ($tasks as $taskID => $task) { 
+                    $this->UpdateServers();
+                    foreach ($servers as $server) {
+                        if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
+                            unset( $remainingTasks[$taskID] );
+                            $assignedTasks[] = $taskID;
+
+                            // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                            $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                            $this->deleteTask( $taskID );
+
+                            break;
+                        }
+                    }
+                }
+                break;
+
+            case "EdgeServerCloud":
+                // Tasks are assigned on a "First-come, First-served" basis
+                // First Edge-servers then typical-servers then Cloud-servers
+                $servers = $this->getAllServers();
+                $servers = $this->sortServers_EdgeServerCloud( $servers );
+                foreach ($tasks as $taskID => $task) { 
+                    $this->UpdateServers();
+                    foreach ($servers as $server) {
+                        if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
+                            unset( $remainingTasks[$taskID] );
+                            $assignedTasks[] = $taskID;
+
+                            // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                            $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                            $this->deleteTask( $taskID );
+
+                            break;
+                        }
+                    }
+                }
+                break;
+
+            case "CloudEdgeServer":
+                // Tasks are assigned on a "First-come, First-served" basis
+                // First Cloud-servers then Edge-servers then typical-servers 
+                $servers = $this->getAllServers();
+                $servers = $this->sortServers_CloudEdgeServer( $servers );
+                foreach ($tasks as $taskID => $task) { 
+                    $this->UpdateServers();
+                    foreach ($servers as $server) {
+                        if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
+                            unset( $remainingTasks[$taskID] );
+                            $assignedTasks[] = $taskID;
+
+                            // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                            $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                            $this->deleteTask( $taskID );
+
+                            break;
+                        }
+                    }
+                }
+                break;
+
+            case "CloudServerEdge":
+                // Tasks are assigned on a "First-come, First-served" basis
+                // First Cloud-servers then typical-servers then Edge-servers
+                $servers = $this->getAllServers();
+                $servers = $this->sortServers_CloudServerEdge( $servers );
+                foreach ($tasks as $taskID => $task) { 
+                    $this->UpdateServers();
+                    foreach ($servers as $server) {
+                        if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
+                            unset( $remainingTasks[$taskID] );
+                            $assignedTasks[] = $taskID;
+
+                            // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                            $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                            $this->deleteTask( $taskID );
+
+                            break;
+                        }
+                    }
+                }
+                break;
+
+            case "ServerEdgeCloud":
+                // Tasks are assigned on a "First-come, First-served" basis
+                // First typical-servers then Edge-servers then Cloud-servers
+                $servers = $this->getAllServers();
+                $servers = $this->sortServers_ServerEdgeCloud( $servers );
+                foreach ($tasks as $taskID => $task) { 
+                    $this->UpdateServers();
+                    foreach ($servers as $server) {
+                        if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
+                            unset( $remainingTasks[$taskID] );
+                            $assignedTasks[] = $taskID;
+
+                            // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                            $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                            $this->deleteTask( $taskID );
+
+                            break;
+                        }
+                    }
+                }
+                break;
+
+            case "ServerCloudEdge":
+                // Tasks are assigned on a "First-come, First-served" basis
+                // First typical-servers then Cloud-servers then Edge-servers
+                $servers = $this->getAllServers();
+                $servers = $this->sortServers_ServerCloudEdge( $servers );
+                foreach ($tasks as $taskID => $task) { 
+                    $this->UpdateServers();
+                    foreach ($servers as $server) {
+                        if ( $this->assignTask( $taskID, $server["Type"], $server["ID"] ) === true ) {
+                            unset( $remainingTasks[$taskID] );
+                            $assignedTasks[] = $taskID;
+
+                            // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                            $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                            $this->deleteTask( $taskID );
+
+                            break;
+                        }
+                    }
+                }
+                break;
+
             default:
                 return false;
                 break;

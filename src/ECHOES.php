@@ -244,6 +244,7 @@ $ECHOES = new Simulator();
 
 
 $ECHOES->generateRandomServers( 20 );
+$ECHOES->setAssignMethod( "EdgeServerCloud" );
 $ECHOES->startSimulation( 200 );
 
 
