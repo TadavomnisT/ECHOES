@@ -5,6 +5,7 @@ require_once "Server.php";
 require_once "Cloud.php";
 require_once "Edge.php";
 require_once "Task.php";
+require_once "Knapsack.php";
 
 // Constants for TASK
 defined("MAX_TASK_REQUIRED_CORE") or define("MAX_TASK_REQUIRED_CORE", 8);
@@ -95,6 +96,8 @@ class Simulator
     private $assignMethods;
     private $assignMethod;
 
+    private $knapsack;
+
     // Constructor
     public function __construct( $assignMethod = "Default" ) {
 
@@ -124,6 +127,7 @@ class Simulator
         ];
         $this->setAssignMethod( $assignMethod );
         
+        $this->knapsack = new Knapsack;
     }
 
     // Get all kind of servers in current simulation
@@ -999,7 +1003,7 @@ class Simulator
     }
 
     // Reduce Task Dimensionality
-    public function reduceTaskDimensionality( $task ) {
+    public function reduceTaskDimensionality( $task, $roundupRange = 1000000000 ) {
         $weight = 0;
         $task = $this->getTaskDetails( $task );
 
@@ -1018,11 +1022,11 @@ class Simulator
         + 0.2 * ($task["Priority"] === "High" ? 1 : 0)
         + 0.2 * ($task["Priority"] === "Medium" ? 1 : 0);
 
-        return [ $value, $weight ];
+        return [ (int)$value, (int)($roundupRange*$weight) ];
     }
 
     // Reduce Server Dimensionality
-    public function reduceServerDimensionality($server) {
+    public function reduceServerDimensionality( $server,  $roundupRange = 1000000000 ) {
 
         $server = $this->getServerStatus( $server );
         $capacity = 0;
@@ -1035,7 +1039,7 @@ class Simulator
         $capacity += 0.1    * $this->min_max_0_1($server["Latency"], MIN_ACTIVE_LATENCY , MAX_ACTIVE_LATENCY);
         $capacity += 0.05   * $this->min_max_0_1($server["NetworkBandwidth"], MIN_SERVER_BANDWIDTH , MAX_SERVER_BANDWIDTH);
     
-        return $capacity;
+        return (int)($roundupRange*$capacity);
     }
     
     // Min-Max normalization (Rescaling) in range [0,1]
@@ -1169,25 +1173,35 @@ class Simulator
 
             case "Knapsack":
                 // Solve Multiple-Knapsack-Problem(MKP) as if the Servers are knapsacks with limited capacity, and the Tasks are items
-
+                $this->UpdateServers();
                 $servers = $this->getAllServers();
-                
                 $knapsacks = [];
                 $items = [];
-
+                $taskIDs = [];
 
                 // Part_1: Dimensionality Reduction!
                 foreach ($servers as $server) {
                     $knapsacks[] = $this->reduceServerDimensionality( $server["Object"] );
                 }
-                foreach ($tasks as $task) {
-                    $items[] = $this->reduceTaskDimensionality( $task );
+                foreach ($tasks as $taskID => $task) {
+                    // $items[] = $this->reduceTaskDimensionality( $task );
+                    list($item_values[],$item_weights[]) = $this->reduceTaskDimensionality( $task );
+                    $taskIDs[] = $taskID;
                 }
                 
                 // Part_2: Solve MKP
-                var_dump( $knapsacks, $items );
-                die;
+                $MKP_Result = $this->knapsack->MKP( $knapsacks, $item_values, $item_weights );
+                foreach ($MKP_Result as $key => $serverID_plus_1) {
+                    $taskID = $taskIDs[$key];
+                    if ( $this->assignTask( $taskID, $servers[$serverID_plus_1-1]["Type"], $servers[$serverID_plus_1-1]["ID"] ) === true ) {
+                        unset( $remainingTasks[$taskID] );
+                        $assignedTasks[] = $taskID;
 
+                        // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                        $this->addRunningTask( $this->getTask( $taskID), $taskID );
+                        $this->deleteTask( $taskID );
+                    }
+                }
 
                 break;
 
