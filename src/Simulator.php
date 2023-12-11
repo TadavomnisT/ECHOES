@@ -69,6 +69,16 @@ defined("MIN_CT_FACTOR_7") or define("MIN_CT_FACTOR_7", 0);
 defined("MAX_CT_FACTOR_8") or define("MAX_CT_FACTOR_8", max([ MAX_SERVER_AVERAGE_ACCESS_TIME_EDGE, MAX_SERVER_AVERAGE_ACCESS_TIME_CLOUD ]));
 defined("MIN_CT_FACTOR_8") or define("MIN_CT_FACTOR_8", 0);
 
+// Constants for Dimensionality-Reduction
+defined("MAX_AVAILABLE_RAM") or define("MAX_AVAILABLE_RAM", MAX_SERVER_RAM-MIN_SERVER_RAM_NOT_AVAILABLE_RANGE );
+defined("MIN_AVAILABLE_RAM") or define("MIN_AVAILABLE_RAM", MIN_SERVER_RAM-MAX_SERVER_RAM_NOT_AVAILABLE_RANGE );
+defined("MAX_AVAILABLE_STORAGE") or define("MAX_AVAILABLE_STORAGE", MAX_SERVER_STORAGE-MIN_SERVER_STORAGE_NOT_AVAILABLE_RANGE );
+defined("MIN_AVAILABLE_STORAGE") or define("MIN_AVAILABLE_STORAGE", MIN_SERVER_STORAGE-MAX_SERVER_STORAGE_NOT_AVAILABLE_RANGE );
+defined("MAX_ACTIVE_TASKS") or define("MAX_ACTIVE_TASKS", MAX_SERVER_RAM/MIN_TASK_REQUIRED_RAM );
+defined("MIN_ACTIVE_TASKS") or define("MIN_ACTIVE_TASKS",0 );
+defined("MAX_ACTIVE_LATENCY") or define("MAX_ACTIVE_LATENCY", max([ MAX_SERVER_AVERAGE_ACCESS_TIME_EDGE, MAX_SERVER_AVERAGE_ACCESS_TIME_CLOUD ]) );
+defined("MIN_ACTIVE_LATENCY") or define("MIN_ACTIVE_LATENCY", 0 );
+
 class Simulator
 {
 
@@ -987,6 +997,46 @@ class Simulator
 
         return $ExecutionTime;
     }
+
+    // Reduce Task Dimensionality
+    public function reduceTaskDimensionality( $task ) {
+        $weight = 0;
+        $task = $this->getTaskDetails( $task );
+
+        $weight += 0.15  *   $this->min_max_0_1($task["RequiredRAM"], MIN_TASK_REQUIRED_RAM, MAX_TASK_REQUIRED_RAM); 
+        $weight += 0.15  *   $this->min_max_0_1($task["RequiredStorage"], MIN_TASK_REQUIRED_STORAGE, MAX_TASK_REQUIRED_STORAGE); 
+        $weight += 0.15  *   $this->min_max_0_1($task["RequiredMIPSPerCore"], MIN_TASK_REQUIRED_MIPS, MAX_TASK_REQUIRED_MIPS); 
+        $weight += 0.1   *   $this->min_max_0_1($task["RequiredCores"], MIN_TASK_REQUIRED_CORE, MAX_TASK_REQUIRED_CORE); 
+        $weight += 0.1   *   $this->min_max_0_1($task["RequiredDataDownload"], MIN_TASK_REQUIRED_DOWNLOAD, MAX_TASK_REQUIRED_DOWNLOAD); 
+        $weight += 0.1   *   $this->min_max_0_1($task["RequiredDataUpload"], MIN_TASK_REQUIRED_UPLOAD, MAX_TASK_REQUIRED_UPLOAD); 
+        $weight += 0.15  *   $this->min_max_0_1($task["EstimateExecutionTime"], MIN_TASK_ESTIMATE_EXECUTION_TIME, MAX_TASK_ESTIMATE_EXECUTION_TIME_2); 
+
+        // Normalize range of weight in a decent range suitable for knapsack's capacity
+        $weight = $this->min_max_0_1( $weight, 0, (MAX_ACTIVE_TASKS/2) );
+
+        $value = 0.8 * max(0, $task["Deadline"] - time())
+        + 0.2 * ($task["Priority"] === "High" ? 1 : 0)
+        + 0.2 * ($task["Priority"] === "Medium" ? 1 : 0);
+
+        return [ $value, $weight ];
+    }
+
+    // Reduce Server Dimensionality
+    public function reduceServerDimensionality($server) {
+
+        $server = $this->getServerStatus( $server );
+        $capacity = 0;
+    
+        $capacity += 0.2    * $this->min_max_0_1($server["Cores"], MIN_SERVER_CORES , MAX_SERVER_CORES);
+        $capacity += 0.2    * $this->min_max_0_1($server["AvailableRAM"], MIN_AVAILABLE_RAM , MAX_AVAILABLE_RAM);
+        $capacity += 0.2    * (1 - $this->min_max_0_1(count($server["ActiveTasks"]), MIN_ACTIVE_TASKS , MAX_ACTIVE_TASKS));
+        $capacity += 0.15   * $this->min_max_0_1($server["MIPS"], MIN_SERVER_MIPS , MAX_SERVER_MIPS);
+        $capacity += 0.1    * $this->min_max_0_1($server["AvailableStorage"], MIN_AVAILABLE_STORAGE , MAX_AVAILABLE_STORAGE);
+        $capacity += 0.1    * $this->min_max_0_1($server["Latency"], MIN_ACTIVE_LATENCY , MAX_ACTIVE_LATENCY);
+        $capacity += 0.05   * $this->min_max_0_1($server["NetworkBandwidth"], MIN_SERVER_BANDWIDTH , MAX_SERVER_BANDWIDTH);
+    
+        return $capacity;
+    }
     
     // Min-Max normalization (Rescaling) in range [0,1]
     public function min_max_0_1( $x, $min_x, $max_x )
@@ -1118,7 +1168,27 @@ class Simulator
                 break;
 
             case "Knapsack":
-                # code...
+                // Solve Multiple-Knapsack-Problem(MKP) as if the Servers are knapsacks with limited capacity, and the Tasks are items
+
+                $servers = $this->getAllServers();
+                
+                $knapsacks = [];
+                $items = [];
+
+
+                // Part_1: Dimensionality Reduction!
+                foreach ($servers as $server) {
+                    $knapsacks[] = $this->reduceServerDimensionality( $server["Object"] );
+                }
+                foreach ($tasks as $task) {
+                    $items[] = $this->reduceTaskDimensionality( $task );
+                }
+                
+                // Part_2: Solve MKP
+                var_dump( $knapsacks, $items );
+                die;
+
+
                 break;
 
             case "EdgeFirst":

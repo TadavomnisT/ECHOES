@@ -244,7 +244,7 @@ $ECHOES = new Simulator();
 
 
 $ECHOES->generateRandomServers( 20 );
-$ECHOES->setAssignMethod( "EdgeServerCloud" );
+$ECHOES->setAssignMethod( "Knapsack" );
 $ECHOES->startSimulation( 200 );
 
 
