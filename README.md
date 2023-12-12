@@ -4,17 +4,26 @@
 
 Edge and Cloud Hybrid Optimization Environment Simulator (ECHOES)
 
+## What is ECHOES?
+
+ECHOES stand for **Edge and Cloud Hybrid Optimization Environment Simulator**, which is a free and open-source tool to simulate an Edge/Cloud-Hybrid network topology, in order to optimise and test methods for offloading Tasks from user's device to edge-server of cloud-server.
+
+
 ## Installation
 
-### Install Requirements
+### 1-Install Requirements
 * **PHP**,
 * **python** and **PIP**,
-* **Mknapsack**, Install with `pip install mknapsack`
-  
-### Install ECHOES
+* **[Mknapsack](https://github.com/jmyrberg/mknapsack)**, Install with `pip install mknapsack`
+```shell
+pip install mknapsack
+```
+### 2-Install ECHOES
 ```shell
 git clone https://github.com/TadavomnisT/ECHOES.git
 ```
+____________________________________________________________
+
 ### Installation and Running example on Debian
 ```shell
 pip install mknapsack
