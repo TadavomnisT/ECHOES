@@ -24,7 +24,7 @@ git clone https://github.com/TadavomnisT/ECHOES.git
 ```
 ____________________________________________________________
 
-### Installation and Running example on Debian
+### Installation and Running example on GNU/Linux
 ```shell
 pip install mknapsack
 git clone https://github.com/TadavomnisT/ECHOES.git
@@ -42,12 +42,12 @@ php src/ECHOES.php
 
 ## Note
 
-* There requirement for python will be no needed in future versions as I am re-implementing Knapsack module with PHP.
+* There requirement for python will not be needed in future versions as I am re-implementing Knapsack module with PHP.
 * Furture documents and explanations will be added soon.
 
 ## Author 
 
-* Behrad.B(TadavomnisT) (behroora@yahoo.com)
+* Behrad.B (TadavomnisT) (behroora@yahoo.com)
 
 ## Lisense
 
