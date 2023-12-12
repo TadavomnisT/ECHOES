@@ -6,7 +6,7 @@ Edge and Cloud Hybrid Optimization Environment Simulator (ECHOES)
 
 ## What is ECHOES?
 
-ECHOES stand for **Edge and Cloud Hybrid Optimization Environment Simulator**, which is a free and open-source tool to simulate an Edge/Cloud-Hybrid network topology, in order to optimise and test methods for offloading Tasks from user's device to edge-server of cloud-server.
+ECHOES stands for **Edge and Cloud Hybrid Optimization Environment Simulator**, which is a free and open-source tool to simulate an Edge/Cloud-Hybrid network topology, in order to optimise and test methods for offloading Tasks from user's device to edge-server or cloud-server.
 
 
 ## Installation
