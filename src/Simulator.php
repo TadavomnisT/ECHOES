@@ -1048,10 +1048,93 @@ class Simulator
         return ($x - $min_x) / ($max_x - $min_x);
     }
 
-    // Printing logs
+    // Prints logs
     public function printLog( string $message )
     {
-        echo "[Log] " . $message . PHP_EOL;
+        $logSgn = (PHP_OS === "Linux") ? "[\033[1;32mLog\033[0m] " : "[Log] ";
+        echo $logSgn . $message . PHP_EOL;
+    }
+
+    // Prints errors
+    public function printError( string $error )
+    {
+        $errorSgn = (PHP_OS === "Linux") ? "[\033[1;31mError\033[0m] " : "[Error] ";
+        echo $errorSgn . $error . PHP_EOL;
+    }
+
+    // Prints ECHOES logo
+    public function printLogo()
+    {
+        $logo = (PHP_OS === "Linux")?("\033[1;34mc########################."
+            . "\n                ########   .######;.                               xxxxxxx"
+            . "\n                .:###=            ,###:.XXXXX..            //.....,xx   xx."
+            . "\n.====.      =###=             .;##XXXXXXXXXXXXc,.         //      .xx   xx."
+            . "\n.######     .###.            =c###XXXXXXXXXXXXXXXX#,.....//        xxxXdxx."
+            . "\n            ####,   .=############XXXXXXXXXXX"
+            . "\n        .;c##### ,###############XXXXXXXXXXX........."
+            . "\n        =c###=    .################XXXXXXXXXXXXXXXXXXddX       xxxxxxx."
+            . "\n    ....:###       =################XXXXXXXXXXXXXXXXXXddd......xx   xx."
+            . "\n,######,         c###############XXXXX.                        xxxxxxx."
+            . "\n                    ,#############XXXXXc;;;;;;;;;::::::"
+            . "\n    .######,               ########XXXXXXXXXXXXXXXXXXddd........"
+            . "\n    .#######               .#######XXXXXXXXXXXX=               \\\\       xxxxxxx."
+            . "\n                            ,#######XXXXXXXXXXXX:......         \\\\......xx   xx."
+            . "\n        .=,,,,,,,,,,,,,,,,:########XXXXXXXXXXXXXXXXX#                   xxxxxxx."
+            . "\n        ###########################XXXXXXXXXXXXXXXXXX;;."
+            . "\n\033[1;35m _____ ____ _   _  ___  _____ ____\033[0m\033[1;34m   .XXXXXXXXXXXXXX:;\\\\\033[0m"
+            . "\n\033[1;35m| ____/ ___| | | |/ _ \\| ____/ ___|\033[0m\033[1;34m                    \\\\     xxxxxxx.\033[0m"
+            . "\n\033[1;35m|  _|| |   | |_| | | | |  _| \\___ \\\033[0m\033[1;34m                     \\\\....xx   xx.\033[0m"
+            . "\n\033[1;35m| |__| |___|  _  | |_| | |___ ___) |\033[0m\033[1;34m                          xxxxxxx.\033[0m"
+            . "\n\033[1;35m|_____\\____|_| |_|\\___/|_____|____/\033[0m\033[0m"
+            . "\n\033[1;33mECHOES: Edge and Cloud Hybrid Optimization Environment Simulator\033[0m"):
+            ("c########################."
+            . "\n                ########   .######;.                               xxxxxxx"
+            . "\n                .:###=            ,###:.XXXXX..            //.....,xx   xx."
+            . "\n.====.      =###=             .;##XXXXXXXXXXXXc,.         //      .xx   xx."
+            . "\n.######     .###.            =c###XXXXXXXXXXXXXXXX#,.....//        xxxXdxx."
+            . "\n            ####,   .=############XXXXXXXXXXX"
+            . "\n        .;c##### ,###############XXXXXXXXXXX........."
+            . "\n        =c###=    .################XXXXXXXXXXXXXXXXXXddX       xxxxxxx."
+            . "\n    ....:###       =################XXXXXXXXXXXXXXXXXXddd......xx   xx."
+            . "\n,######,         c###############XXXXX.                        xxxxxxx."
+            . "\n                    ,#############XXXXXc;;;;;;;;;::::::"
+            . "\n    .######,               ########XXXXXXXXXXXXXXXXXXddd........"
+            . "\n    .#######               .#######XXXXXXXXXXXX=               \\\\       xxxxxxx."
+            . "\n                            ,#######XXXXXXXXXXXX:......         \\\\......xx   xx."
+            . "\n        .=,,,,,,,,,,,,,,,,:########XXXXXXXXXXXXXXXXX#                   xxxxxxx."
+            . "\n        ###########################XXXXXXXXXXXXXXXXXX;;."
+            . "\n _____ ____ _   _  ___  _____ ____   .XXXXXXXXXXXXXX:;\\\\"
+            . "\n| ____/ ___| | | |/ _ \\| ____/ ___|                    \\\\     xxxxxxx."
+            . "\n|  _|| |   | |_| | | | |  _| \\___ \\                     \\\\....xx   xx."
+            . "\n| |__| |___|  _  | |_| | |___ ___) |                          xxxxxxx."
+            . "\n|_____\\____|_| |_|\\___/|_____|____/"
+            . "\nECHOES: Edge and Cloud Hybrid Optimization Environment Simulator");
+        echo $logo . PHP_EOL;
+    }
+
+    // Prints Seperator
+    public function printSeperator()
+    {
+        $sep = (PHP_OS === "Linux")?
+        "\033[1;31m---------------------------------------------------------------------\033[0m " :
+        "---------------------------------------------------------------------";
+        echo $sep . PHP_EOL;
+    }
+
+    // Prints Info
+    public function printInfo()
+    {
+        $info = "* Copyright (c) 2023 Behrad.B (behroora@yahoo.com)"
+        . "\nAUTHOR :           TadavomnisT (Behrad.B)"
+        . "\nRepo :             https://github.com/TadavomnisT/ECHOES"
+        . "\nREPORTING BUGS :   https://github.com/TadavomnisT/ECHOES/issues"
+        . "\nCOPYRIGHT :"
+        . "\n\tCopyright (c) 2023   License GPLv3+"
+        . "\n\tThis is free software: you are free to change and redistribute it."
+        . "\n\tThere is NO WARRANTY, to the extent permitted by law.";
+
+        // $errorSgn = (PHP_OS === "Linux") ? "[\033[1;31mError\033[0m] " : "[Error] ";
+        echo $info . PHP_EOL;
     }
 
     // Assign a Task to a Server
@@ -1444,11 +1527,18 @@ class Simulator
             $possibilityOfGeneration = 50
         )
     {
+        $this->printLogo();
+        $this->printSeperator();
+        $this->printInfo();
+        $this->printSeperator();
+
         $flag = false;
         $running = 0;
         $this->printLog( "Simulation started at " . date(DATE_RFC2822) . " (" . time() . ") for " . $simulationTime . " seconds."  );
         $startTime = time();
         $endTime = $startTime + $simulationTime;
+
+        $this->printLog( "Assign method is : " . $this->getAssignMethod() );
 
         while (time() < $endTime) {
 

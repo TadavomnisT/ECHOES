@@ -1,5 +1,47 @@
 <?php
 
+/*
+
+ECHOES-Logo:
+
+        c########################.
+                ########   .######;.                               xxxxxxx
+                .:###=            ,###:.XXXXX..            //.....,xx   xx.
+.====.      =###=             .;##XXXXXXXXXXXXc,.         //      .xx   xx.
+.######     .###.            =c###XXXXXXXXXXXXXXXX#,.....//        xxxXdxx.
+            ####,   .=############XXXXXXXXXXX
+        .;c##### ,###############XXXXXXXXXXX.........
+        =c###=    .################XXXXXXXXXXXXXXXXXXddX       xxxxxxx.
+    ....:###       =################XXXXXXXXXXXXXXXXXXddd......xx   xx.
+,######,         c###############XXXXX.                        xxxxxxx.
+                    ,#############XXXXXc;;;;;;;;;::::::
+    .######,               ########XXXXXXXXXXXXXXXXXXddd........
+    .#######               .#######XXXXXXXXXXXX=               \\       xxxxxxx.
+                            ,#######XXXXXXXXXXXX:......         \\......xx   xx.
+        .=,,,,,,,,,,,,,,,,:########XXXXXXXXXXXXXXXXX#                   xxxxxxx.
+        ###########################XXXXXXXXXXXXXXXXXX;;.
+ _____ ____ _   _  ___  _____ ____   .XXXXXXXXXXXXXX:;\\
+| ____/ ___| | | |/ _ \| ____/ ___|                    \\     xxxxxxx.
+|  _|| |   | |_| | | | |  _| \___ \                     \\....xx   xx.
+| |__| |___|  _  | |_| | |___ ___) |                          xxxxxxx.
+|_____\____|_| |_|\___/|_____|____/
+
+---------------------------------------------------------------------
+
+* Copyright (c) 2023 Behrad.B (behroora@yahoo.com)
+AUTHOR :            TadavomnisT (Behrad.B)
+Repo :              https://github.com/TadavomnisT/ECHOES
+REPORTING BUGS :    https://github.com/TadavomnisT/ECHOES/issues
+COPYRIGHT :
+    Copyright (c) 2023   License GPLv3+
+    This is free software: you are free to change and redistribute it.
+    There is NO WARRANTY, to the extent permitted by law.
+
+---------------------------------------------------------------------
+
+*/
+
+
 require_once "Simulator.php";
 
 $ECHOES = new Simulator();
@@ -246,7 +288,6 @@ $ECHOES = new Simulator();
 $ECHOES->generateRandomServers( 20 );
 $ECHOES->setAssignMethod( "Knapsack" );
 $ECHOES->startSimulation( 200 );
-
 
 // TODO:
 // assignAllTasks()
