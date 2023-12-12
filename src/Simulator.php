@@ -647,6 +647,146 @@ class Simulator
         ];
     }
 
+    // Export tasks as JSON file
+    public function exportTasksAsJSON( string $fileName )
+    {
+        if ( file_exists($fileName) ) {
+            throw new Exception("File \"" . $fileName . "\" already exists.", 1);
+            return false;
+        }
+        file_put_contents( $fileName, $this->getTasksAsJSON() ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        return true;
+    }
+
+    // Export servers as JSON file
+    public function exportServersAsJSON( string $fileName )
+    {
+        if ( file_exists($fileName) ) {
+            throw new Exception("File \"" . $fileName . "\" already exists.", 1);
+            return false;
+        }
+        file_put_contents( $fileName, $this->getServersAsJSON() ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        return true;
+    }
+
+    // Export tasks as CSV file
+    public function exportTasksAsCSV( string $fileName )
+    {
+        if ( file_exists($fileName) ) {
+            throw new Exception("File \"" . $fileName . "\" already exists.", 1);
+            return false;
+        }
+        file_put_contents( $fileName, $this->getTasksAsCSV() ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        return true;
+    }
+
+    // Export servers as CSV file
+    public function exportServersAsCSV( string $fileName )
+    {
+        if ( file_exists($fileName) ) {
+            throw new Exception("File \"" . $fileName . "\" already exists.", 1);
+            return false;
+        }
+        file_put_contents( $fileName, $this->getServersAsCSV() ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        return true;
+    }
+
+    // Get tasks as JSON data
+    public function getTasksAsJSON()
+    {
+        # code...
+    }
+
+    // Get servers as JSON data
+    public function getServersAsJSON()
+    {
+        # code...
+    }
+
+    // Get tasks as CSV data
+    public function getTasksAsCSV()
+    {
+        # code...
+    }
+
+    // Get servers as CSV data
+    public function getServersAsCSV()
+    {
+        # code...
+    }
+
+    // Import tasks from JSON file
+    public function importTasksFromJSON( string $fileName )
+    {
+        if ( !file_exists($fileName) ) {
+            throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
+            return false;
+        }
+        $result = file_get_contents( $fileName ) or throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);;
+        $this->loadTasksFromJSON( $result );
+        return true;
+    }
+
+    // Import server from JSON file
+    public function importServersFromJSON( string $fileName )
+    {
+        if ( !file_exists($fileName) ) {
+            throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
+            return false;
+        }
+        $result = file_get_contents( $fileName ) or throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);;
+        $this->loadServersFromJSON( $result );
+        return true;
+    }
+
+    // Import tasks from CSV file
+    public function importTasksFromCSV( string $fileName )
+    {
+        if ( !file_exists($fileName) ) {
+            throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
+            return false;
+        }
+        $result = file_get_contents( $fileName ) or throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);;
+        $this->loadTasksFromCSV( $result );
+        return true;
+    }
+
+    // Import server from CSV file
+    public function importServersFromCSV( string $fileName )
+    {
+        if ( !file_exists($fileName) ) {
+            throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
+            return false;
+        }
+        $result = file_get_contents( $fileName ) or throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);;
+        $this->loadServersFromCSV( $result );
+        return true;
+    }
+
+    // Load tasks from JSON data
+    public function loadTasksFromJSON( string $jsonTasks )
+    {
+        # code...
+    }
+
+    // Load server from JSON data
+    public function loadServersFromJSON( string $jsonServers )
+    {
+        # code...
+    }
+
+    // Load tasks from CSV data
+    public function loadTasksFromCSV( string $csvTasks )
+    {
+        # code...
+    }
+
+    // Load server from CSV data
+    public function loadServersFromCSV( string $csvServers )
+    {
+        # code...
+    }
+
     // Get methods of this class 
     public function getMethods()
     {
