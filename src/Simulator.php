@@ -605,8 +605,8 @@ class Simulator
         ];
     }
 
-    // Get Server status
-    public function getServerStatus( $server )
+    // Get Normal-server status
+    public function getNormalServerStatus( $server )
     {
         if ( $server instanceof Server )
             return [
@@ -645,6 +645,21 @@ class Simulator
             "Availability"      => $this->servers[ $server ]->getAvailability(),
             "ActiveTasks"       => $this->servers[ $server ]->getActiveTasks()
         ];
+    }
+
+    // Get Any Server status
+    public function getServerStatus( $server )
+    {
+        if ( $server instanceof Server )
+            return $this->getNormalServerStatus($server);
+        else if ( $server instanceof Cloud )
+            return $this->getCloudServerStatus($server);
+        else if ( $server instanceof Edge )
+            return $this->getEdgeServerStatus($server);
+        else{
+            throw new Exception("getServerStatus()only works with Object, not IDs.", 1);
+            return false;
+        }
     }
 
     // Export tasks as JSON file
@@ -692,15 +707,27 @@ class Simulator
     }
 
     // Get tasks as JSON data
-    public function getTasksAsJSON()
+    public function getTasksAsJSON( $getTaskID = false, $getParameterNames = false )
     {
-        # code...
+        $jsonTasks = [];
+        foreach ($this->getTasks() as $taskID => $task) {
+            if( $getTaskID )
+                $jsonTasks[$taskID] = ($getParameterNames)? array_merge(["ID"=>$taskID], $this->getTaskDetails($task)) : array_values(array_merge([$task],$this->getTaskDetails($task)));
+            else $jsonTasks[] = ($getParameterNames)? $this->getTaskDetails($task) : array_values($this->getTaskDetails($task));
+        } 
+        return json_encode($jsonTasks);
     }
 
     // Get servers as JSON data
-    public function getServersAsJSON()
+    public function getServersAsJSON( $getServerID = false, $getParameterNames = false )
     {
-        # code...
+        $jsonServers = [];
+        foreach ($this->getAllServers() as $server) {
+            if( $getServerID )
+                $jsonServers[] = ($getParameterNames)? array_merge(["ID"=>$server["ID"]], $this->getServerStatus($server["Object"])) : array_values(array_merge([$server["ID"]],$this->getServerStatus($server["Object"])));
+            else $jsonServers[] = ($getParameterNames)? $this->getServerStatus($server["Object"]) : array_values($this->getServerStatus($server["Object"]));
+        } 
+        return json_encode($jsonServers);
     }
 
     // Get tasks as CSV data
