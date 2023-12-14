@@ -731,15 +731,61 @@ class Simulator
     }
 
     // Get tasks as CSV data
-    public function getTasksAsCSV()
+    public function getTasksAsCSV( $getTaskID = false, $getParameterNames = false )
     {
-        # code...
+        $tasks = $this->getTasks();
+        if( count($tasks) == 0 ) return false;
+        $csvTasks = "";
+        if($getParameterNames)
+        {
+            if( $getTaskID )
+                $taskArray = array_values( array_merge( ["ID"], array_keys($this->getTaskDetails($tasks[0])) ) );
+            else $taskArray = array_keys($this->getTaskDetails($tasks[0]));
+            $csvTasks .= $this->csvstr($taskArray) .PHP_EOL;
+        }
+        foreach ($tasks as $taskID => $task) {
+            if( $getTaskID )
+                $taskArray = array_values(array_merge([$taskID], $this->getTaskDetails($task)));
+            else $taskArray = array_values($this->getTaskDetails($task));
+            $csvTasks .= $this->csvstr($taskArray) .PHP_EOL;
+        } 
+        return trim($csvTasks);
     }
 
     // Get servers as CSV data
-    public function getServersAsCSV()
+    public function getServersAsCSV( $getServerID = false, $getParameterNames = false )
     {
-        # code...
+        $servers = $this->getAllServers();
+        if( count($servers) == 0 ) return false;
+        $csvServers = "";
+        if($getParameterNames)
+        {
+            if( $getServerID )
+                $serverArray = array_values( array_merge( ["ID"], array_keys($this->getServerStatus($servers[0]["Object"])) ) );
+            else $serverArray = array_keys($this->getServerStatus($servers[0]["Object"]));
+            $csvServers .= $this->csvstr($serverArray) .PHP_EOL;
+        }
+        foreach ($servers as $server) {
+            $serverArray = $this->getServerStatus($server["Object"]);
+            $serverArray["ActiveTasks"] = json_encode($serverArray["ActiveTasks"]);
+            if( $getServerID )
+                $serverArray = array_values(array_merge([ $server["ID"] ], $serverArray ));
+            else $serverArray = array_values($serverArray);
+            $csvServers .= $this->csvstr($serverArray) .PHP_EOL;
+        } 
+        return trim($csvServers);
+    }
+
+    // Convert a line of array to csv-string : derived from: https://www.php.net/manual/en/function.fputcsv.php
+    public function csvstr(array $fields) : string
+    {
+        $f = fopen('php://memory', 'r+');
+        if (fputcsv($f, $fields) === false) {
+            return false;
+        }
+        rewind($f);
+        $csv_line = stream_get_contents($f);
+        return rtrim($csv_line);
     }
 
     // Import tasks from JSON file
@@ -1300,7 +1346,6 @@ class Simulator
         . "\n\tThis is free software: you are free to change and redistribute it."
         . "\n\tThere is NO WARRANTY, to the extent permitted by law.";
 
-        // $errorSgn = (PHP_OS === "Linux") ? "[\033[1;31mError\033[0m] " : "[Error] ";
         echo $info . PHP_EOL;
     }
 

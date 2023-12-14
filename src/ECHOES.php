@@ -306,13 +306,35 @@ $ECHOES = new Simulator();
 // var_dump( $ECHOES->getServersAsJSON(false, true) );
 // var_dump( $ECHOES->getServersAsJSON(true, true) );
 
-$ECHOES->generateRandomServers( 20 );
-$ECHOES->setAssignMethod( "Knapsack" );
-$ECHOES->startSimulation( 200 );
+// // Testing: getTasksAsCSV()
+// $ECHOES->generateRandomTasks( 50 );
+// var_dump( $ECHOES->getTasksAsCSV() );
+// var_dump( $ECHOES->getTasksAsCSV(true) );
+// var_dump( $ECHOES->getTasksAsCSV(false, true) );
+// var_dump( $ECHOES->getTasksAsCSV(true, true) );
+
+// // Testing: getServersAsCSV()
+// $ECHOES->generateRandomServers( 50 );
+// var_dump( $ECHOES->getServersAsCSV() );
+// var_dump( $ECHOES->getServersAsCSV(true) );
+// var_dump( $ECHOES->getServersAsCSV(false, true) );
+// var_dump( $ECHOES->getServersAsCSV(true, true) );
+
+// // Testing: getServersAsCSV() with active tasks
+// $ECHOES->generateRandomServers( 50 );
+// $ECHOES->generateRandomTasks( 100 );
+// $ECHOES->setAssignMethod( "Knapsack" );
+// $ECHOES->assignAllTasks();
+// var_dump( $ECHOES->getServersAsCSV() );
+// var_dump( $ECHOES->getServersAsCSV(true) );
+// var_dump( $ECHOES->getServersAsCSV(false, true) );
+// var_dump( $ECHOES->getServersAsCSV(true, true) );
+
+// $ECHOES->generateRandomServers( 20 );
+// $ECHOES->setAssignMethod( "Knapsack" );
+// $ECHOES->startSimulation( 200 );
 
 // TODO:
-// getTasksAsCSV()
-// getServersAsCSV()
 // loadTasksFromJSON()
 // loadServersFromJSON()
 // loadTasksFromCSV()

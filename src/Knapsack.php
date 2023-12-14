@@ -1,5 +1,13 @@
 <?php
 
+/*
+Example:
+
+$item_values=[78, 35, 89, 36, 94, 75, 74, 100, 80, 16];
+$item_weights=[18, 9, 23, 20, 59, 61, 70, 75, 76, 30];
+$knapsacks=[90, 100];
+*/
+
 class Knapsack
 {
 
