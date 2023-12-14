@@ -306,6 +306,20 @@ $ECHOES = new Simulator();
 // var_dump( $ECHOES->getServersAsJSON(false, true) );
 // var_dump( $ECHOES->getServersAsJSON(true, true) );
 
+// // Testing: getServersAsJSON() with active tasks
+// $ECHOES->generateRandomServers( 50 );
+// $ECHOES->generateRandomTasks( 100 );
+// $ECHOES->setAssignMethod( "Knapsack" );
+// $ECHOES->assignAllTasks();
+// var_dump( json_decode($ECHOES->getServersAsJSON()) );
+// var_dump( json_decode($ECHOES->getServersAsJSON(true)) );
+// var_dump( json_decode($ECHOES->getServersAsJSON(false, true)) );
+// var_dump( json_decode($ECHOES->getServersAsJSON(true, true)) );
+// var_dump( $ECHOES->getServersAsJSON() );
+// var_dump( $ECHOES->getServersAsJSON(true) );
+// var_dump( $ECHOES->getServersAsJSON(false, true) );
+// var_dump( $ECHOES->getServersAsJSON(true, true) );
+
 // // Testing: getTasksAsCSV()
 // $ECHOES->generateRandomTasks( 50 );
 // var_dump( $ECHOES->getTasksAsCSV() );
@@ -329,6 +343,47 @@ $ECHOES = new Simulator();
 // var_dump( $ECHOES->getServersAsCSV(true) );
 // var_dump( $ECHOES->getServersAsCSV(false, true) );
 // var_dump( $ECHOES->getServersAsCSV(true, true) );
+
+// // Testing: exportTasksAsJSON()
+// $ECHOES->generateRandomTasks( 50 );
+// var_dump( $ECHOES->exportTasksAsJSON("Tasks.json") );
+// var_dump( $ECHOES->exportTasksAsJSON("Tasks.json", true) );
+// var_dump( $ECHOES->exportTasksAsJSON("Tasks.json",false,true) );
+// var_dump( $ECHOES->exportTasksAsJSON("Tasks.json",true,true) );
+
+// // Testing: exportServersAsJSON()
+// $ECHOES->generateRandomServers( 50 );
+// var_dump($ECHOES->exportServersAsJSON("Servers.json") );
+// var_dump($ECHOES->exportServersAsJSON("Servers.json",true) );
+// var_dump($ECHOES->exportServersAsJSON("Servers.json",false, true) );
+// var_dump($ECHOES->exportServersAsJSON("Servers.json",true, true) );
+
+// // Testing: exportTasksAsCSV()
+// $ECHOES->generateRandomTasks( 50 );
+// var_dump( $ECHOES->exportTasksAsCSV("Tasks.csv") );
+// var_dump( $ECHOES->exportTasksAsCSV("Tasks.csv", true) );
+// var_dump( $ECHOES->exportTasksAsCSV("Tasks.csv", false, true) );
+// var_dump( $ECHOES->exportTasksAsCSV("Tasks.csv", true, true) );
+
+// // Testing: exportServersAsCSV()
+// $ECHOES->generateRandomServers( 50 );
+// var_dump( $ECHOES->exportServersAsCSV("Servers.csv") );
+// var_dump( $ECHOES->exportServersAsCSV("Servers.csv", true) );
+// var_dump( $ECHOES->exportServersAsCSV("Servers.csv", false, true) );
+// var_dump( $ECHOES->exportServersAsCSV("Servers.csv", true, true) );
+
+// // Testing: exportServersAsCSV() with active tasks
+// $ECHOES->generateRandomServers( 50 );
+// $ECHOES->generateRandomTasks( 100 );
+// $ECHOES->setAssignMethod( "Knapsack" );
+// $ECHOES->assignAllTasks();
+// var_dump( $ECHOES->exportServersAsCSV("Servers.csv") );
+// var_dump( $ECHOES->exportServersAsCSV("Servers.csv", true) );
+// var_dump( $ECHOES->exportServersAsCSV("Servers.csv", false, true) );
+// var_dump( $ECHOES->exportServersAsCSV("Servers.csv", true, true) );
+
+
+
 
 // $ECHOES->generateRandomServers( 20 );
 // $ECHOES->setAssignMethod( "Knapsack" );

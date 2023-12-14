@@ -663,46 +663,46 @@ class Simulator
     }
 
     // Export tasks as JSON file
-    public function exportTasksAsJSON( string $fileName )
+    public function exportTasksAsJSON( string $fileName, $getTaskID = false, $getParameterNames = false )
     {
         if ( file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" already exists.", 1);
             return false;
         }
-        file_put_contents( $fileName, $this->getTasksAsJSON() ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        file_put_contents( $fileName, $this->getTasksAsJSON( $getTaskID, $getParameterNames ) ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
         return true;
     }
 
     // Export servers as JSON file
-    public function exportServersAsJSON( string $fileName )
+    public function exportServersAsJSON( string $fileName, $getServerID = false, $getParameterNames = false  )
     {
         if ( file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" already exists.", 1);
             return false;
         }
-        file_put_contents( $fileName, $this->getServersAsJSON() ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        file_put_contents( $fileName, $this->getServersAsJSON( $getServerID, $getParameterNames ) ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
         return true;
     }
 
     // Export tasks as CSV file
-    public function exportTasksAsCSV( string $fileName )
+    public function exportTasksAsCSV( string $fileName, $getTaskID = false, $getParameterNames = false )
     {
         if ( file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" already exists.", 1);
             return false;
         }
-        file_put_contents( $fileName, $this->getTasksAsCSV() ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        file_put_contents( $fileName, $this->getTasksAsCSV( $getTaskID, $getParameterNames ) ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
         return true;
     }
 
     // Export servers as CSV file
-    public function exportServersAsCSV( string $fileName )
+    public function exportServersAsCSV( string $fileName, $getServerID = false, $getParameterNames = false )
     {
         if ( file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" already exists.", 1);
             return false;
         }
-        file_put_contents( $fileName, $this->getServersAsCSV() ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        file_put_contents( $fileName, $this->getServersAsCSV( $getServerID, $getParameterNames ) ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
         return true;
     }
 
@@ -712,7 +712,7 @@ class Simulator
         $jsonTasks = [];
         foreach ($this->getTasks() as $taskID => $task) {
             if( $getTaskID )
-                $jsonTasks[$taskID] = ($getParameterNames)? array_merge(["ID"=>$taskID], $this->getTaskDetails($task)) : array_values(array_merge([$task],$this->getTaskDetails($task)));
+                $jsonTasks[] = ($getParameterNames)? array_merge(["ID"=>$taskID], $this->getTaskDetails($task)) : array_values(array_merge([$taskID],$this->getTaskDetails($task)));
             else $jsonTasks[] = ($getParameterNames)? $this->getTaskDetails($task) : array_values($this->getTaskDetails($task));
         } 
         return json_encode($jsonTasks);
@@ -726,7 +726,7 @@ class Simulator
             if( $getServerID )
                 $jsonServers[] = ($getParameterNames)? array_merge(["ID"=>$server["ID"]], $this->getServerStatus($server["Object"])) : array_values(array_merge([$server["ID"]],$this->getServerStatus($server["Object"])));
             else $jsonServers[] = ($getParameterNames)? $this->getServerStatus($server["Object"]) : array_values($this->getServerStatus($server["Object"]));
-        } 
+        }
         return json_encode($jsonServers);
     }
 
