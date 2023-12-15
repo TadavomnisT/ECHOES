@@ -669,7 +669,8 @@ class Simulator
             throw new Exception("File \"" . $fileName . "\" already exists.", 1);
             return false;
         }
-        file_put_contents( $fileName, $this->getTasksAsJSON( $getTaskID, $getParameterNames ) ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        if(file_put_contents( $fileName, $this->getTasksAsJSON( $getTaskID, $getParameterNames ) ) < 1)
+            throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);
         return true;
     }
 
@@ -680,7 +681,8 @@ class Simulator
             throw new Exception("File \"" . $fileName . "\" already exists.", 1);
             return false;
         }
-        file_put_contents( $fileName, $this->getServersAsJSON( $getServerID, $getParameterNames ) ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        if(file_put_contents( $fileName, $this->getServersAsJSON( $getServerID, $getParameterNames ) ) < 1)
+            throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);
         return true;
     }
 
@@ -691,7 +693,8 @@ class Simulator
             throw new Exception("File \"" . $fileName . "\" already exists.", 1);
             return false;
         }
-        file_put_contents( $fileName, $this->getTasksAsCSV( $getTaskID, $getParameterNames ) ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        if(file_put_contents( $fileName, $this->getTasksAsCSV( $getTaskID, $getParameterNames ) ) < 1)
+            throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);
         return true;
     }
 
@@ -702,7 +705,8 @@ class Simulator
             throw new Exception("File \"" . $fileName . "\" already exists.", 1);
             return false;
         }
-        file_put_contents( $fileName, $this->getServersAsCSV( $getServerID, $getParameterNames ) ) or throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);;
+        if(file_put_contents( $fileName, $this->getServersAsCSV( $getServerID, $getParameterNames ) ) < 1)
+            throw new Exception("Could not write to the file \"" . $fileName . "\".", 1);
         return true;
     }
 
@@ -789,73 +793,81 @@ class Simulator
     }
 
     // Import tasks from JSON file
-    public function importTasksFromJSON( string $fileName )
+    public function importTasksFromJSON( string $fileName, $issetTaskID = false, $issetParameterNames = false )
     {
         if ( !file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
             return false;
         }
-        $result = file_get_contents( $fileName ) or throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);;
+        $result = file_get_contents( $fileName );
+        if( !$result )
+            throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);
         $this->loadTasksFromJSON( $result );
         return true;
     }
 
     // Import server from JSON file
-    public function importServersFromJSON( string $fileName )
+    public function importServersFromJSON( string $fileName, $issetServerID = false, $issetParameterNames = false )
     {
         if ( !file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
             return false;
         }
-        $result = file_get_contents( $fileName ) or throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);;
+        $result = file_get_contents( $fileName );
+        if( !$result )
+            throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);
         $this->loadServersFromJSON( $result );
         return true;
     }
 
     // Import tasks from CSV file
-    public function importTasksFromCSV( string $fileName )
+    public function importTasksFromCSV( string $fileName, $issetTaskID = false, $issetParameterNames = false )
     {
         if ( !file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
             return false;
         }
-        $result = file_get_contents( $fileName ) or throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);;
+        $result = file_get_contents( $fileName );
+        if( !$result )
+            throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);
         $this->loadTasksFromCSV( $result );
         return true;
     }
 
     // Import server from CSV file
-    public function importServersFromCSV( string $fileName )
+    public function importServersFromCSV( string $fileName, $issetServerID = false, $issetParameterNames = false )
     {
         if ( !file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
             return false;
         }
-        $result = file_get_contents( $fileName ) or throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);;
+        $result = file_get_contents( $fileName );
+        if( !$result )
+            throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);
         $this->loadServersFromCSV( $result );
         return true;
     }
 
     // Load tasks from JSON data
-    public function loadTasksFromJSON( string $jsonTasks )
+    public function loadTasksFromJSON( string $jsonTasks, $issetTaskID = false, $issetParameterNames = false )
     {
         # code...
     }
 
     // Load server from JSON data
-    public function loadServersFromJSON( string $jsonServers )
+    public function loadServersFromJSON( string $jsonServers, $issetServerID = false, $issetParameterNames = false )
     {
         # code...
     }
 
     // Load tasks from CSV data
-    public function loadTasksFromCSV( string $csvTasks )
+    public function loadTasksFromCSV( string $csvTasks, $issetTaskID = false, $issetParameterNames = false )
     {
         # code...
     }
 
     // Load server from CSV data
-    public function loadServersFromCSV( string $csvServers )
+    public function loadServersFromCSV( string $csvServers, $issetServerID = false, $issetParameterNames = false )
     {
         # code...
     }

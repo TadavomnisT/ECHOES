@@ -385,9 +385,9 @@ $ECHOES = new Simulator();
 
 
 
-// $ECHOES->generateRandomServers( 20 );
-// $ECHOES->setAssignMethod( "Knapsack" );
-// $ECHOES->startSimulation( 200 );
+$ECHOES->generateRandomServers( 20 );
+$ECHOES->setAssignMethod( "Knapsack" );
+$ECHOES->startSimulation( 200 );
 
 // TODO:
 // loadTasksFromJSON()
