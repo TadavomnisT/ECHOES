@@ -97,7 +97,8 @@ class Server {
         int     $NetworkBandwidth, 
         float   $EnergyEfficiency, 
         int     $RedundancyLevel, 
-        bool    $Availability
+        bool    $Availability,
+        array   $ActiveTasks = []
     ) {
         $this->setName( $Name );
         $this->setType( $Type );
@@ -114,7 +115,7 @@ class Server {
         $this->setEnergyEfficiency( $EnergyEfficiency );
         $this->setRedundancyLevel( $RedundancyLevel );
         $this->setAvailability( $Availability );
-        $this->setActiveTasks( [] );
+        $this->setActiveTasks( $ActiveTasks );
     }
 
     // Getter and Setter for Name

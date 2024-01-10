@@ -793,7 +793,7 @@ class Simulator
     }
 
     // Import tasks from JSON file
-    public function importTasksFromJSON( string $fileName, $issetTaskID = false, $issetParameterNames = false )
+    public function importTasksFromJSON( string $fileName, $issetTaskID = false, $issetParameterNames = false, $applyTaskID = false )
     {
         if ( !file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
@@ -802,12 +802,12 @@ class Simulator
         $result = file_get_contents( $fileName );
         if( !$result )
             throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);
-        $this->loadTasksFromJSON( $result );
+        $this->loadTasksFromJSON( $result, $issetTaskID, $issetParameterNames, $applyTaskID );
         return true;
     }
 
     // Import server from JSON file
-    public function importServersFromJSON( string $fileName, $issetServerID = false, $issetParameterNames = false )
+    public function importServersFromJSON( string $fileName, $issetServerID = false, $issetParameterNames = false, $applyServerID = false )
     {
         if ( !file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
@@ -816,12 +816,12 @@ class Simulator
         $result = file_get_contents( $fileName );
         if( !$result )
             throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);
-        $this->loadServersFromJSON( $result );
+        $this->loadServersFromJSON( $result, $issetServerID, $issetParameterNames, $applyServerID );
         return true;
     }
 
     // Import tasks from CSV file
-    public function importTasksFromCSV( string $fileName, $issetTaskID = false, $issetParameterNames = false )
+    public function importTasksFromCSV( string $fileName, $issetTaskID = false, $issetParameterNames = false, $applyTaskID = false )
     {
         if ( !file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
@@ -830,12 +830,12 @@ class Simulator
         $result = file_get_contents( $fileName );
         if( !$result )
             throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);
-        $this->loadTasksFromCSV( $result );
+        $this->loadTasksFromCSV( $result, $issetTaskID, $issetParameterNames, $applyTaskID );
         return true;
     }
 
     // Import server from CSV file
-    public function importServersFromCSV( string $fileName, $issetServerID = false, $issetParameterNames = false )
+    public function importServersFromCSV( string $fileName, $issetServerID = false, $issetParameterNames = false, $applyServerID = false )
     {
         if ( !file_exists($fileName) ) {
             throw new Exception("File \"" . $fileName . "\" does not exists.", 1);
@@ -844,30 +844,430 @@ class Simulator
         $result = file_get_contents( $fileName );
         if( !$result )
             throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);
-        $this->loadServersFromCSV( $result );
+        $this->loadServersFromCSV( $result, $issetServerID, $issetParameterNames, $applyServerID );
         return true;
     }
 
     // Load tasks from JSON data
-    public function loadTasksFromJSON( string $jsonTasks, $issetTaskID = false, $issetParameterNames = false )
+    public function loadTasksFromJSON( string $jsonTasks, $issetTaskID = false, $issetParameterNames = false, $applyTaskID = false )
     {
-        # code...
+        $tasks = json_decode( $jsonTasks, true );
+        if ( $tasks == false || empty( $tasks ) )
+        {
+            throw new Exception("Could not decode JSON data.", 1);
+            return false;
+        }
+        foreach ($tasks as $key => $task) {
+            if ( $issetParameterNames ) {
+                if( $issetTaskID )
+                {
+                    if( $applyTaskID )
+                    {
+                        if ( array_key_exists( $task["ID"] , $this->tasks ) || array_key_exists( $task["ID"] , $this->runningTasks ) )
+                        {
+                            throw new Exception("A task with ID \"" . $task["ID"] . "\" already exists.", 1);
+                            return false;
+                        }
+                        $this->tasks[ $task["ID"] ] = new Task(
+                            $task["Name"],
+                            $task["Priority"],
+                            $task["RequiredCores"],
+                            $task["RequiredMIPSPerCore"],
+                            $task["RequiredRAM"],
+                            $task["RequiredStorage"],
+                            $task["Timestamp"],
+                            $task["TimestampMS"],
+                            $task["RequiredDataDownload"],
+                            $task["RequiredDataUpload"],
+                            $task["Deadline"],
+                            $task["SecurityLevel"],
+                            $task["CommunicationType"],
+                            $task["ExecutionTime"],
+                            $task["EstimateExecutionTime"]
+                        );
+                    }
+                    else
+                    {
+                        $this->createTask(
+                            $task["Name"],
+                            $task["Priority"],
+                            $task["RequiredCores"],
+                            $task["RequiredMIPSPerCore"],
+                            $task["RequiredRAM"],
+                            $task["RequiredStorage"],
+                            $task["Timestamp"],
+                            $task["TimestampMS"],
+                            $task["RequiredDataDownload"],
+                            $task["RequiredDataUpload"],
+                            $task["Deadline"],
+                            $task["SecurityLevel"],
+                            $task["CommunicationType"],
+                            $task["ExecutionTime"],
+                            $task["EstimateExecutionTime"]
+                        );
+                    }
+                }
+                else
+                {
+                    $this->createTask(
+                        $task["Name"],
+                        $task["Priority"],
+                        $task["RequiredCores"],
+                        $task["RequiredMIPSPerCore"],
+                        $task["RequiredRAM"],
+                        $task["RequiredStorage"],
+                        $task["Timestamp"],
+                        $task["TimestampMS"],
+                        $task["RequiredDataDownload"],
+                        $task["RequiredDataUpload"],
+                        $task["Deadline"],
+                        $task["SecurityLevel"],
+                        $task["CommunicationType"],
+                        $task["ExecutionTime"],
+                        $task["EstimateExecutionTime"]
+                    );
+                }
+            }
+            else
+            {
+                if( $issetTaskID || $applyTaskID )
+                {
+                    if ( array_key_exists( $task[0] , $this->tasks ) || array_key_exists( $task[0] , $this->runningTasks ) )
+                    {
+                        throw new Exception("A task with ID \"" . $task[0] . "\" already exists.", 1);
+                        return false;
+                    }
+                    $this->tasks[ $task[0] ] = new Task(
+                        $task[1],
+                        $task[2],
+                        $task[3],
+                        $task[4],
+                        $task[5],
+                        $task[6],
+                        $task[7],
+                        $task[8],
+                        $task[9],
+                        $task[10],
+                        $task[11],
+                        $task[12],
+                        $task[13],
+                        $task[14],
+                        $task[15]
+                    );
+                }
+                else
+                {
+                    $this->createTask(
+                        $task[0],
+                        $task[1],
+                        $task[2],
+                        $task[3],
+                        $task[4],
+                        $task[5],
+                        $task[6],
+                        $task[7],
+                        $task[8],
+                        $task[9],
+                        $task[10],
+                        $task[11],
+                        $task[12],
+                        $task[13],
+                        $task[14]
+                    );
+                }
+            }
+        }
+        return true;
     }
 
     // Load server from JSON data
-    public function loadServersFromJSON( string $jsonServers, $issetServerID = false, $issetParameterNames = false )
+    public function loadServersFromJSON( string $jsonServers, $issetServerID = false, $issetParameterNames = false, $applyServerID = false )
     {
-        # code...
+        $servers = json_decode( $jsonServers, true );
+        if ( $servers == false || empty( $servers ) )
+        {
+            throw new Exception("Could not decode JSON data.", 1);
+            return false;
+        }
+        var_dump($servers);die;
+        // var_dump( $this->allServers );die;
+        
+        foreach ($servers as $key => $server) {
+            if ( $issetParameterNames ) {
+                if( $issetServerID && $applyServerID )
+                {
+                    switch ($server["Type"]) {
+                        case "Edge":
+                            $keyExists = array_key_exists( $server["ID"] , $this->edgeServers );
+                            if ( $keyExists )
+                            {
+                                throw new Exception("A(n) " . $server["Type"] . "-server with ID \"" . $server["ID"] . "\" already exists.", 1);
+                                return false;
+                            }
+                            $this->edgeServers[$server["ID"]] = new Edge(
+                                $server["Name"],
+                                $server["Cores"],
+                                $server["MIPS"],
+                                $server["RAM"],
+                                $server["AvailableRAM"],
+                                $server["Storage"],
+                                $server["AvailableStorage"],
+                                $server["StorageSpeed"],
+                                $server["AverageAccessTime"],
+                                $server["Latency"],
+                                $server["NetworkBandwidth"],
+                                $server["EnergyEfficiency"],
+                                $server["RedundancyLevel"],
+                                $server["Availability"],
+                                $server["Location"],
+                                $server["Temperature"]
+                            );
+                            break;
+                        case "Cloud":
+                            $keyExists = array_key_exists( $server["ID"] , $this->cloudServers );
+                            if ( $keyExists )
+                            {
+                                throw new Exception("A(n) " . $server["Type"] . "-server with ID \"" . $server["ID"] . "\" already exists.", 1);
+                                return false;
+                            }
+                            $this->cloudServers[$server["ID"]] = new Cloud(
+                                $server["Name"],
+                                $server["Cores"],
+                                $server["MIPS"],
+                                $server["RAM"],
+                                $server["AvailableRAM"],
+                                $server["Storage"],
+                                $server["AvailableStorage"],
+                                $server["StorageSpeed"],
+                                $server["AverageAccessTime"],
+                                $server["Latency"],
+                                $server["NetworkBandwidth"],
+                                $server["EnergyEfficiency"],
+                                $server["RedundancyLevel"],
+                                $server["Availability"],
+                                $server["Location"],
+                                $server["Temperature"]
+                            );
+                            break;
+                        case "Server":
+                            $keyExists = array_key_exists( $server["ID"] , $this->servers );
+                            if ( $keyExists )
+                            {
+                                throw new Exception("A(n) " . $server["Type"] . "-server with ID \"" . $server["ID"] . "\" already exists.", 1);
+                                return false;
+                            }
+                            $this->servers[$server["ID"]] = new Server(
+                                $server["Name"],
+                                $server["Type"],
+                                $server["Cores"],
+                                $server["MIPS"],
+                                $server["RAM"],
+                                $server["AvailableRAM"],
+                                $server["Storage"],
+                                $server["AvailableStorage"],
+                                $server["StorageSpeed"],
+                                $server["AverageAccessTime"],
+                                $server["Latency"],
+                                $server["NetworkBandwidth"],
+                                $server["EnergyEfficiency"],
+                                $server["RedundancyLevel"],
+                                $server["Availability"]
+                            );
+                            break;
+                        default:
+                            return false;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch ($variable) {
+                        case "Edge":
+                            $this->createEdgeServer(
+                                $server["Name"],
+                                $server["Cores"],
+                                $server["MIPS"],
+                                $server["RAM"],
+                                $server["AvailableRAM"],
+                                $server["Storage"],
+                                $server["AvailableStorage"],
+                                $server["StorageSpeed"],
+                                $server["AverageAccessTime"],
+                                $server["Latency"],
+                                $server["NetworkBandwidth"],
+                                $server["EnergyEfficiency"],
+                                $server["RedundancyLevel"],
+                                $server["Availability"],
+                                $server["Location"],
+                                $server["Temperature"]
+                            );
+                            break;
+                        case "Cloud":
+                            $this->createCloudServer(
+                                $server["Name"],
+                                $server["Cores"],
+                                $server["MIPS"],
+                                $server["RAM"],
+                                $server["AvailableRAM"],
+                                $server["Storage"],
+                                $server["AvailableStorage"],
+                                $server["StorageSpeed"],
+                                $server["AverageAccessTime"],
+                                $server["Latency"],
+                                $server["NetworkBandwidth"],
+                                $server["EnergyEfficiency"],
+                                $server["RedundancyLevel"],
+                                $server["Availability"],
+                                $server["Location"],
+                                $server["Temperature"]
+                            );
+                            break;
+                        case "Server":
+                            $this->createServer(
+                                $server["Name"],
+                                $server["Type"],
+                                $server["Cores"],
+                                $server["MIPS"],
+                                $server["RAM"],
+                                $server["AvailableRAM"],
+                                $server["Storage"],
+                                $server["AvailableStorage"],
+                                $server["StorageSpeed"],
+                                $server["AverageAccessTime"],
+                                $server["Latency"],
+                                $server["NetworkBandwidth"],
+                                $server["EnergyEfficiency"],
+                                $server["RedundancyLevel"],
+                                $server["Availability"]
+                            );
+                            break;
+                        default:
+                            return false;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                if( $issetServerID && $applyServerID )
+                {
+                    switch ($server[2]) {
+                        case "Edge":
+                            $keyExists = array_key_exists( $server[0] , $this->edgeServers );
+                            break;
+                        case "Cloud":
+                            $keyExists = array_key_exists( $server[0] , $this->cloudServers );
+                            break;
+                        case "Server":
+                            $keyExists = array_key_exists( $server[0] , $this->servers );
+                            break;
+                        default:
+                            return false;
+                            break;
+                    }
+                    if ( $keyExists )
+                    {
+                        throw new Exception("A(n) " . $server[1] . "-server with ID \"" . $server[2] . "\" already exists.", 1);
+                        return false;
+                    }
+                    switch ($server[2]) {
+                        case "Edge":
+                            $keyExists = array_key_exists( $server[0] , $this->edgeServers );
+                            $this->edgeServers[ $server[0] ] = [
+                                "Type" => $server[2],
+                                "ID" => $server[0],
+                                "Object" => new Server(
+                                    $server[1],
+                                    $server[2],
+                                    $server[3],
+                                    $server[4],
+                                    $server[5],
+                                    $server[6],
+                                    $server[7],
+                                    $server[8],
+                                    $server[9],
+                                    $server[10],
+                                    $server[11],
+                                    $server[12],
+                                    $server[13],
+                                    $server[14],
+                                    $server[15],
+                                    $server[16]
+                                )
+                            ];
+                            break;
+                        case "Cloud":
+                            $keyExists = array_key_exists( $server[0] , $this->cloudServers );
+                            $this->cloudServers[ $server[0] ] = [
+                                "Type" => $server[2],
+                                "ID" => $server[0],
+                                "Object" => new Server(
+                                    $server[1],
+                                    $server[2],
+                                    $server[3],
+                                    $server[4],
+                                    $server[5],
+                                    $server[6],
+                                    $server[7],
+                                    $server[8],
+                                    $server[9],
+                                    $server[10],
+                                    $server[11],
+                                    $server[12],
+                                    $server[13],
+                                    $server[14],
+                                    $server[15],
+                                    $server[16]
+                                )
+                            ];
+                            break;
+                        case "Server":
+                            $keyExists = array_key_exists( $server[0] , $this->servers );
+                            $this->servers[ $server[0] ] = [
+                                "Type" => $server[2],
+                                "ID" => $server[0],
+                                "Object" => new Server(
+                                    $server[1],
+                                    $server[2],
+                                    $server[3],
+                                    $server[4],
+                                    $server[5],
+                                    $server[6],
+                                    $server[7],
+                                    $server[8],
+                                    $server[9],
+                                    $server[10],
+                                    $server[11],
+                                    $server[12],
+                                    $server[13],
+                                    $server[14],
+                                    $server[15],
+                                    $server[16]
+                                )
+                            ];
+                            break;
+                        default:
+                            return false;
+                            break;
+                    }
+                }
+                else
+                {
+                    
+                }
+            }
+        }
+        return true;
     }
 
     // Load tasks from CSV data
-    public function loadTasksFromCSV( string $csvTasks, $issetTaskID = false, $issetParameterNames = false )
+    public function loadTasksFromCSV( string $csvTasks, $issetTaskID = false, $issetParameterNames = false, $applyTaskID = false )
     {
         # code...
     }
 
     // Load server from CSV data
-    public function loadServersFromCSV( string $csvServers, $issetServerID = false, $issetParameterNames = false )
+    public function loadServersFromCSV( string $csvServers, $issetServerID = false, $issetParameterNames = false, $applyServerID = false )
     {
         # code...
     }

@@ -110,7 +110,8 @@ class Cloud extends Server
         int     $RedundancyLevel, 
         bool    $Availability,
         string  $Location,
-        int     $Temperature
+        int     $Temperature,
+        array   $ActiveTasks = []
     ) {
         $this->Type = "Cloud";
         parent::__construct(
@@ -128,7 +129,8 @@ class Cloud extends Server
             $NetworkBandwidth,
             $EnergyEfficiency,
             $RedundancyLevel,
-            $Availability
+            $Availability,
+            $ActiveTasks
         );
         $this->setLocation( $Location );
         $this->setTemperature( $Temperature );

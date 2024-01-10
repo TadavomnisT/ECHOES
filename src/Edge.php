@@ -110,7 +110,8 @@ class Edge extends Server
         int     $RedundancyLevel, 
         bool    $Availability,
         string  $Location,
-        int     $Temperature
+        int     $Temperature,
+        array   $ActiveTasks = []
     ) {
         $this->Type = "Edge";
         parent::__construct(
@@ -128,7 +129,8 @@ class Edge extends Server
             $NetworkBandwidth,
             $EnergyEfficiency,
             $RedundancyLevel,
-            $Availability
+            $Availability,
+            $ActiveTasks
         );
         $this->setLocation( $Location );
         $this->setTemperature( $Temperature );
