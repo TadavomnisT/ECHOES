@@ -271,8 +271,9 @@ class Simulator
         $NetworkBandwidth,
         $EnergyEfficiency,
         $RedundancyLevel,
-        $Availability
-    )
+        $Availability,
+        $ActiveTasks = []
+        )
     {
         $this->servers[] = new Server(
             $Name,
@@ -289,7 +290,8 @@ class Simulator
             $NetworkBandwidth,
             $EnergyEfficiency,
             $RedundancyLevel,
-            $Availability
+            $Availability,
+            $ActiveTasks
         );
         end($this->servers);
         $ID = key($this->servers);
@@ -330,7 +332,8 @@ class Simulator
         $RedundancyLevel,
         $Availability,
         $Location,
-        $Temperature
+        $Temperature,
+        $ActiveTasks = []
     )
     {
         $this->edgeServers[] = new Edge(
@@ -349,7 +352,8 @@ class Simulator
             $RedundancyLevel,
             $Availability,
             $Location,
-            $Temperature
+            $Temperature,
+            $ActiveTasks
         );
         end($this->edgeServers);
         $ID = key($this->edgeServers);
@@ -390,7 +394,8 @@ class Simulator
         $RedundancyLevel,
         $Availability,
         $Location,
-        $Temperature
+        $Temperature,
+        $ActiveTasks = []
     )
     {
         $this->cloudServers[] = new Cloud(
@@ -409,7 +414,8 @@ class Simulator
             $RedundancyLevel,
             $Availability,
             $Location,
-            $Temperature
+            $Temperature,
+            $ActiveTasks
         );
         end($this->cloudServers);
         $ID = key($this->cloudServers);
@@ -650,12 +656,13 @@ class Simulator
     // Get Any Server status
     public function getServerStatus( $server )
     {
-        if ( $server instanceof Server )
-            return $this->getNormalServerStatus($server);
-        else if ( $server instanceof Cloud )
+        // A very twisted logic has beem implemented here! Since a "Cloud" or an "Edge" are a "Server" too, The order in if-else matters! 
+        if ( $server instanceof Cloud )
             return $this->getCloudServerStatus($server);
         else if ( $server instanceof Edge )
             return $this->getEdgeServerStatus($server);
+        else if ( $server instanceof Server )
+            return $this->getNormalServerStatus($server);
         else{
             throw new Exception("getServerStatus()only works with Object, not IDs.", 1);
             return false;
@@ -989,7 +996,7 @@ class Simulator
             throw new Exception("Could not decode JSON data.", 1);
             return false;
         }
-        var_dump($servers);die;
+        // var_dump($servers);die;
         // var_dump( $this->allServers );die;
         
         foreach ($servers as $key => $server) {
@@ -1020,7 +1027,8 @@ class Simulator
                                 $server["RedundancyLevel"],
                                 $server["Availability"],
                                 $server["Location"],
-                                $server["Temperature"]
+                                $server["Temperature"],
+                                $server["AciveTasks"]
                             );
                             break;
                         case "Cloud":
@@ -1046,7 +1054,8 @@ class Simulator
                                 $server["RedundancyLevel"],
                                 $server["Availability"],
                                 $server["Location"],
-                                $server["Temperature"]
+                                $server["Temperature"],
+                                $server["AciveTasks"]
                             );
                             break;
                         case "Server":
@@ -1071,7 +1080,8 @@ class Simulator
                                 $server["NetworkBandwidth"],
                                 $server["EnergyEfficiency"],
                                 $server["RedundancyLevel"],
-                                $server["Availability"]
+                                $server["Availability"],
+                                $server["AciveTasks"]
                             );
                             break;
                         default:
@@ -1081,7 +1091,7 @@ class Simulator
                 }
                 else
                 {
-                    switch ($variable) {
+                    switch ($server["Type"]) {
                         case "Edge":
                             $this->createEdgeServer(
                                 $server["Name"],
@@ -1099,7 +1109,8 @@ class Simulator
                                 $server["RedundancyLevel"],
                                 $server["Availability"],
                                 $server["Location"],
-                                $server["Temperature"]
+                                $server["Temperature"],
+                                $server["AciveTasks"]
                             );
                             break;
                         case "Cloud":
@@ -1119,7 +1130,8 @@ class Simulator
                                 $server["RedundancyLevel"],
                                 $server["Availability"],
                                 $server["Location"],
-                                $server["Temperature"]
+                                $server["Temperature"],
+                                $server["AciveTasks"]
                             );
                             break;
                         case "Server":
@@ -1138,7 +1150,8 @@ class Simulator
                                 $server["NetworkBandwidth"],
                                 $server["EnergyEfficiency"],
                                 $server["RedundancyLevel"],
-                                $server["Availability"]
+                                $server["Availability"],
+                                $server["AciveTasks"]
                             );
                             break;
                         default:
@@ -1149,111 +1162,255 @@ class Simulator
             }
             else
             {
-                if( $issetServerID && $applyServerID )
+                if( $issetServerID )
                 {
-                    switch ($server[2]) {
-                        case "Edge":
-                            $keyExists = array_key_exists( $server[0] , $this->edgeServers );
-                            break;
-                        case "Cloud":
-                            $keyExists = array_key_exists( $server[0] , $this->cloudServers );
-                            break;
-                        case "Server":
-                            $keyExists = array_key_exists( $server[0] , $this->servers );
-                            break;
-                        default:
-                            return false;
-                            break;
-                    }
-                    if ( $keyExists )
+                    if ( $applyServerID )
                     {
-                        throw new Exception("A(n) " . $server[1] . "-server with ID \"" . $server[2] . "\" already exists.", 1);
-                        return false;
-                    }
-                    switch ($server[2]) {
-                        case "Edge":
-                            $keyExists = array_key_exists( $server[0] , $this->edgeServers );
-                            $this->edgeServers[ $server[0] ] = [
-                                "Type" => $server[2],
-                                "ID" => $server[0],
-                                "Object" => new Server(
-                                    $server[1],
-                                    $server[2],
-                                    $server[3],
-                                    $server[4],
-                                    $server[5],
-                                    $server[6],
-                                    $server[7],
-                                    $server[8],
-                                    $server[9],
-                                    $server[10],
-                                    $server[11],
-                                    $server[12],
-                                    $server[13],
-                                    $server[14],
-                                    $server[15],
-                                    $server[16]
-                                )
-                            ];
-                            break;
-                        case "Cloud":
-                            $keyExists = array_key_exists( $server[0] , $this->cloudServers );
-                            $this->cloudServers[ $server[0] ] = [
-                                "Type" => $server[2],
-                                "ID" => $server[0],
-                                "Object" => new Server(
-                                    $server[1],
-                                    $server[2],
-                                    $server[3],
-                                    $server[4],
-                                    $server[5],
-                                    $server[6],
-                                    $server[7],
-                                    $server[8],
-                                    $server[9],
-                                    $server[10],
-                                    $server[11],
-                                    $server[12],
-                                    $server[13],
-                                    $server[14],
-                                    $server[15],
-                                    $server[16]
-                                )
-                            ];
-                            break;
-                        case "Server":
-                            $keyExists = array_key_exists( $server[0] , $this->servers );
-                            $this->servers[ $server[0] ] = [
-                                "Type" => $server[2],
-                                "ID" => $server[0],
-                                "Object" => new Server(
-                                    $server[1],
-                                    $server[2],
-                                    $server[3],
-                                    $server[4],
-                                    $server[5],
-                                    $server[6],
-                                    $server[7],
-                                    $server[8],
-                                    $server[9],
-                                    $server[10],
-                                    $server[11],
-                                    $server[12],
-                                    $server[13],
-                                    $server[14],
-                                    $server[15],
-                                    $server[16]
-                                )
-                            ];
-                            break;
-                        default:
+                        switch ($server[2]) {
+                            case "Edge":
+                                $keyExists = array_key_exists( $server[0] , $this->edgeServers );
+                                break;
+                            case "Cloud":
+                                $keyExists = array_key_exists( $server[0] , $this->cloudServers );
+                                break;
+                            case "Server":
+                                $keyExists = array_key_exists( $server[0] , $this->servers );
+                                break;
+                            default:
+                                return false;
+                                break;
+                        }
+                        if ( $keyExists )
+                        {
+                            throw new Exception("A(n) " . $server[2] . "-server with ID \"" . $server[0] . "\" already exists.", 1);
                             return false;
-                            break;
+                        }
+                        switch ($server[2]) {
+                            case "Edge":
+                                $this->edgeServers[ $server[0] ] = [
+                                    "Type" => $server[2],
+                                    "ID" => $server[0],
+                                    "Object" => new Edge(
+                                        $server[1],
+                                        $server[2],
+                                        $server[3],
+                                        $server[4],
+                                        $server[5],
+                                        $server[6],
+                                        $server[7],
+                                        $server[8],
+                                        $server[9],
+                                        $server[10],
+                                        $server[11],
+                                        $server[12],
+                                        $server[13],
+                                        $server[14],
+                                        $server[15],
+                                        $server[17],
+                                        $server[18],
+                                        $server[16]
+                                    )
+                                ];
+                                break;
+                            case "Cloud":
+                                $this->cloudServers[ $server[0] ] = [
+                                    "Type" => $server[2],
+                                    "ID" => $server[0],
+                                    "Object" => new Cloud(
+                                        $server[1],
+                                        $server[2],
+                                        $server[3],
+                                        $server[4],
+                                        $server[5],
+                                        $server[6],
+                                        $server[7],
+                                        $server[8],
+                                        $server[9],
+                                        $server[10],
+                                        $server[11],
+                                        $server[12],
+                                        $server[13],
+                                        $server[14],
+                                        $server[15],
+                                        $server[17],
+                                        $server[18],
+                                        $server[16]
+                                    )
+                                ];
+                                break;
+                            case "Server":
+                                $this->servers[ $server[0] ] = [
+                                    "Type" => $server[2],
+                                    "ID" => $server[0],
+                                    "Object" => new Server(
+                                        $server[1],
+                                        $server[2],
+                                        $server[3],
+                                        $server[4],
+                                        $server[5],
+                                        $server[6],
+                                        $server[7],
+                                        $server[8],
+                                        $server[9],
+                                        $server[10],
+                                        $server[11],
+                                        $server[12],
+                                        $server[13],
+                                        $server[14],
+                                        $server[15],
+                                        $server[16]
+                                    )
+                                ];
+                                break;
+                            default:
+                                return false;
+                                break;
+                        }
+                    }
+                    else 
+                    {
+                        switch ($server[2]) {
+                            case "Edge":
+                                $this->createEdgeServer(
+                                    $server[1],
+                                    $server[2],
+                                    $server[3],
+                                    $server[4],
+                                    $server[5],
+                                    $server[6],
+                                    $server[7],
+                                    $server[8],
+                                    $server[9],
+                                    $server[10],
+                                    $server[11],
+                                    $server[12],
+                                    $server[13],
+                                    $server[14],
+                                    $server[15],
+                                    $server[17],
+                                    $server[18],
+                                    $server[16]
+                                );
+                                break;
+                            case "Cloud":
+                                $this->createCloudServer(
+                                    $server[1],
+                                    $server[2],
+                                    $server[3],
+                                    $server[4],
+                                    $server[5],
+                                    $server[6],
+                                    $server[7],
+                                    $server[8],
+                                    $server[9],
+                                    $server[10],
+                                    $server[11],
+                                    $server[12],
+                                    $server[13],
+                                    $server[14],
+                                    $server[15],
+                                    $server[17],
+                                    $server[18],
+                                    $server[16]
+                                );
+                                break;
+                            case "Server":
+                                $this->createServer(
+                                    $server[1],
+                                    $server[2],
+                                    $server[3],
+                                    $server[4],
+                                    $server[5],
+                                    $server[6],
+                                    $server[7],
+                                    $server[8],
+                                    $server[9],
+                                    $server[10],
+                                    $server[11],
+                                    $server[12],
+                                    $server[13],
+                                    $server[14],
+                                    $server[15],
+                                    $server[16]
+                                );
+                                break;
+                            default:
+                                return false;
+                                break;
+                        }
                     }
                 }
                 else
                 {
-                    
+                    switch ($server[1]) {
+                        case "Edge":
+                            $this->createEdgeServer(
+                                $server[0],
+                                $server[1],
+                                $server[2],
+                                $server[3],
+                                $server[4],
+                                $server[5],
+                                $server[6],
+                                $server[7],
+                                $server[8],
+                                $server[9],
+                                $server[10],
+                                $server[11],
+                                $server[12],
+                                $server[13],
+                                $server[14],
+                                $server[16],
+                                $server[17],
+                                $server[15]
+                            );
+                            break;
+                        case "Cloud":
+                            $this->createCloudServer(
+                                $server[0],
+                                $server[1],
+                                $server[2],
+                                $server[3],
+                                $server[4],
+                                $server[5],
+                                $server[6],
+                                $server[7],
+                                $server[8],
+                                $server[9],
+                                $server[10],
+                                $server[11],
+                                $server[12],
+                                $server[13],
+                                $server[14],
+                                $server[16],
+                                $server[17],
+                                $server[15]
+                            );
+                            break;
+                        case "Server":
+                            $this->createServer(
+                                $server[0],
+                                $server[1],
+                                $server[2],
+                                $server[3],
+                                $server[4],
+                                $server[5],
+                                $server[6],
+                                $server[7],
+                                $server[8],
+                                $server[9],
+                                $server[10],
+                                $server[11],
+                                $server[12],
+                                $server[13],
+                                $server[14],
+                                $server[15]
+                            );
+                            break;
+                        default:
+                            return false;
+                            break;
+                    }
                 }
             }
         }

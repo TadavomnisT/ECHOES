@@ -408,7 +408,7 @@ $S1 = $ECHOES->createServer(
         98,
         True
     );
-var_dump( $ECHOES->exportServersAsJSON("Servers.json", 1) );
+var_dump( $ECHOES->exportServersAsJSON("Servers.json") );
 // var_dump( $ECHOES->getAllServers() );
 var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json") ) );
 // var_dump( $ECHOES->getAllServers() );
