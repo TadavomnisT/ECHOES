@@ -389,7 +389,7 @@ $ECHOES = new Simulator();
 // var_dump( $ECHOES->loadTasksFromJSON( file_get_contents("Tasks.json") ) );
 // // var_dump( $ECHOES->getTasks() );
 
-// Testing: loadServersFromJSON()
+// // Testing: loadServersFromJSON()
 // $ECHOES->generateRandomServers( 50 );
 // $S1 = $ECHOES->createServer(
 //         "S1",
@@ -412,7 +412,7 @@ $ECHOES = new Simulator();
 // var_dump($ECHOES->exportServersAsJSON("Servers.json",true) );
 // var_dump($ECHOES->exportServersAsJSON("Servers.json",false, true) );
 // var_dump($ECHOES->exportServersAsJSON("Servers.json",true, true) );
-var_dump( $ECHOES->getAllServers() );
+// var_dump( $ECHOES->getAllServers() );
 //  ------------- string $jsonServers, $issetServerID = false, $issetParameterNames = false, $applyServerID = false -------------
 // var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json") ) );
 // var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), false, false, true ) );
@@ -421,8 +421,19 @@ var_dump( $ECHOES->getAllServers() );
 // var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), false, true ) );
 // var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), false, true, true ) );
 // var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, true ) );
-var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, true, true ) );
+// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, true, true ) );
+// var_dump( $ECHOES->getAllServers() );
+
+
+// Testing clearSimulator()
+$ECHOES->generateRandomServers( 50 );
+$ECHOES->generateRandomTasks( 100 );
 var_dump( $ECHOES->getAllServers() );
+var_dump( $ECHOES->getTasks() );
+$ECHOES->clearSimulator();
+var_dump( $ECHOES->getAllServers() );
+var_dump( $ECHOES->getTasks() );
+
 
 // $ECHOES->generateRandomServers( 20 );
 // $ECHOES->generateRandomTasks( 200 );
@@ -430,8 +441,6 @@ var_dump( $ECHOES->getAllServers() );
 // $ECHOES->startSimulation( 200 );
 
 // TODO:
-// clearSimulator()
-// loadServersFromJSON()
 // loadTasksFromCSV()
 // loadServersFromCSV()
 

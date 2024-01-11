@@ -91,6 +91,9 @@ class Simulator
     private $tasks;
     private $runningTasks;
 
+    private $successTerminatedTasks;
+    private $expiredTerminatedTasks;
+
     private $totalTerminatedTasks;
 
     private $assignMethods;
@@ -107,6 +110,9 @@ class Simulator
         $this->edgeServers      = [];
         $this->tasks            = [];
         $this->runningTasks     = [];
+
+        $this->successTerminatedTasks   = 0;
+        $this->expiredTerminatedTasks   = 0;
 
         $this->totalTerminatedTasks = 0;
 
@@ -206,6 +212,30 @@ class Simulator
     public function getTotalTerminatedTasks()
     {
         return $this->totalTerminatedTasks;
+    }
+
+    // Increment the number of successfully terminated tasks
+    public function incrementSuccessTerminatedTasks()
+    {
+        $this->successTerminatedTasks++;
+    }
+
+    // Get the number of successfully terminated tasks
+    public function getSuccessTerminatedTasks()
+    {
+        return $this->successTerminatedTasks;
+    }
+
+    // Increment the number of expired terminated tasks
+    public function incrementExpiredTerminatedTasks()
+    {
+        $this->expiredTerminatedTasks++;
+    }
+
+    // Get the number of expired terminated tasks
+    public function getExpiredTerminatedTasks()
+    {
+        return $this->expiredTerminatedTasks;
     }
 
     // Creates a new task and returns its ID
@@ -1444,6 +1474,22 @@ class Simulator
         # code...
     }
 
+    // Clears all Servers, Tasks, Logs, etc in the current simulator
+    public function clearSimulator()
+    {
+        $this->allServers       = [];
+        $this->servers          = [];
+        $this->cloudServers     = [];
+        $this->edgeServers      = [];
+        $this->tasks            = [];
+        $this->runningTasks     = [];
+        $this->successTerminatedTasks   = 0;
+        $this->expiredTerminatedTasks   = 0;
+        $this->totalTerminatedTasks = 0;
+
+        return true;
+    }
+
     // Get methods of this class 
     public function getMethods()
     {
@@ -2300,8 +2346,14 @@ class Simulator
             foreach ($server["Object"]->getActiveTasks() as $taskID) {
                 $TD = $this->getRunningTaskDetails($taskID);
 
-                //Terminate if Deadline has passed || Terminate if Task is done
-                if( ($TD["Deadline"] < time()) || ($TD["ExecutionTime"] + $TD["Timestamp"] < time()) )
+                //Terminate if Deadline has passed
+                if( ($TD["Deadline"] < time()) || ($TD["ExecutionTime"] + $TD["Timestamp"] < time()) ) 
+                {
+                    $server["Object"]->terminateTask( $taskID, $this->getRunningTask($taskID) );
+                    $this->deleteRunningTask( $taskID );
+                    $this->incrementTotalTerminatedTasks();
+                }
+                else if( $TD["ExecutionTime"] + $TD["Timestamp"] < time() ) // Terminate if Task is done
                 {
                     $server["Object"]->terminateTask( $taskID, $this->getRunningTask($taskID) );
                     $this->deleteRunningTask( $taskID );
