@@ -35,9 +35,17 @@ php src/ECHOES.php
 
 ## Usage
 
+
+**Shell #1 :** Start the server for knapsack python wrapper
 ```shell
-cd ECHOES
-php src/ECHOES.php
+cd ECHOES/src
+python knapsack_server.py
+```
+
+**Shell #2 :** Run the simulator
+```shell
+cd ECHOES/Tests
+php run_tests.php
 ```
 
 ## Note
