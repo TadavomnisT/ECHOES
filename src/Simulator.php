@@ -2147,6 +2147,7 @@ class Simulator
                 // Part_2: Solve MKP
                 $MKP_Result = $this->knapsack->MKP( $knapsacks, $item_values, $item_weights );
                 foreach ($MKP_Result as $key => $serverID_plus_1) {
+                    if( $serverID_plus_1 == 0 ) continue;
                     $taskID = $taskIDs[$key];
                     if ( $this->assignTask( $taskID, $servers[$serverID_plus_1-1]["Type"], $servers[$serverID_plus_1-1]["ID"] ) === true ) {
                         unset( $remainingTasks[$taskID] );
