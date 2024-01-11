@@ -393,7 +393,7 @@ $ECHOES = new Simulator();
 $ECHOES->generateRandomServers( 50 );
 $S1 = $ECHOES->createServer(
         "S1",
-        "Default",
+        "Server",
         8,
         16000,
         32768,

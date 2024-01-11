@@ -996,9 +996,6 @@ class Simulator
             throw new Exception("Could not decode JSON data.", 1);
             return false;
         }
-        // var_dump($servers);die;
-        // var_dump( $this->allServers );die;
-        
         foreach ($servers as $key => $server) {
             if ( $issetParameterNames ) {
                 if( $issetServerID && $applyServerID )
@@ -1085,6 +1082,7 @@ class Simulator
                             );
                             break;
                         default:
+                            throw new Exception("Unknown type for server : " . $server["Type"], 1);
                             return false;
                             break;
                     }
@@ -1155,6 +1153,7 @@ class Simulator
                             );
                             break;
                         default:
+                            throw new Exception("Unknown type for server : " . $server["Type"], 1);
                             return false;
                             break;
                     }
@@ -1177,6 +1176,7 @@ class Simulator
                                 $keyExists = array_key_exists( $server[0] , $this->servers );
                                 break;
                             default:
+                                throw new Exception("Unknown type for server : " . $server[2], 1);
                                 return false;
                                 break;
                         }
@@ -1192,7 +1192,6 @@ class Simulator
                                     "ID" => $server[0],
                                     "Object" => new Edge(
                                         $server[1],
-                                        $server[2],
                                         $server[3],
                                         $server[4],
                                         $server[5],
@@ -1218,7 +1217,6 @@ class Simulator
                                     "ID" => $server[0],
                                     "Object" => new Cloud(
                                         $server[1],
-                                        $server[2],
                                         $server[3],
                                         $server[4],
                                         $server[5],
@@ -1263,6 +1261,7 @@ class Simulator
                                 ];
                                 break;
                             default:
+                                throw new Exception("Unknown type for server : " . $server[2], 1);
                                 return false;
                                 break;
                         }
@@ -1273,7 +1272,6 @@ class Simulator
                             case "Edge":
                                 $this->createEdgeServer(
                                     $server[1],
-                                    $server[2],
                                     $server[3],
                                     $server[4],
                                     $server[5],
@@ -1295,7 +1293,6 @@ class Simulator
                             case "Cloud":
                                 $this->createCloudServer(
                                     $server[1],
-                                    $server[2],
                                     $server[3],
                                     $server[4],
                                     $server[5],
@@ -1335,6 +1332,7 @@ class Simulator
                                 );
                                 break;
                             default:
+                                throw new Exception("Unknown type for server : " . $server[2], 1);
                                 return false;
                                 break;
                         }
@@ -1346,7 +1344,6 @@ class Simulator
                         case "Edge":
                             $this->createEdgeServer(
                                 $server[0],
-                                $server[1],
                                 $server[2],
                                 $server[3],
                                 $server[4],
@@ -1368,7 +1365,6 @@ class Simulator
                         case "Cloud":
                             $this->createCloudServer(
                                 $server[0],
-                                $server[1],
                                 $server[2],
                                 $server[3],
                                 $server[4],
@@ -1408,6 +1404,7 @@ class Simulator
                             );
                             break;
                         default:
+                            throw new Exception("Unknown type for server : " . $server[1], 1);
                             return false;
                             break;
                     }

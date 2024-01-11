@@ -7,7 +7,7 @@
 A Server entity in ECHOESimulator contains following attributes:
 
     Name                => Server name: e.g "E_Server_GNULinux64"
-    Type                => Server type: Edge/Cloud/Default
+    Type                => Server type: Edge/Cloud/Server(Default)
     Cores               => Number of CPU cores
     MIPS                => CPU Mega Instructions Per Second
     RAM                 => Server memory in MB
@@ -64,7 +64,7 @@ COPYRIGHT :
 class Server {
 
     private $Name;              // Server name: e.g "E_Server_GNULinux64"
-    private $Type;              // Server type: Edge/Cloud/Default
+    private $Type;              // Server type: Edge/Cloud/Server(Default)
     private $Cores;             // Number of CPU cores
     private $MIPS;              // CPU Mega Instructions Per Second
     private $RAM;               // Server memory in MB
@@ -131,8 +131,8 @@ class Server {
     public function getType() {
         return $this->Type;
     }
-    public function setType( string $Type = "Default" ) {
-        if( $Type !== "Default" && $Type !== "Edge" && $Type !== "Cloud"  )
+    public function setType( string $Type = "Server" ) {
+        if( $Type !== "Server" && $Type !== "Edge" && $Type !== "Cloud"  )
         {
             throw new Exception("Unknown type \"" . $Type . "\"." , 1);
             return FALSE;
