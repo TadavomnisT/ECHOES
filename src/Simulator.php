@@ -1025,8 +1025,13 @@ class Simulator
                                 $server["Availability"],
                                 $server["Location"],
                                 $server["Temperature"],
-                                $server["AciveTasks"]
+                                $server["ActiveTasks"]
                             );
+                            $this->allServers[] = [
+                                "Type"      => "Edge",
+                                "ID"        => $server["ID"],
+                                "Object"    => $this->edgeServers[ $server["ID"] ]
+                            ];
                             break;
                         case "Cloud":
                             $keyExists = array_key_exists( $server["ID"] , $this->cloudServers );
@@ -1052,8 +1057,13 @@ class Simulator
                                 $server["Availability"],
                                 $server["Location"],
                                 $server["Temperature"],
-                                $server["AciveTasks"]
+                                $server["ActiveTasks"]
                             );
+                            $this->allServers[] = [
+                                "Type"      => "Cloud",
+                                "ID"        => $server["ID"],
+                                "Object"    => $this->cloudServers[ $server["ID"] ]
+                            ];
                             break;
                         case "Server":
                             $keyExists = array_key_exists( $server["ID"] , $this->servers );
@@ -1078,8 +1088,13 @@ class Simulator
                                 $server["EnergyEfficiency"],
                                 $server["RedundancyLevel"],
                                 $server["Availability"],
-                                $server["AciveTasks"]
+                                $server["ActiveTasks"]
                             );
+                            $this->allServers[] = [
+                                "Type"      => "Server",
+                                "ID"        => $server["ID"],
+                                "Object"    => $this->servers[ $server["ID"] ]
+                            ];
                             break;
                         default:
                             throw new Exception("Unknown type for server : " . $server["Type"], 1);
@@ -1108,7 +1123,7 @@ class Simulator
                                 $server["Availability"],
                                 $server["Location"],
                                 $server["Temperature"],
-                                $server["AciveTasks"]
+                                $server["ActiveTasks"]
                             );
                             break;
                         case "Cloud":
@@ -1129,7 +1144,7 @@ class Simulator
                                 $server["Availability"],
                                 $server["Location"],
                                 $server["Temperature"],
-                                $server["AciveTasks"]
+                                $server["ActiveTasks"]
                             );
                             break;
                         case "Server":
@@ -1149,7 +1164,7 @@ class Simulator
                                 $server["EnergyEfficiency"],
                                 $server["RedundancyLevel"],
                                 $server["Availability"],
-                                $server["AciveTasks"]
+                                $server["ActiveTasks"]
                             );
                             break;
                         default:
@@ -1187,77 +1202,80 @@ class Simulator
                         }
                         switch ($server[2]) {
                             case "Edge":
-                                $this->edgeServers[ $server[0] ] = [
-                                    "Type" => $server[2],
-                                    "ID" => $server[0],
-                                    "Object" => new Edge(
-                                        $server[1],
-                                        $server[3],
-                                        $server[4],
-                                        $server[5],
-                                        $server[6],
-                                        $server[7],
-                                        $server[8],
-                                        $server[9],
-                                        $server[10],
-                                        $server[11],
-                                        $server[12],
-                                        $server[13],
-                                        $server[14],
-                                        $server[15],
-                                        $server[17],
-                                        $server[18],
-                                        $server[16]
-                                    )
+                                $this->edgeServers[ $server[0] ] = new Edge(
+                                    $server[1],
+                                    $server[3],
+                                    $server[4],
+                                    $server[5],
+                                    $server[6],
+                                    $server[7],
+                                    $server[8],
+                                    $server[9],
+                                    $server[10],
+                                    $server[11],
+                                    $server[12],
+                                    $server[13],
+                                    $server[14],
+                                    $server[15],
+                                    $server[17],
+                                    $server[18],
+                                    $server[16]
+                                );
+                                $this->allServers[] = [
+                                    "Type"      => "Edge",
+                                    "ID"        => $server[0],
+                                    "Object"    => $this->edgeServers[ $server[0] ]
                                 ];
                                 break;
                             case "Cloud":
-                                $this->cloudServers[ $server[0] ] = [
-                                    "Type" => $server[2],
-                                    "ID" => $server[0],
-                                    "Object" => new Cloud(
-                                        $server[1],
-                                        $server[3],
-                                        $server[4],
-                                        $server[5],
-                                        $server[6],
-                                        $server[7],
-                                        $server[8],
-                                        $server[9],
-                                        $server[10],
-                                        $server[11],
-                                        $server[12],
-                                        $server[13],
-                                        $server[14],
-                                        $server[15],
-                                        $server[17],
-                                        $server[18],
-                                        $server[16]
-                                    )
+                                $this->cloudServers[ $server[0] ] = new Cloud(
+                                    $server[1],
+                                    $server[3],
+                                    $server[4],
+                                    $server[5],
+                                    $server[6],
+                                    $server[7],
+                                    $server[8],
+                                    $server[9],
+                                    $server[10],
+                                    $server[11],
+                                    $server[12],
+                                    $server[13],
+                                    $server[14],
+                                    $server[15],
+                                    $server[17],
+                                    $server[18],
+                                    $server[16]
+                                );
+                                $this->allServers[] = [
+                                    "Type"      => "Cloud",
+                                    "ID"        => $server[0],
+                                    "Object"    => $this->cloudServers[ $server[0] ]
                                 ];
                                 break;
                             case "Server":
-                                $this->servers[ $server[0] ] = [
-                                    "Type" => $server[2],
-                                    "ID" => $server[0],
-                                    "Object" => new Server(
-                                        $server[1],
-                                        $server[2],
-                                        $server[3],
-                                        $server[4],
-                                        $server[5],
-                                        $server[6],
-                                        $server[7],
-                                        $server[8],
-                                        $server[9],
-                                        $server[10],
-                                        $server[11],
-                                        $server[12],
-                                        $server[13],
-                                        $server[14],
-                                        $server[15],
-                                        $server[16]
-                                    )
+                                $this->servers[ $server[0] ] = new Server(
+                                    $server[1],
+                                    $server[2],
+                                    $server[3],
+                                    $server[4],
+                                    $server[5],
+                                    $server[6],
+                                    $server[7],
+                                    $server[8],
+                                    $server[9],
+                                    $server[10],
+                                    $server[11],
+                                    $server[12],
+                                    $server[13],
+                                    $server[14],
+                                    $server[15],
+                                    $server[16]
+                                );
+                                $this->allServers[] = [
+                                    "Type"      => "Server",
+                                    "ID"        => $server[0],
+                                    "Object"    => $this->servers[ $server[0] ]
                                 ];
                                 break;
                             default:

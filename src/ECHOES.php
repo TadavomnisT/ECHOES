@@ -390,28 +390,37 @@ $ECHOES = new Simulator();
 // // var_dump( $ECHOES->getTasks() );
 
 // Testing: loadServersFromJSON()
-$ECHOES->generateRandomServers( 50 );
-$S1 = $ECHOES->createServer(
-        "S1",
-        "Server",
-        8,
-        16000,
-        32768,
-        28672,
-        1048576,
-        786432,
-        10,
-        10,
-        12,
-        1000,
-        1.5,
-        98,
-        True
-    );
-var_dump( $ECHOES->exportServersAsJSON("Servers.json") );
-// var_dump( $ECHOES->getAllServers() );
-var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json") ) );
-// var_dump( $ECHOES->getAllServers() );
+// $ECHOES->generateRandomServers( 50 );
+// $S1 = $ECHOES->createServer(
+//         "S1",
+//         "Server",
+//         8,
+//         16000,
+//         32768,
+//         28672,
+//         1048576,
+//         786432,
+//         10,
+//         10,
+//         12,
+//         1000,
+//         1.5,
+//         98,
+//         True
+//     );
+// var_dump( $ECHOES->exportServersAsJSON("Servers.json") );
+// var_dump($ECHOES->exportServersAsJSON("Servers.json",true) );
+// var_dump($ECHOES->exportServersAsJSON("Servers.json",false, true) );
+// var_dump($ECHOES->exportServersAsJSON("Servers.json",true, true) );
+var_dump( $ECHOES->getAllServers() );
+//  ------------- string $jsonServers, $issetServerID = false, $issetParameterNames = false, $applyServerID = false -------------
+// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, false ) );
+// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, false, true ) );
+// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), false, true ) );
+var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), false, true, true ) );
+// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, true ) );
+// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, true, true ) );
+var_dump( $ECHOES->getAllServers() );
 
 // $ECHOES->generateRandomServers( 20 );
 // $ECHOES->generateRandomTasks( 200 );
