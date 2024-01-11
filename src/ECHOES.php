@@ -553,19 +553,19 @@ $tasksFileSet = [
 
 $ECHOES->clearSimulator();
 $ECHOES->setAssignMethod( "Knapsack" );
-$ECHOES->startSimulation( $serversFile, $tasksFileSet, 200 );
+$ECHOES->startSimulation( $serversFile, $tasksFileSet, 1000 );
 
 $ECHOES->clearSimulator();
 $ECHOES->setAssignMethod( "EdgeFirst" );
-$ECHOES->startSimulation( $serversFile, $tasksFileSet, 200 );
+$ECHOES->startSimulation( $serversFile, $tasksFileSet, 1000 );
 
 $ECHOES->clearSimulator();
 $ECHOES->setAssignMethod( "Random" );
-$ECHOES->startSimulation( $serversFile, $tasksFileSet, 200 );
+$ECHOES->startSimulation( $serversFile, $tasksFileSet, 1000 );
 
 $ECHOES->clearSimulator();
 $ECHOES->setAssignMethod( "Default" );
-$ECHOES->startSimulation( $serversFile, $tasksFileSet, 200 );
+$ECHOES->startSimulation( $serversFile, $tasksFileSet, 1000 );
 
 
 // TODO:
