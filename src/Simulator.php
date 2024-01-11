@@ -839,7 +839,7 @@ class Simulator
         $result = file_get_contents( $fileName );
         if( !$result )
             throw new Exception("Could not read to the file \"" . $fileName . "\".", 1);
-        $this->loadTasksFromJSON( $result, $issetTaskID, $issetParameterNames, $applyTaskID );
+        $this->loadTasksFromJSON( $result, true, $issetTaskID, $issetParameterNames, $applyTaskID );
         return true;
     }
 
@@ -886,7 +886,7 @@ class Simulator
     }
 
     // Load tasks from JSON data
-    public function loadTasksFromJSON( string $jsonTasks, $issetTaskID = false, $issetParameterNames = false, $applyTaskID = false )
+    public function loadTasksFromJSON( string $jsonTasks, $updateTimes = true, $issetTaskID = false, $issetParameterNames = false, $applyTaskID = false )
     {
         $tasks = json_decode( $jsonTasks, true );
         if ( $tasks == false || empty( $tasks ) )
@@ -904,6 +904,12 @@ class Simulator
                         {
                             throw new Exception("A task with ID \"" . $task["ID"] . "\" already exists.", 1);
                             return false;
+                        }
+                        if( $updateTimes )
+                        {
+                            $task["Deadline"] = ($task["Deadline"]-$task["Timestamp"]) + time();
+                            $task["Timestamp"] = time();
+                            $task["TimestampMS"] = $this->getTimestampMS();
                         }
                         $this->tasks[ $task["ID"] ] = new Task(
                             $task["Name"],
@@ -925,6 +931,12 @@ class Simulator
                     }
                     else
                     {
+                        if( $updateTimes )
+                        {
+                            $task["Deadline"] = ($task["Deadline"]-$task["Timestamp"]) + time();
+                            $task["Timestamp"] = time();
+                            $task["TimestampMS"] = $this->getTimestampMS();
+                        }
                         $this->createTask(
                             $task["Name"],
                             $task["Priority"],
@@ -946,6 +958,12 @@ class Simulator
                 }
                 else
                 {
+                    if( $updateTimes )
+                    {
+                        $task["Deadline"] = ($task["Deadline"]-$task["Timestamp"]) + time();
+                        $task["Timestamp"] = time();
+                        $task["TimestampMS"] = $this->getTimestampMS();
+                    }
                     $this->createTask(
                         $task["Name"],
                         $task["Priority"],
@@ -974,6 +992,12 @@ class Simulator
                         throw new Exception("A task with ID \"" . $task[0] . "\" already exists.", 1);
                         return false;
                     }
+                    if( $updateTimes )
+                    {
+                        $task[11] = ($task[11]-$task[7]) + time();
+                        $task[7] = time();
+                        $task[8] = $this->getTimestampMS();
+                    }
                     $this->tasks[ $task[0] ] = new Task(
                         $task[1],
                         $task[2],
@@ -994,6 +1018,12 @@ class Simulator
                 }
                 else
                 {
+                    if( $updateTimes )
+                    {
+                        $task[10] = ($task[10]-$task[6]) + time();
+                        $task[6] = time();
+                        $task[7] = $this->getTimestampMS();
+                    }
                     $this->createTask(
                         $task[0],
                         $task[1],
@@ -2347,16 +2377,18 @@ class Simulator
                 $TD = $this->getRunningTaskDetails($taskID);
 
                 //Terminate if Deadline has passed
-                if( ($TD["Deadline"] < time()) || ($TD["ExecutionTime"] + $TD["Timestamp"] < time()) ) 
+                if( ($TD["Deadline"] < time()) ) 
                 {
                     $server["Object"]->terminateTask( $taskID, $this->getRunningTask($taskID) );
                     $this->deleteRunningTask( $taskID );
                     $this->incrementTotalTerminatedTasks();
+                    $this->incrementExpiredTerminatedTasks();
                 }
                 else if( $TD["ExecutionTime"] + $TD["Timestamp"] < time() ) // Terminate if Task is done
                 {
                     $server["Object"]->terminateTask( $taskID, $this->getRunningTask($taskID) );
                     $this->deleteRunningTask( $taskID );
+                    $this->incrementSuccessTerminatedTasks();
                     $this->incrementTotalTerminatedTasks();
                 }
             }
@@ -2365,22 +2397,20 @@ class Simulator
 
     // Simulation starter: $simulationTime => in seconds
     public function startSimulation(
-            $simulationTime = 30,
-            $initialTasks = true,
-            $autoGenerateTasks = true,
-            $randomNumberOfTasks = true,
-            $constantNumberOfTasks = 0,
-            $minTaskGenration = 1,
-            $maxTaskGenration = 50,
-            $possibilityOfGeneration = 50
-        )
+        $serversFile,
+        $tasksFileSet,
+        $simulationTime = 30
+    )
     {
+        // Configure the servers for simulation
+        $this->loadServersFromJSON( file_get_contents($serversFile) );
+
         $this->printLogo();
         $this->printSeperator();
         $this->printInfo();
         $this->printSeperator();
 
-        $flag = false;
+        $counter = 0;
         $running = 0;
         $this->printLog( "Simulation started at " . date(DATE_RFC2822) . " (" . time() . ") for " . $simulationTime . " seconds."  );
         $startTime = time();
@@ -2389,35 +2419,32 @@ class Simulator
         $this->printLog( "Assign method is : " . $this->getAssignMethod() );
 
         while (time() < $endTime) {
-
             // Update servers, assign tasks, etc.
-            
+
+            // Update servers
             $this->UpdateServers();
 
-            // Generate initial Tasks if $initialTasks is true
-            if ( $initialTasks ) {
-                $this->generateRandomTasks( ($randomNumberOfTasks) ? mt_rand( $minTaskGenration, $maxTaskGenration ) : $constantNumberOfTasks );
-            }
+            // Add a set of Tasks
+            if( isset($tasksFileSet[ $counter ]) )
+                $this->loadTasksFromJSON( file_get_contents( $tasksFileSet[ $counter++ ] ) );
 
-            // Generate random Task during simulatin if $autoGenerateTasks is true
-            if ( $autoGenerateTasks && $flag ) {
-                if ( mt_rand(0,99) >= $possibilityOfGeneration ) {
-                    $this->generateRandomTasks( ($randomNumberOfTasks) ? mt_rand( $minTaskGenration, $maxTaskGenration ) : $constantNumberOfTasks );
-                }
-            }
-            $flag = true;
-
+            // Assign tasks
             $result = $this->assignAllTasks();
             $running += count( $result["assignedTasks"] );
 
+            // Print log 
             $this->printLog( "At " . date(DATE_RFC2822) . " (" . time() . ") " . time() - $startTime . " seconds passed, \"" .
                             $this->getTotalTerminatedTasks() . "\" Total terminated Task(s) so far, \"" .
+                            $this->getSuccessTerminatedTasks() . "\" Successfully terminated Task(s), \"" .
+                            $this->getExpiredTerminatedTasks() . "\" Expired terminated Task(s), \"" .
                             $running . "\" Task(s) running at this point, \"" . count( $result["remainingTasks"] ) .
                             "\" Task(s) still waiting."   
             );
 
             usleep(100000); // Sleep for 100 milliseconds
         }
+
+        $this->printSeperator();
     }
 }
 

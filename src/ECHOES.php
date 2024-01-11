@@ -425,20 +425,148 @@ $ECHOES = new Simulator();
 // var_dump( $ECHOES->getAllServers() );
 
 
-// Testing clearSimulator()
-$ECHOES->generateRandomServers( 50 );
-$ECHOES->generateRandomTasks( 100 );
-var_dump( $ECHOES->getAllServers() );
-var_dump( $ECHOES->getTasks() );
-$ECHOES->clearSimulator();
-var_dump( $ECHOES->getAllServers() );
-var_dump( $ECHOES->getTasks() );
+// // Testing clearSimulator()
+// $ECHOES->generateRandomServers( 50 );
+// $ECHOES->generateRandomTasks( 100 );
+// var_dump( $ECHOES->getAllServers() );
+// var_dump( $ECHOES->getTasks() );
+// $ECHOES->clearSimulator();
+// var_dump( $ECHOES->getAllServers() );
+// var_dump( $ECHOES->getTasks() );
 
 
+// $serversFile = "../Tests/Servers.json";
+// $tasksFileSet = [];
 // $ECHOES->generateRandomServers( 20 );
-// $ECHOES->generateRandomTasks( 200 );
-// $ECHOES->setAssignMethod( "Knapsack" );
-// $ECHOES->startSimulation( 200 );
+// $ECHOES->exportServersAsJSON($serversFile);
+// for ($i = 0; $i < 100 ; $i++) { 
+//     $ECHOES->clearSimulator();
+//     $fname = "../Tests/Tasks_set" . $i . ".json";
+//     $tasksFileSet[] = $fname;
+//     $ECHOES->generateRandomTasks( mt_rand(200, 300) );
+//     $ECHOES->exportTasksAsJSON($fname);
+// }
+
+$serversFile = "../Tests/Servers.json";
+$tasksFileSet = [
+    "../Tests/Tasks_set0.json",
+    "../Tests/Tasks_set1.json",
+    "../Tests/Tasks_set2.json",
+    "../Tests/Tasks_set3.json",
+    "../Tests/Tasks_set4.json",
+    "../Tests/Tasks_set5.json",
+    "../Tests/Tasks_set6.json",
+    "../Tests/Tasks_set7.json",
+    "../Tests/Tasks_set8.json",
+    "../Tests/Tasks_set9.json",
+    "../Tests/Tasks_set10.json",
+    "../Tests/Tasks_set11.json",
+    "../Tests/Tasks_set12.json",
+    "../Tests/Tasks_set13.json",
+    "../Tests/Tasks_set14.json",
+    "../Tests/Tasks_set15.json",
+    "../Tests/Tasks_set16.json",
+    "../Tests/Tasks_set17.json",
+    "../Tests/Tasks_set18.json",
+    "../Tests/Tasks_set19.json",
+    "../Tests/Tasks_set20.json",
+    "../Tests/Tasks_set21.json",
+    "../Tests/Tasks_set22.json",
+    "../Tests/Tasks_set23.json",
+    "../Tests/Tasks_set24.json",
+    "../Tests/Tasks_set25.json",
+    "../Tests/Tasks_set26.json",
+    "../Tests/Tasks_set27.json",
+    "../Tests/Tasks_set28.json",
+    "../Tests/Tasks_set29.json",
+    "../Tests/Tasks_set30.json",
+    "../Tests/Tasks_set31.json",
+    "../Tests/Tasks_set32.json",
+    "../Tests/Tasks_set33.json",
+    "../Tests/Tasks_set34.json",
+    "../Tests/Tasks_set35.json",
+    "../Tests/Tasks_set36.json",
+    "../Tests/Tasks_set37.json",
+    "../Tests/Tasks_set38.json",
+    "../Tests/Tasks_set39.json",
+    "../Tests/Tasks_set40.json",
+    "../Tests/Tasks_set41.json",
+    "../Tests/Tasks_set42.json",
+    "../Tests/Tasks_set43.json",
+    "../Tests/Tasks_set44.json",
+    "../Tests/Tasks_set45.json",
+    "../Tests/Tasks_set46.json",
+    "../Tests/Tasks_set47.json",
+    "../Tests/Tasks_set48.json",
+    "../Tests/Tasks_set49.json",
+    "../Tests/Tasks_set50.json",
+    "../Tests/Tasks_set51.json",
+    "../Tests/Tasks_set52.json",
+    "../Tests/Tasks_set53.json",
+    "../Tests/Tasks_set54.json",
+    "../Tests/Tasks_set55.json",
+    "../Tests/Tasks_set56.json",
+    "../Tests/Tasks_set57.json",
+    "../Tests/Tasks_set58.json",
+    "../Tests/Tasks_set59.json",
+    "../Tests/Tasks_set60.json",
+    "../Tests/Tasks_set61.json",
+    "../Tests/Tasks_set62.json",
+    "../Tests/Tasks_set63.json",
+    "../Tests/Tasks_set64.json",
+    "../Tests/Tasks_set65.json",
+    "../Tests/Tasks_set66.json",
+    "../Tests/Tasks_set67.json",
+    "../Tests/Tasks_set68.json",
+    "../Tests/Tasks_set69.json",
+    "../Tests/Tasks_set70.json",
+    "../Tests/Tasks_set71.json",
+    "../Tests/Tasks_set72.json",
+    "../Tests/Tasks_set73.json",
+    "../Tests/Tasks_set74.json",
+    "../Tests/Tasks_set75.json",
+    "../Tests/Tasks_set76.json",
+    "../Tests/Tasks_set77.json",
+    "../Tests/Tasks_set78.json",
+    "../Tests/Tasks_set79.json",
+    "../Tests/Tasks_set80.json",
+    "../Tests/Tasks_set81.json",
+    "../Tests/Tasks_set82.json",
+    "../Tests/Tasks_set83.json",
+    "../Tests/Tasks_set84.json",
+    "../Tests/Tasks_set85.json",
+    "../Tests/Tasks_set86.json",
+    "../Tests/Tasks_set87.json",
+    "../Tests/Tasks_set88.json",
+    "../Tests/Tasks_set89.json",
+    "../Tests/Tasks_set90.json",
+    "../Tests/Tasks_set91.json",
+    "../Tests/Tasks_set92.json",
+    "../Tests/Tasks_set93.json",
+    "../Tests/Tasks_set94.json",
+    "../Tests/Tasks_set95.json",
+    "../Tests/Tasks_set96.json",
+    "../Tests/Tasks_set97.json",
+    "../Tests/Tasks_set98.json",
+    "../Tests/Tasks_set99.json"
+];
+
+$ECHOES->clearSimulator();
+$ECHOES->setAssignMethod( "Knapsack" );
+$ECHOES->startSimulation( $serversFile, $tasksFileSet, 200 );
+
+$ECHOES->clearSimulator();
+$ECHOES->setAssignMethod( "EdgeFirst" );
+$ECHOES->startSimulation( $serversFile, $tasksFileSet, 200 );
+
+$ECHOES->clearSimulator();
+$ECHOES->setAssignMethod( "Random" );
+$ECHOES->startSimulation( $serversFile, $tasksFileSet, 200 );
+
+$ECHOES->clearSimulator();
+$ECHOES->setAssignMethod( "Default" );
+$ECHOES->startSimulation( $serversFile, $tasksFileSet, 200 );
+
 
 // TODO:
 // loadTasksFromCSV()
