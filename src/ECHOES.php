@@ -414,12 +414,14 @@ $ECHOES = new Simulator();
 // var_dump($ECHOES->exportServersAsJSON("Servers.json",true, true) );
 var_dump( $ECHOES->getAllServers() );
 //  ------------- string $jsonServers, $issetServerID = false, $issetParameterNames = false, $applyServerID = false -------------
-// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, false ) );
+// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json") ) );
+// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), false, false, true ) );
+// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true ) );
 // var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, false, true ) );
 // var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), false, true ) );
-var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), false, true, true ) );
+// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), false, true, true ) );
 // var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, true ) );
-// var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, true, true ) );
+var_dump( $ECHOES->loadServersFromJSON( file_get_contents("Servers.json"), true, true, true ) );
 var_dump( $ECHOES->getAllServers() );
 
 // $ECHOES->generateRandomServers( 20 );
