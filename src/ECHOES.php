@@ -434,6 +434,12 @@ $ECHOES = new Simulator();
 // var_dump( $ECHOES->getAllServers() );
 // var_dump( $ECHOES->getTasks() );
 
+// // Testing: startSimulationWithoutLoadingFromFile() with active tasks
+// $ECHOES->setAssignMethod( "Knapsack" );
+// $ECHOES->generateRandomServers( 10 );
+// $ECHOES->generateRandomTasks( 2048 );
+// $ECHOES->startSimulationWithoutLoadingFromFile( 1000 );
+
 
 // $serversFile = "../Tests/Test01/Servers.json";
 // $tasksFileSet = [];

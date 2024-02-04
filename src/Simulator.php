@@ -2521,7 +2521,7 @@ class Simulator
             // Update servers
             $this->UpdateServers();
 
-            // Load Tasks based on timey 
+            // Load Tasks based on time
             if( floor((time()-$startTime)/$injectTasksEveryTimeFrame) > $counter )
             {
                 $ctr = floor((time()-$startTime)/$injectTasksEveryTimeFrame) - $counter;
@@ -2529,6 +2529,52 @@ class Simulator
                     if( isset($tasksFileSet[ $counter ]) )
                         $this->loadTasksFromJSON( file_get_contents( $tasksFileSet[ $counter++ ] ) );
             }
+
+            // Assign tasks
+            $result = $this->assignAllTasks();
+            $running += (isset($result["assignedTasks"])) ? count( $result["assignedTasks"] ) : 0 ;
+            $remaining = (isset($result["remainingTasks"])) ? count( $result["remainingTasks"] ) : 0 ;
+
+            // Print log 
+            $this->printLog( "At " . date(DATE_RFC2822) . " (" . time() . ") " . time() - $startTime . " seconds passed, \"" .
+                            $this->getTotalTerminatedTasks() . "\" Total terminated Task(s) so far, \"" .
+                            $this->getSuccessTerminatedTasks() . "\" Successfully terminated Task(s), \"" .
+                            $this->getExpiredTerminatedTasks() . "\" Expired terminated Task(s), \"" .
+                            $running . "\" Task(s) running at this point, \"" . $remaining .
+                            "\" Task(s) still waiting."   
+            );
+
+            usleep(100000); // Sleep for 100 milliseconds
+        }
+
+        $this->printSeperator();
+    }
+
+    // Simulation starter with RAM data
+    public function startSimulationWithoutLoadingFromFile(
+        $simulationTime = 3000,
+    )
+    {
+
+        $this->printLogo();
+        $this->printSeperator();
+        $this->printInfo();
+        $this->printSeperator();
+
+        $counter = 0;
+        $running = 0;
+        $remaining = 0;
+        $this->printLog( "Simulation started at " . date(DATE_RFC2822) . " (" . time() . ") for " . $simulationTime . " seconds."  );
+        $startTime = time();
+        $endTime = $startTime + $simulationTime;
+
+        $this->printLog( "Assign method is : " . $this->getAssignMethod() );
+
+        while (time() < $endTime) {
+            // Update servers, assign tasks, etc.
+
+            // Update servers
+            $this->UpdateServers();
 
             // Assign tasks
             $result = $this->assignAllTasks();
