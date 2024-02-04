@@ -556,6 +556,10 @@ $ECHOES->setAssignMethod( "Knapsack" );
 $ECHOES->startSimulation( $serversFile, $tasksFileSet, 1000 );
 
 $ECHOES->clearSimulator();
+$ECHOES->setAssignMethod( "DecisionTree" );
+$ECHOES->startSimulation( $serversFile, $tasksFileSet, 1000 );
+
+$ECHOES->clearSimulator();
 $ECHOES->setAssignMethod( "EdgeFirst" );
 $ECHOES->startSimulation( $serversFile, $tasksFileSet, 1000 );
 

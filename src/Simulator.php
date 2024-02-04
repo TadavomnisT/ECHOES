@@ -118,6 +118,7 @@ class Simulator
 
 
         $this->assignMethods = [
+            "DecisionTree",
             "Default",
             "Random",
             "Knapsack",
@@ -2009,6 +2010,64 @@ class Simulator
         echo $info . PHP_EOL;
     }
 
+    // Check if a Task is Assignable to a Server
+    public function isTaskAssignableToServer( $taskID, $serverType, $serverID )
+    {
+        if ($serverType != "Edge" && $serverType != "Cloud" && $serverType != "Server") {
+            return false;
+        }
+        if ( $this->getTask( $taskID ) === false ) {
+            return false;
+        }
+        switch ($serverType) {
+            case "Edge":
+                if (empty($this->getEdgeServers()[$serverID])) {
+                    return false;
+                }
+                $server = $this->getEdgeServers()[$serverID];
+                break;
+            case "Cloud":
+                if (empty($this->getCloudServers()[$serverID])) {
+                    return false;
+                }
+                $server = $this->getCloudServers()[$serverID];
+                break;
+            case "Server":
+                if (empty($this->getServers()[$serverID])) {
+                    return false;
+                }
+                $server = $this->getServers()[$serverID];
+                break;
+            default:
+                return false;
+                break;
+        }
+
+        $this->UpdateServers();
+        $task = $this->getTask( $taskID );
+
+        if ( $task->getRequiredCores() > $server->getCores() ) {
+            return false;
+        }
+        if ( $task->getRequiredMIPSPerCore() > $server->getMIPS() ) {
+            return false;
+        }
+        if ( $task->getRequiredRAM() > $server->getAvailableRAM() ) {
+            return false;
+        }
+        if ( $task->getRequiredStorage() > $server->getAvailableStorage() ) {
+            return false;
+        }
+        if ( $task->getTimestamp() + $task->getDeadline() <= time() ) {
+            return false;
+        }
+        if ( !$server->getAvailability() ) {
+            return false;
+        }
+
+        return true;
+    }
+
     // Assign a Task to a Server
     public function assignTask( $taskID, $serverType, $serverID, $returnError = False )
     {
@@ -2081,6 +2140,7 @@ class Simulator
     public function assignAllTasks()
     {
         $tasks = $this->getTasks();
+        if ( empty($tasks) ) return false;
         $assignedTasks = [];
         $remainingTasks = array_keys( $tasks );
         switch ( $this->getAssignMethod() ) {
@@ -2159,6 +2219,40 @@ class Simulator
                     }
                 }
 
+                break;
+
+            case "DecisionTree":
+                // Tasks and Servers (Edge/Cloud) are stored on a Decision-Tree and then are assigned
+                $servers = $this->getAllServers();
+                
+                // assign tasks to servers using Decision-Tree
+                $assignments = []; // Array to store task-server assignments
+
+                // Calculate the number of tasks per server
+                $numTasksPerServer = ceil(count($tasks) / count($servers));
+
+                // Assign tasks to servers in a round-robin fashion
+                $serverIndex = 0;
+                foreach ($tasks as $taskID => $task) {
+                    $assignments[$taskID] = $serverIndex;
+
+                    // Move to the next server in a round-robin fashion
+                    $serverIndex = ($serverIndex + 1) % count($servers);
+                }
+
+                // Assigne Tasks
+                foreach ($assignments as $Tid => $Sid) {
+                    if ( $this->assignTask( $Tid, $servers[$Sid]["Type"], $servers[$Sid]["ID"] ) === true ) {
+                        unset( $remainingTasks[$Tid] );
+                        $assignedTasks[] = $Tid;
+
+                        // Delete assigned tasks from tasks[] and set them to runningTasks[]
+                        $this->addRunningTask( $this->getTask( $Tid), $Tid );
+                        $this->deleteTask( $Tid );
+
+                        break;
+                    }
+                }
                 break;
 
             case "EdgeFirst":
@@ -2400,7 +2494,8 @@ class Simulator
     public function startSimulation(
         $serversFile,
         $tasksFileSet,
-        $simulationTime = 30
+        $simulationTime = 3000,
+        $injectTasksEveryTimeFrame = 5 // EXAMPLE: Every 5 seconds load a set of Tasks
     )
     {
         // Configure the servers for simulation
@@ -2413,6 +2508,7 @@ class Simulator
 
         $counter = 0;
         $running = 0;
+        $remaining = 0;
         $this->printLog( "Simulation started at " . date(DATE_RFC2822) . " (" . time() . ") for " . $simulationTime . " seconds."  );
         $startTime = time();
         $endTime = $startTime + $simulationTime;
@@ -2425,20 +2521,26 @@ class Simulator
             // Update servers
             $this->UpdateServers();
 
-            // Add a set of Tasks
-            if( isset($tasksFileSet[ $counter ]) )
-                $this->loadTasksFromJSON( file_get_contents( $tasksFileSet[ $counter++ ] ) );
+            // Load Tasks based on timey 
+            if( floor((time()-$startTime)/$injectTasksEveryTimeFrame) > $counter )
+            {
+                $ctr = floor((time()-$startTime)/$injectTasksEveryTimeFrame) - $counter;
+                for ($i=0; $i < $ctr ; $i++)
+                    if( isset($tasksFileSet[ $counter ]) )
+                        $this->loadTasksFromJSON( file_get_contents( $tasksFileSet[ $counter++ ] ) );
+            }
 
             // Assign tasks
             $result = $this->assignAllTasks();
-            $running += count( $result["assignedTasks"] );
+            $running += (isset($result["assignedTasks"])) ? count( $result["assignedTasks"] ) : 0 ;
+            $remaining = (isset($result["remainingTasks"])) ? count( $result["remainingTasks"] ) : 0 ;
 
             // Print log 
             $this->printLog( "At " . date(DATE_RFC2822) . " (" . time() . ") " . time() - $startTime . " seconds passed, \"" .
                             $this->getTotalTerminatedTasks() . "\" Total terminated Task(s) so far, \"" .
                             $this->getSuccessTerminatedTasks() . "\" Successfully terminated Task(s), \"" .
                             $this->getExpiredTerminatedTasks() . "\" Expired terminated Task(s), \"" .
-                            $running . "\" Task(s) running at this point, \"" . count( $result["remainingTasks"] ) .
+                            $running . "\" Task(s) running at this point, \"" . $remaining .
                             "\" Task(s) still waiting."   
             );
 
