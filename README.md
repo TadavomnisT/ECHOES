@@ -24,12 +24,10 @@ git clone https://github.com/TadavomnisT/ECHOES.git
 ```
 ____________________________________________________________
 
-### Installation and Running example on GNU/Linux
+### Installation example on GNU/Linux
 ```shell
 pip install mknapsack
 git clone https://github.com/TadavomnisT/ECHOES.git
-cd ECHOES
-php src/ECHOES.php
 ```
 
 
