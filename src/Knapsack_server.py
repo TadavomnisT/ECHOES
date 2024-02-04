@@ -10,7 +10,11 @@ def solve_knapsack():
     item_values = data['item_values']
     item_weights = data['item_weights']
     knapsacks = data['knapsacks']
-    res = solve_multiple_knapsack(item_values, item_weights, knapsacks, method_kwargs={"check_inputs": 0})
+    method = 'mtm'
+    # Method migration threshold : You can change it
+    if len(item_values) > 32768 
+        method = 'mthm'
+    res = solve_multiple_knapsack(item_values, item_weights, knapsacks, method=method, method_kwargs={"check_inputs": 0})
     return jsonify(res.tolist())
 
 if __name__ == '__main__':
