@@ -22,14 +22,6 @@ pip install mknapsack
 ```shell
 git clone https://github.com/TadavomnisT/ECHOES.git
 ```
-____________________________________________________________
-
-### Installation example on GNU/Linux
-```shell
-pip install mknapsack
-git clone https://github.com/TadavomnisT/ECHOES.git
-```
-
 
 ## Usage
 
